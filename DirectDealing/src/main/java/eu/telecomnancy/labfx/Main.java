@@ -10,19 +10,33 @@ import javafx.fxml.FXMLLoader;
 
 public class Main extends Application {
 
+    private static Stage currentStage;
     public static void main(String[] args) {
         Application.launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        primaryStage.setTitle("JavaFx Demo");
-
+        
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Main.fxml"));
         Parent root = loader.load();
 
-        Scene scene = new Scene(root, 400, 400);
-        primaryStage.setScene(scene);
+        MainController controller = loader.getController();
+        controller.setPrimaryStage(primaryStage);
+
+        currentStage = primaryStage;
+        primaryStage.setScene(new Scene(root, 1600, 900));
+        primaryStage.setTitle("");
         primaryStage.show();
     }
+
+    public static Stage getCurrentStage() {
+        return currentStage;
+    }
+
+    public static void setCurrentStage(Stage stage) {
+        currentStage = stage;
+    }
+
+
 }
