@@ -28,6 +28,8 @@
 
 14. **Gestion de Liste d'Attente** : L'application offre la possibilité de gérer une liste d’attente pour un emprunt ou un service demandé.
 
+15. **Ajout d'amis et création de groupes de discussion** : L'application permet d'ajouter des utilisateurs en tant qu'amis et de créer des groupes de discussion entre ami.
+
 
 ## Classification des Fonctionnalités par Priorité 
 (1 = low, 2 = medium, 3 = high)
@@ -48,3 +50,4 @@
 | Notifications de Fin d’Emprunt | 1 |
 | Système d'Évaluation | 2 |
 | Gestion de Liste d'Attente | 1 |
+| Ajout d'amis et création de groupes de discussion | 1 |
