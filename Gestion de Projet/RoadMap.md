@@ -9,6 +9,7 @@ Cette roadmap sera mise à jour régulièrement et sera accessible à tous les m
 ### 08/01/2024
 
 - Visuels de l'application : schémas, diagramme, fichiers FXML, etc, (Page de garde  Page de connexion Page d'inscription Affichage profil)
+- Lien du croquis des viuels : [Croquis](https://lucid.app/lucidspark/3e2b87ea-0b26-4c6a-bc3a-3376331c43c6/edit?view_items=eFG3Hkxl6jku&invitationId=inv_aa13254e-0082-48cd-b5fd-fd50973800d6)
 - Début de la gestion des profils utilisateurs :
     - Création de compte
     - Connexion
