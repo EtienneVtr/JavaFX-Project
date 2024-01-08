@@ -8,12 +8,12 @@ Cette roadmap sera mise à jour régulièrement et sera accessible à tous les m
 
 ### 08/01/2024
 
-- Visuels de l'application : schémas, diagramme, fichiers FXML, etc.
-- Page principale
+- Visuels de l'application : schémas, diagramme, fichiers FXML, etc, (Page de garde  Page de connexion Page d'inscription Affichage profil)
 - Début de la gestion des profils utilisateurs :
     - Création de compte
     - Connexion
-    - Création de la base de données utilisateurs
+    - Création de la base de données utilisateurs (
+        table profil : id, prenom, nom, pseudo, mail,phone, password, photo_profil, localisation, date_inscription, status_compte : particulier/professionnel, etat_compte : sommeil ou non, nb_florain, historique_florain, note)
     - Pattern d'un profil : 
         - Nom
         - Prénom
@@ -24,3 +24,6 @@ Cette roadmap sera mise à jour régulièrement et sera accessible à tous les m
         - Photo de profil (optionnel)
         - Localisation
 - **Livrable :** Page principale avec la gestion des profils utilisateurs
+
+
+
