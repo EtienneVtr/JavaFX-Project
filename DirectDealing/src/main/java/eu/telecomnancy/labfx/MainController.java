@@ -3,9 +3,22 @@ package eu.telecomnancy.labfx;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import eu.telecomnancy.labfx.DataBase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import java.io.IOException;
 
 public class MainController {
+
+    @FXML private TextField emailField;
+    @FXML private TextField passwordField;
 
     // Fonction qui permet de charger la page de bienvenue
     public void loadWelcomePage() {
@@ -42,6 +55,11 @@ public class MainController {
 
     // Fonction qui charge le squellete de la page d'accueil
     public void loadSkeletPage() {
+        //A compléter
+    }
+
+    public void loadHomePage() {
+        //A compléter
     }
 
 
@@ -59,10 +77,30 @@ public class MainController {
 
     // Bouton qui tente la connexion
     @FXML
-    public void handleConnexion() throws IOException {
-        System.out.println("Connexion");
-        //loadHomePage();
+    private void handleConnexion() {
+    String email = emailField.getText();
+    String password = passwordField.getText();
+
+    try (Connection conn = DataBase.getConnection()) {
+        String sql = "SELECT * FROM profil WHERE mail = ? AND password = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            pstmt.setString(2, password);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                // Utilisateur trouvé, rediriger vers Dashboard.fxml
+                System.out.println("Utilisateur trouvé, Connexion réussie");
+                // Charger la page d'accueil
+                loadHomePage();
+            } else {
+                System.out.println("Identifiants incorrects");
+                // Afficher un message d'erreur
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Gestion des erreurs SQL
+        }
     }
-
-
 }

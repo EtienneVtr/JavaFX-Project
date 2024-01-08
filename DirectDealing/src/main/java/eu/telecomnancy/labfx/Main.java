@@ -20,7 +20,9 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        DataBase.initializeDatabase();
         Application.launch(args);
+
     }
 
     @Override

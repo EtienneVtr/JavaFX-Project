@@ -20,13 +20,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+
+
 import javafx.application.Platform;
 
 public class InscriptionController {
 
     private MainController mainController;
 
-    private static Stage primaryStage;
     @FXML private TextField prenom;
     @FXML private TextField nom;
     @FXML private TextField pseudo;
@@ -39,7 +40,6 @@ public class InscriptionController {
 
     private String imagePath;
 
-    // Fonction qui permet de charger le main controller
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }
@@ -54,14 +54,20 @@ public class InscriptionController {
         String password2Value = password2.getText();
         String localisationValue = localisation.getText();
         String phoneValue = telephone.getText();
-   
+    
+        // Vérifiez si les champs obligatoires sont remplis
+        if (prenomValue.isEmpty() || nomValue.isEmpty() || pseudoValue.isEmpty() || 
+            mailValue.isEmpty() || passwordValue.isEmpty() || localisationValue.isEmpty()) {
+            System.out.println("Tous les champs obligatoires doivent être remplis");
+            return;
+        }
+    
         if (!passwordValue.equals(password2Value)) {
             System.out.println("Les mots de passe ne correspondent pas");
             return;
         }
         
-        String url = "jdbc:sqlite:src/main/resources/eu/telecomnancy/labfx/DirectDealing.db";
-        try (Connection conn = DriverManager.getConnection(url)) {
+        try (Connection conn = DataBase.getConnection()) {
             if (userExists(conn, pseudoValue, mailValue)) {
                 System.out.println("Un utilisateur avec ce pseudo ou ce mail existe déjà");
                 return;
@@ -74,24 +80,25 @@ public class InscriptionController {
                 pstmt.setString(3, pseudoValue);
                 pstmt.setString(4, mailValue);
                 pstmt.setString(5, passwordValue);
-                pstmt.setString(6, phoneValue.isEmpty() ? null : phoneValue);
+                pstmt.setString(6, phoneValue.isEmpty() ? null : phoneValue); // Téléphone non obligatoire
                 pstmt.setString(7, localisationValue);
                 pstmt.setString(8, LocalDate.now().toString());
-                pstmt.setString(9, imagePath); 
+                pstmt.setString(9, imagePath); // Photo de profil non obligatoire
     
                 pstmt.executeUpdate();
                 System.out.println("Utilisateur créé");
-                System.out.println("Prenom: " + prenomValue + "\nNom: " + nomValue + "\nPseudo: " + pseudoValue + "\nMail: " + mailValue + "\nPassword: " + passwordValue + "\nLocalisation: " + localisationValue + "\nPhone: " + phoneValue + "\nDate: " + LocalDate.now().toString() + "\nImage: " + imagePath);
+                // Reste du code pour la redirection
             }
-    
-            // Redirection vers WelcomePage.fxml
-            mainController.loadWelcomePage();
-    
         } catch (SQLException e) {
             e.printStackTrace();
             // Gestion des erreurs SQL
         }
+    
+    
+        // Redirection vers WelcomePage.fxml
+        mainController.loadWelcomePage();
     }
+    
     
 
     @FXML
@@ -109,15 +116,7 @@ public class InscriptionController {
     
             // Stocker le chemin d'accès de l'image
             imagePath = selectedFile.getAbsolutePath();
-            // Vous pouvez maintenant utiliser cette chaîne pour l'insérer dans votre base de données
         }
-    }
-
-    
-    // Bouton qui charge la page de bienvenue
-    @FXML
-    public void handleWelcome() throws IOException {
-        mainController.loadWelcomePage();
     }
 
 
@@ -130,4 +129,16 @@ public class InscriptionController {
         return rs.next(); // Retourne vrai si un enregistrement existe
         }
     }
+
+
+    // Bouton qui charge la page de bienvenue
+    @FXML
+    public void handleRetour() throws IOException {
+        mainController.loadWelcomePage();
+    }
+
 }
+
+
+
+
