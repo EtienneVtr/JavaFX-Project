@@ -50,7 +50,7 @@
                         <Insets bottom="10.0" left="80.0" right="80.0" top="10.0" />
                      </VBox.margin>
                   </VBox>
-                  <Button mnemonicParsing="false" text="Connexion">
+                  <Button fx:id="ConnexionButton" mnemonicParsing="false" onAction="#handleConnexion" text="Connexion">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -63,7 +63,7 @@
             <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Pas encore inscrit?" />
-                  <Button mnemonicParsing="false" text="Inscrivez-vous" onAction="#handleInscription"/>
+                  <Button mnemonicParsing="false" onAction="#handleInscription" text="Inscrivez-vous" />
                </children>
                <padding>
                   <Insets bottom="20.0" left="10.0" right="10.0" top="10.0" />

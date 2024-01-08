@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.SkeletonController">
+   <children>
+      <AnchorPane layoutY="1.0" minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="177.0">
+         <children>
+            <VBox prefHeight="398.0" prefWidth="160.0">
+               <children>
+                  <VBox fx:id="MenuContent" prefHeight="300.0" prefWidth="177.0" />
+                  <VBox fx:id="ProfileContent" prefHeight="130.0" prefWidth="177.0">
+                     <children>
+                        <Line endX="75.29289245605469" startX="-100.0" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <Line endX="176.0" startX="176.0" startY="398.9999694824219" />
+      <AnchorPane fx:id="mainContent" layoutX="175.0" layoutY="1.0" prefHeight="398.0" prefWidth="418.0" />
+   </children>
+</AnchorPane>

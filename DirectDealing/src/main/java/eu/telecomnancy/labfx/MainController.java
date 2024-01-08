@@ -39,6 +39,12 @@ public class MainController {
         }
     }
 
+
+    // Fonction qui charge le squellete de la page d'accueil
+    public void loadSkeletPage() {
+    }
+
+
     // Bouton qui charge la page d'incription
     @FXML
     public void handleInscription() throws IOException {
@@ -49,6 +55,13 @@ public class MainController {
     @FXML
     public void handleWelcome() throws IOException {
         loadWelcomePage();
+    }
+
+    // Bouton qui tente la connexion
+    @FXML
+    public void handleConnexion() throws IOException {
+        System.out.println("Connexion");
+        //loadHomePage();
     }
 
 
