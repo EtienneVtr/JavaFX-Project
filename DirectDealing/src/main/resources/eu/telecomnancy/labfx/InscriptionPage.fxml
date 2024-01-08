@@ -13,7 +13,7 @@
          <children>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                 <Button fx:id="ButtonValidate" layoutX="53.0" layoutY="305.0" mnemonicParsing="false" onAction="#handleInscription" text="VALIDER" />
-                <Button fx:id="ButtonCancel" layoutX="470.0" layoutY="305.0" mnemonicParsing="false" onAction="#handleRetour" text="ANNULER" />
+                <Button fx:id="ButtonCancel" layoutX="470.0" layoutY="305.0" mnemonicParsing="false" text="ANNULER" onAction="#handleWelcome" />
                 <TextField fx:id="prenom" alignment="CENTER" layoutX="269.0" layoutY="44.0" promptText="Entrez un Prénom" />
                 <TextField fx:id="nom" alignment="CENTER" layoutX="63.0" layoutY="108.0" promptText="Entrez un Nom" />
                     <TextField fx:id="pseudo" alignment="CENTER" layoutX="80.0" layoutY="44.0" promptText="Entrez un Pseudo" />

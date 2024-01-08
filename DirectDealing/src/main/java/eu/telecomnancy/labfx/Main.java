@@ -2,41 +2,37 @@ package eu.telecomnancy.labfx;
 
 import java.io.IOException;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.scene.Parent;
-
-import javafx.fxml.FXMLLoader;
 
 public class Main extends Application {
 
-    private static Stage currentStage;
+    private static Stage primaryStage;
+
+    public static Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public static void setPrimaryStage(Stage stage) {
+        primaryStage = stage;
+    }
+
     public static void main(String[] args) {
         Application.launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Main.fxml"));
+        setPrimaryStage(primaryStage);
+        primaryStage.setTitle("DirectDealing");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/WelcomePage.fxml"));
         Parent root = loader.load();
-
-        MainController controller = loader.getController();
-        controller.setPrimaryStage(primaryStage);
-
-        currentStage = primaryStage;
-        primaryStage.setScene(new Scene(root, 1600, 900));
-        primaryStage.setTitle("");
+        
+        Scene scene = new Scene(root, 1600, 900);
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(true);
         primaryStage.show();
     }
-
-    public static Stage getCurrentStage() {
-        return currentStage;
-    }
-
-    public static void setCurrentStage(Stage stage) {
-        currentStage = stage;
-    }
-
-
 }

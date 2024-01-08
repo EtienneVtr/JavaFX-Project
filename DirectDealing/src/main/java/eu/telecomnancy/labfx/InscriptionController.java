@@ -20,12 +20,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-
-
 import javafx.application.Platform;
 
 public class InscriptionController {
 
+    private MainController mainController;
 
     private static Stage primaryStage;
     @FXML private TextField prenom;
@@ -40,7 +39,12 @@ public class InscriptionController {
 
     private String imagePath;
 
+    // Fonction qui permet de charger le main controller
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
+    @FXML
     public void handleInscription() throws IOException {
         String prenomValue = prenom.getText();
         String nomValue = nom.getText();
@@ -56,7 +60,6 @@ public class InscriptionController {
             return;
         }
         
-    
         String url = "jdbc:sqlite:src/main/resources/eu/telecomnancy/labfx/DirectDealing.db";
         try (Connection conn = DriverManager.getConnection(url)) {
             if (userExists(conn, pseudoValue, mailValue)) {
@@ -82,16 +85,7 @@ public class InscriptionController {
             }
     
             // Redirection vers WelcomePage.fxml
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/WelcomePage.fxml"));
-            Parent root = fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.setTitle("WelcomePage");
-            stage.setScene(new Scene(root, 1000, 560)); 
-
-            Main.getCurrentStage().close();
-            Main.setCurrentStage(stage);
-
-            stage.show();
+            mainController.loadWelcomePage();
     
         } catch (SQLException e) {
             e.printStackTrace();
@@ -117,6 +111,13 @@ public class InscriptionController {
             imagePath = selectedFile.getAbsolutePath();
             // Vous pouvez maintenant utiliser cette chaîne pour l'insérer dans votre base de données
         }
+    }
+
+    
+    // Bouton qui charge la page de bienvenue
+    @FXML
+    public void handleWelcome() throws IOException {
+        mainController.loadWelcomePage();
     }
 
 
