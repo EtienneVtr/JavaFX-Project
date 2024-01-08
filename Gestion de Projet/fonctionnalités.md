@@ -27,3 +27,24 @@
 13. **Système d'Évaluation** : Un système de notation permet d'évaluer la qualité des transactions, des objets, des services, et la disponibilité des utilisateurs.
 
 14. **Gestion de Liste d'Attente** : L'application offre la possibilité de gérer une liste d’attente pour un emprunt ou un service demandé.
+
+
+# Classification des Fonctionnalités par Priorité 
+(1 = low, 2 = medium, 3 = high)
+
+| Fonctionnalité | Priorité |
+| --- | --- |
+| Prêt et Emprunt de Matériel | 3 |
+| Proposition et Demande de Services | 3 |
+| Flexibilité Temporelle | 2 |
+| Gestion de la Durée de Prêt | 2 |
+| Géo-localisation des Offres et Demandes | 1 |
+| Comptes Utilisateurs | 3 |
+| Système de Récompenses en Florains | 3 |
+| Gestion de Planning | 1 |
+| Moteur de Recherche Avancé | 2 |
+| Communication Directe | 2 |
+| Gestion des Litiges | 1 |
+| Notifications de Fin d’Emprunt | 1 |
+| Système d'Évaluation | 2 |
+| Gestion de Liste d'Attente | 1 |
