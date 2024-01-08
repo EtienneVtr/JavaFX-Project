@@ -18,22 +18,25 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Main.fxml"));
-            Parent root = fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Inscription");
-            stage.setScene(new Scene(root, 1000, 560)); 
-            Main.setPreviousStage(stage);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Main.fxml"));
+        Parent root = loader.load();
 
-            stage.show();
+        MainController controller = loader.getController();
+        controller.setPrimaryStage(primaryStage);
+
+        currentStage = primaryStage;
+        primaryStage.setScene(new Scene(root, 1600, 900));
+        primaryStage.setTitle("");
+        primaryStage.show();
     }
 
-
-    public static Stage getPreviousStage() {
+    public static Stage getCurrentStage() {
         return currentStage;
     }
 
-    public static void setPreviousStage(Stage stage) {
+    public static void setCurrentStage(Stage stage) {
         currentStage = stage;
     }
+
+
 }
