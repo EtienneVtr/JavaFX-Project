@@ -93,6 +93,10 @@ public class MainController {
                 System.out.println("Utilisateur trouvé, Connexion réussie");
                 // Charger la page d'accueil
                 loadHomePage();
+                // Creation d'un objet User
+                User user = new User(email);
+
+                System.out.println("Prenom: " + user.getPrenom() + " Nom: " + user.getNom() + " Pseudo: " + user.getPseudo() + " Mail: " + user.getMail() + " Phone: " + user.getPhone() + " Photo de profil: " + user.getPhotoProfil() + " Localisation: " + user.getLocalisation() + " Date d'inscription: " + user.getDateInscription() + " Status du compte: " + user.getStatusCompte() + " Etat du compte: " + user.getEtatCompte() + " Nombre de florain: " + user.getNbFlorain() + " Historique florain: " + user.getHistoriqueFlorain() + " Note: " + user.getNote());
             } else {
                 System.out.println("Identifiants incorrects");
                 // Afficher un message d'erreur

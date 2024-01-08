@@ -1,11 +1,14 @@
 package eu.telecomnancy.labfx;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+
 
 public class User {
 
@@ -30,10 +33,9 @@ public class User {
     }
 
     private void loadUserFromDB() {
-        String url = "jdbc:sqlite:chemin/vers/votre/base/de/données.db";
         String sql = "SELECT * FROM profil WHERE mail = ?";
 
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DataBase.getConnection(); // Utiliser DatabaseUtil pour obtenir la connexion
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, this.mail);
@@ -47,19 +49,49 @@ public class User {
                 this.phone = rs.getString("phone");
                 this.photoProfil = rs.getString("photo_profil");
                 this.localisation = rs.getString("localisation");
-                this.dateInscription = rs.getDate("date_inscription").toLocalDate();
+                String dateString = rs.getString("date_inscription");
+                if (dateString != null && !dateString.isEmpty()) {
+                this.dateInscription = LocalDate.parse(dateString);
+                } else {
+                this.dateInscription = null; // ou une date par défaut si nécessaire
+                }
                 this.statusCompte = rs.getString("status_compte");
                 this.etatCompte = rs.getString("etat_compte");
                 this.nbFlorain = rs.getInt("nb_florain");
                 this.historiqueFlorain = rs.getString("historique_florain");
                 this.note = rs.getDouble("note");
-                
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
+
+    public void update() {
+        String sql = "UPDATE profil SET prenom = ?, nom = ?, pseudo = ?, phone = ?, photo_profil = ?, localisation = ?, status_compte = ?, etat_compte = ?, nb_florain = ?, historique_florain = ?, note = ? WHERE mail = ?";
+
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, this.prenom);
+            pstmt.setString(2, this.nom);
+            pstmt.setString(3, this.pseudo);
+            pstmt.setString(4, this.phone);
+            pstmt.setString(5, this.photoProfil);
+            pstmt.setString(6, this.localisation);
+            pstmt.setString(7, this.statusCompte);
+            pstmt.setString(8, this.etatCompte);
+            pstmt.setInt(9, this.nbFlorain);
+            pstmt.setString(10, this.historiqueFlorain);
+            pstmt.setDouble(11, this.note);
+            pstmt.setString(12, this.mail);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // Getters et Setters
     
@@ -77,6 +109,14 @@ public class User {
     
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public String setMail() {
+        return this.mail;
     }
     
     public String getPseudo() {
