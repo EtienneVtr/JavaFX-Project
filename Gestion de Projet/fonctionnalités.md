@@ -29,7 +29,7 @@
 14. **Gestion de Liste d'Attente** : L'application offre la possibilité de gérer une liste d’attente pour un emprunt ou un service demandé.
 
 
-# Classification des Fonctionnalités par Priorité 
+## Classification des Fonctionnalités par Priorité 
 (1 = low, 2 = medium, 3 = high)
 
 | Fonctionnalité | Priorité |
