@@ -33,6 +33,50 @@ public class ServiceOffer {
         loadServiceFromDB();
     }
 
+    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time, boolean isRecurrent, String daysOfService, int nbRecurrencingWeeks) {
+        this.supplier = supplier;
+        this.supplier_mail = supplier.getMail();
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.time = time;
+        this.isRecurrent = isRecurrent;
+        this.daysOfService = daysOfService;
+        this.nbRecurrencingWeeks = nbRecurrencingWeeks;
+        createNewOffer();
+    }
+
+
+    public void createNewOffer(){
+        String sql = "INSERT INTO service_offers (supplier_mail, title, description, date, time, is_recurrent, days_of_service, nb_recurrencing_weeks) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+    
+            pstmt.setString(1, this.supplier.getMail());
+            pstmt.setString(2, this.title);
+            pstmt.setString(3, this.description);
+            pstmt.setString(4, (this.date != null) ? this.date.toString() : null);
+            pstmt.setString(5, (this.time != null) ? this.time.toString() : null);
+            pstmt.setBoolean(6, this.isRecurrent);
+            pstmt.setString(7, this.daysOfService);
+            pstmt.setInt(8, this.nbRecurrencingWeeks);
+    
+            int affectedRows = pstmt.executeUpdate();
+    
+            // Vérifier si l'insertion a réussi et récupérer l'ID généré
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        this.id = generatedKeys.getInt(1);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
     private void loadServiceFromDB() {
         String sql = "SELECT * FROM service_offers WHERE supplier_mail = ?";
 

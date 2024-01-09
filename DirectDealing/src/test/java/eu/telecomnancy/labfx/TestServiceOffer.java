@@ -44,4 +44,29 @@ public class TestServiceOffer {
         offer.setDescription("Test Description");
         offer.update();
     }
+
+    @Order(3)
+    @Test
+    @DisplayName("Créer une nouvelle offre de service")
+    void testCreateNewServiceOffer() {
+        User testSupplier = new User("testsupplier@gmail.com");
+        String testTitle = "New Service";
+        String testDescription = "This is a new service.";
+        LocalDate testDate = LocalDate.of(2024, 5, 20);
+        LocalTime testTime = LocalTime.of(15, 30);
+        boolean testIsRecurrent = true;
+        String testDaysOfService = "2,4,6";
+        int testNbRecurrencingWeeks = 3;
+
+        ServiceOffer newOffer = new ServiceOffer(testSupplier, testTitle, testDescription, testDate, testTime, testIsRecurrent, testDaysOfService, testNbRecurrencingWeeks);
+
+        assertEquals(testSupplier.getMail(), newOffer.getSupplierMail());
+        assertEquals(testTitle, newOffer.getTitle());
+        assertEquals(testDescription, newOffer.getDescription());
+        assertEquals(testDate, newOffer.getDate());
+        assertEquals(testTime, newOffer.getTime());
+        assertEquals(testIsRecurrent, newOffer.getIsRecurrent());
+        assertEquals(testDaysOfService, newOffer.getDaysOfService());
+        assertEquals(testNbRecurrencingWeeks, newOffer.getNbRecurrencingWeeks());
+    }
 }
