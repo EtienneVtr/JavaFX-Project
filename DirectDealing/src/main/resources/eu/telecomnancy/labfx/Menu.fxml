@@ -6,9 +6,9 @@
 
 <VBox fx:id="MenuContent" alignment="TOP_CENTER" prefHeight="300.0" prefWidth="177.0" spacing="10.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.MenuController">
    <children>
-      <Button fx:id="homeButton" mnemonicParsing="false" text="Home" onAction="#handleHome" />
-      <Button fx:id="meterielButton" mnemonicParsing="false" text="Matériel"  />
-      <Button fx:id="serviceButton" mnemonicParsing="false" text="Service" onAction="#handleService" />
+      <Button fx:id="homeButton" mnemonicParsing="false" onAction="#handleHome" text="Home" />
+      <Button fx:id="meterielButton" mnemonicParsing="false" onAction="#handleEquipment" text="Matériel" />
+      <Button fx:id="serviceButton" mnemonicParsing="false" onAction="#handleService" text="Service" />
       <Button fx:id="carteButton" mnemonicParsing="false" text="Carte" />
       <Button fx:id="planningButton" mnemonicParsing="false" text="Mon planning" />
       <Button fx:id="messagerieButton" mnemonicParsing="false" text="Ma messagerie" />

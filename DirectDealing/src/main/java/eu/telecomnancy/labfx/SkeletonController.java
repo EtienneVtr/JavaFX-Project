@@ -104,6 +104,24 @@ public class SkeletonController {
         }
     }
 
+    // Fonction qui permet de charger la page des prêts de matériel
+    public void loadEquipmentPage(){
+        try {
+            System.out.println("Chargement de la page Equipment");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Equipment.fxml"));
+            Parent equipment = loader.load();
+
+            EquipmentController equipment_controller = loader.getController();
+            equipment_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(equipment);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
 
 
