@@ -67,6 +67,39 @@ public class EquipmentOffer {
             e.printStackTrace();
         }
     }
+
+    public void loadEquipmentById(int offerId) {
+        String sql = "SELECT * FROM equipement WHERE id = ?";
+
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, offerId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                this.name = rs.getString("name");
+                this.id = rs.getInt("id");
+                this.description = rs.getString("description");
+                this.quantity = rs.getInt("quantity");
+                String start_availabilityString = rs.getString("start_availability");
+                if (start_availabilityString != null && !start_availabilityString.isEmpty()) {
+                    this.start_availability = LocalDate.parse(start_availabilityString);
+                    } else {
+                    this.start_availability = null;
+                    }
+                String end_availabilityString = rs.getString("end_availability");
+                if (end_availabilityString != null && !end_availabilityString.isEmpty()) {
+                    this.end_availability = LocalDate.parse(end_availabilityString);
+                    } else {
+                    this.end_availability = null;
+                    }
+                this.price = rs.getInt("price");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     
     
     private void loadEquipmentFromDB() {
@@ -121,6 +154,10 @@ public class EquipmentOffer {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getId() {
+        return id;
     }
     
 

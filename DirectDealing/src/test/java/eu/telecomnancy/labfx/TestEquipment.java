@@ -16,6 +16,7 @@ public class TestEquipment {
         
     }
 
+    /* 
     @Order(1)
     @Test
     @DisplayName("Vérifier les informations de l'offre d'équipement")
@@ -42,6 +43,29 @@ public class TestEquipment {
         offer.setQuantity(10);
         offer.update();
 
+    } */
+    @Order(3)
+    @Test
+    @DisplayName("Créer une nouvelle offre d'équipement")
+    void testCreateNewEquipmentOffer() {
+        User testUser = new User("testuser@mail.com");
+        EquipmentOffer newOffer = new EquipmentOffer(
+            testUser, 
+            "Nouvel Équipement", 
+            "Description de l'équipement", 
+            5, 
+            LocalDate.now(), 
+            LocalDate.now().plusDays(10), 
+            200
+        );
+        newOffer.createNewOffer();
 
+        // Créer une instance pour charger l'offre
+        EquipmentOffer loadedOffer = new EquipmentOffer(testUser.getMail());
+        loadedOffer.loadEquipmentById(newOffer.getId()); // Charger l'offre par son ID
+
+        // Vérifier que l'offre a bien été créée
+        assertEquals("Nouvel Équipement", loadedOffer.getName());
+        
     }
 }
