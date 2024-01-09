@@ -18,5 +18,6 @@ public class EquipmentController {
 
     @FXML public void handleConsultOffer() {
         System.out.println("Consult offer");
+        skeleton_controller.loadListEquipmentOfferPage();
     }
 }
