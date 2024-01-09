@@ -59,13 +59,13 @@ public class CreateEquipmentController {
                 price
             );
             System.out.println("Offre bien créé");
+            skeleton_controller.loadEquipmentOfferPage(newOffer);
             // L'offre est automatiquement enregistrée dans createNewOffer()
     
         } catch (NumberFormatException e) {
             System.out.println("Erreur de format de nombre");
         }
 
-        skeleton_controller.loadEquipmentOfferPage();
     }
     
     
