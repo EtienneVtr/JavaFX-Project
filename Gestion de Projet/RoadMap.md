@@ -26,5 +26,19 @@ Cette roadmap sera mise à jour régulièrement et sera accessible à tous les m
         - Localisation
 - **Livrable :** Page principale avec la gestion des profils utilisateurs
 
+### 09/01/2024
 
+- Début de la gestion des annonces :
+    - controller pour les pages de création et de consultation
+    - controller pour l'affichage d'une annonce
+- Finir les DB EquipmentOffer et ServiceOffer
+- Controller et affichage du profil :
+    - Profil public
+    - Profil privé
+    - Modification du profil
+- Finir la création des pages :
+    - Page 'homePage'
+    - Pages profils utilisateur
+    - Pages création / consultation d'annonces
+- **Livrable :** Page principale avec la gestion des profils utilisateurs et des annonces
 
