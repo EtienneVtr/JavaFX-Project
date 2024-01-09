@@ -6,6 +6,7 @@ import java.time.LocalTime;
 // Description: Classe représentant une offre de service. Elle contient un titre, une description, une date et une heure.
 //              Elle peut être récurrente, auquel cas on lui ajoute un tableau de jours de la semaine où le service doit être réalisé.
 public class ServiceOffer {
+    private User supplier;
     private String title;
     private String description;
     private LocalDate date;
@@ -15,7 +16,8 @@ public class ServiceOffer {
                                    // On notera 1 = lundi, 2 = mardi, etc.
     private int nb_recurrencing_weeks;
 
-    public ServiceOffer(String title, String description, LocalDate date, LocalTime time){
+    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time){
+        this.supplier = supplier;
         this.title = title;
         this.description = description;
         this.date = date;
@@ -23,7 +25,8 @@ public class ServiceOffer {
         this.is_recurrent = false;
     }
 
-    public ServiceOffer(String title, String description, LocalDate date, LocalTime time, int[] days_of_service, int nb_recurrencing_weeks){
+    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time, int[] days_of_service, int nb_recurrencing_weeks){
+        this.supplier = supplier;
         this.title = title;
         this.description = description;
         this.date = date;

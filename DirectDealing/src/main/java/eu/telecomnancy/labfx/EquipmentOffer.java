@@ -5,6 +5,7 @@ import java.time.LocalDate;
 // Description: Classe représentant une offre de matériel. Elle contient un nom, une description, une quantité, 
 //              une date de début et de fin de disponibilité et un prix.
 public class EquipmentOffer {
+    private User owner;
     private String name;
     private String description;
     private int quantity;
@@ -12,7 +13,8 @@ public class EquipmentOffer {
     private LocalDate end_availability;
     private int price;
 
-    public EquipmentOffer(String name, String description, int quantity, LocalDate start_availability, LocalDate end_availability, int price) {
+    public EquipmentOffer(User owner, String name, String description, int quantity, LocalDate start_availability, LocalDate end_availability, int price) {
+        this.owner = owner;
         this.name = name;
         this.description = description;
         this.quantity = quantity;
