@@ -22,7 +22,7 @@ import java.time.LocalDate;
 
 
 
-public classe PrivateProfile{
+public class PrivateProfileController{
 
 
     @FXML private TextField prenom;
@@ -30,7 +30,7 @@ public classe PrivateProfile{
     @FXML private TextField pseudo;
     @FXML private TextField mail;
     @FXML private TextField localisation;
-    @FXML private TextField telephone;
+    @FXML private TextField phone;
     @FXML private ImageView imageView;
 
     private User currentUser;
@@ -40,14 +40,13 @@ public classe PrivateProfile{
         this.currentUser = user;
     }
     @FXML
-    public void initileze() {
-        prenom       = currentUser.getPrenom();
-        nom          = currentUser.getNom();
-        pseudo       = currentUser.getPseudo();
-        mail         = currentUser.getMail();
-        localisation = currentUser.getLocalisation();
-        telephone    = currentUser.getTelephone();
-        imageView    = currentUser.getPhotoProfil();
+    public void initialize() {
+        prenom.setText(currentUser.getPrenom());
+        nom.setText(currentUser.getNom());
+        pseudo.setText(currentUser.getPseudo());
+        mail.setText(currentUser.getMail());
+        localisation.setText(currentUser.getLocalisation());
+        phone.setText(currentUser.getPhone());
     }
 
     
