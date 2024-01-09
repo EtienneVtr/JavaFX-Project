@@ -3,6 +3,7 @@ package eu.telecomnancy.labfx;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +17,7 @@ public class MainController {
     
 
     @FXML private TextField emailField;
-    @FXML private TextField passwordField;
+    @FXML private PasswordField passwordField;
     @FXML private SkeletonController skeleton_controller;
 
     private static User currentUser;
