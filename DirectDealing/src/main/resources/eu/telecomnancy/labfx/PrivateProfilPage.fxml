@@ -46,7 +46,7 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="pseudo" />
-                  <TextField fx:id="pseudo" text="Pseudo" />
+                  <TextField fx:id="pseudo" text=pseudo />
                </children>
             </VBox>
          </children>
@@ -56,7 +56,7 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="prénom" />
-                  <TextField fx:id="prenom" text="Prénom" />
+                  <TextField fx:id="prenom" text=prenom />
                </children>
             </VBox>
          </children>
@@ -66,7 +66,7 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="nom" />
-                  <TextField fx:id="nom" text="Nom" />
+                  <TextField fx:id="nom" text=nom />
                </children>
             </VBox>
          </children>
@@ -76,7 +76,7 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="mail" />
-                  <TextField fx:id="mail" text="Mail" />
+                  <TextField fx:id="mail" text=mail />
                </children>
             </VBox>
          </children>
@@ -86,7 +86,7 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="numéro de téléphone" />
-                  <TextField fx:id="phone" text="phone" />
+                  <TextField fx:id="phone" text=phone />
                </children>
             </VBox>
          </children>
@@ -96,28 +96,20 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="localisation" />
-                  <TextField fx:id="localisation" text="localisation" />
+                  <TextField fx:id="localisation" text=localisation />
                </children>
             </VBox>
          </children>
       </HBox>
-      <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
-         <children>
-            <Label text="mail" />
-            <TextField fx:id="mail" text="Mail" />
-         </children>
-      </VBox>
-      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-         <children>
-            <Button mnemonicParsing="false" text="*" />
-            <Label text="Appliquer les modifications" />
-         </children>
-      </HBox>
       <Line endX="300.0" startX="-100.0" />
-      <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="600.0">
+      <HBox prefHeight="30.0" prefWidth="600.0">
          <children>
-            <Button mnemonicParsing="false" text="*" />
-            <Label text="Passer en sommeil" />
+            <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="600.0">
+               <children>
+                  <Button mnemonicParsing="false" text="Button" />
+                  <Label text="Passer en sommeil" />
+               </children>
+            </HBox>
          </children>
       </HBox>
    </children>

@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 
 import java.io.IOException;
@@ -35,6 +36,15 @@ public class SkeletonController {
     @FXML
     private VBox mainContent;
 
+
+    private User currentUser;
+
+
+    public void initialize(){
+        System.out.println("Initialisation de la session");
+        currentUser = Main.getCurrentUser();
+    }
+
     // Vous pouvez également ajouter des méthodes spécifiques pour charger le menu et le profil si nécessaire
     public void loadMenuPage() {
         try {
@@ -60,6 +70,7 @@ public class SkeletonController {
             profile_controller.setSkeletonController(this);
 
             profileContent.getChildren().setAll(profil_page);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -104,6 +115,7 @@ public class SkeletonController {
         }
     }
 
+    
 }
 
 

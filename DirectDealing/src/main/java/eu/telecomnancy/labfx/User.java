@@ -27,6 +27,7 @@ public class User {
     private String historiqueFlorain;
     private Double note;
 
+    
     public User(String mail) {
         this.mail = mail;
         loadUserFromDB();
