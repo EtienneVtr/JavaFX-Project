@@ -115,6 +115,40 @@ public class SkeletonController {
         }
     }
 
+    public void loadEquipmentPage(){
+        try {
+            System.out.println("Chargement de la page matériel");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Equipment.fxml"));
+            Parent equipment = loader.load();
+
+            EquipmentController equipment_controller = loader.getController();
+            equipment_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(equipment);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page de création des équipements
+    public void loadCreateEquipmentPage(){
+        try {
+            System.out.println("Chargement de la page de création d'une offre d'équipement");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/CreateEquipment.fxml"));
+            Parent create_equipment = loader.load();
+
+            CreateEquipmentController create_equipment_controller = loader.getController();
+            create_equipment_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(create_equipment);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
 }
 

@@ -13,6 +13,7 @@ public class EquipmentController {
     
     @FXML public void handleCreateOffer() {
         System.out.println("Create offer");
+        skeleton_controller.loadCreateEquipmentPage();
     }
 
     @FXML public void handleConsultOffer() {
