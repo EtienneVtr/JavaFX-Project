@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.CreateEquipmentController">
+   <children>
+      <TextField layoutX="43.0" layoutY="29.0" prefHeight="24.0" prefWidth="515.0" promptText="Entrez un titre" />
+      <TextField layoutX="43.0" layoutY="66.0" prefHeight="24.0" prefWidth="515.0" promptText="Entrez une desciption" />
+      <RadioButton layoutX="237.0" layoutY="137.0" mnemonicParsing="false" text="Oui" />
+      <RadioButton layoutX="302.0" layoutY="137.0" mnemonicParsing="false" text="Non" />
+      <Label layoutX="45.0" layoutY="137.0" text="Possibilité de récurrence ?" />
+      <DatePicker layoutX="69.0" layoutY="103.0" promptText="Date du service" />
+      <TextField layoutX="352.0" layoutY="103.0" prefHeight="24.0" prefWidth="181.0" promptText="Horaire (format 'HH:MM')" />
+      <TextField layoutX="43.0" layoutY="162.0" prefHeight="24.0" prefWidth="515.0" promptText="Si oui, entrez les jours de la semaine où vous êtes disponible" />
+      <Label layoutX="32.0" layoutY="186.0" text="Attention : il faut séparer les jours de la semaine par des virgules ou point-virgules" />
+   </children>
+</AnchorPane>
