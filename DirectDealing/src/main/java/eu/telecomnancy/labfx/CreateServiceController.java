@@ -25,12 +25,6 @@ public class CreateServiceController {
 
     private User currentUser;
 
-    @FXML
-    public void initialize() {
-        System.out.println("EquipmentController initialize");
-        currentUser = Main.getCurrentUser();
-    } 
-    
 
     @FXML private TextField title;
     @FXML private TextField description;
@@ -41,6 +35,18 @@ public class CreateServiceController {
     @FXML private TextField days_of_repetition;
     @FXML private TextField price;
     
+    private ToggleGroup recurrenceGroup = new ToggleGroup();
+
+    @FXML public void initialize() {
+        // Assignation des RadioButton au ToggleGroup
+        yes.setToggleGroup(recurrenceGroup);
+        no.setToggleGroup(recurrenceGroup);
+        currentUser = Main.getCurrentUser();
+
+        // Définir "Non" comme valeur par défaut
+        no.setSelected(true);
+    }
+
     @FXML public void handleCreateOffer() {
             System.out.println("Create service");
             String titleField = title.getText();

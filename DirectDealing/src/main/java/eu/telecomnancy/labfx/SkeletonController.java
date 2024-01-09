@@ -212,7 +212,6 @@ public class SkeletonController {
             System.out.println("Chargement de la page d'une offre de service");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/ServiceOffer.fxml"));
             Parent service_offer = loader.load();
-
             ServiceOfferController service_offer_controller = loader.getController();
             service_offer_controller.setSkeletonController(this);
 
