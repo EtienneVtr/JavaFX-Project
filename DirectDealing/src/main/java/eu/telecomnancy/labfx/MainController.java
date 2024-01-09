@@ -19,6 +19,13 @@ public class MainController {
     @FXML private TextField passwordField;
     @FXML private SkeletonController skeleton_controller;
 
+    private static User currentUser;
+
+    public void initialize(){
+        System.out.println("Initialisation de la session");
+        currentUser = Main.getCurrentUser();
+    }
+
     // Fonction qui permet de charger la page de bienvenue
     public void loadWelcomePage() {
         System.out.println("Chargement de la page de bienvenue");
@@ -109,12 +116,14 @@ public class MainController {
                 if (rs.next()) {
                     // Utilisateur trouvé, rediriger vers Dashboard.fxml
                     System.out.println("Utilisateur trouvé, Connexion réussie");
-                    // Charger la page d'accueil
-                    loadHomePage();
+
                     // Creation d'un objet User
                     User user = new User(email);
-
+                    currentUser = user;
+                    Main.setCurrentUser(currentUser);
                     System.out.println("Prenom: " + user.getPrenom() + " Nom: " + user.getNom() + " Pseudo: " + user.getPseudo() + " Mail: " + user.getMail() + " Phone: " + user.getPhone() + " Photo de profil: " + user.getPhotoProfil() + " Localisation: " + user.getLocalisation() + " Date d'inscription: " + user.getDateInscription() + " Status du compte: " + user.getStatusCompte() + " Etat du compte: " + user.getEtatCompte() + " Nombre de florain: " + user.getNbFlorain() + " Historique florain: " + user.getHistoriqueFlorain() + " Note: " + user.getNote());
+                    // Charger la page d'accueil
+                    loadHomePage();
                 } else {
                     System.out.println("Identifiants incorrects");
                     // Afficher un message d'erreur
