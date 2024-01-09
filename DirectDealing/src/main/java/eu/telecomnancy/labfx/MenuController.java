@@ -19,5 +19,10 @@ public class MenuController {
         skeleton_controller.loadHomePage();
     }
 
+    @FXML public void handleEquipment() {
+        System.out.println("Equipment");
+        skeleton_controller.loadEquipmentPage();
+    }
+
 
 }
