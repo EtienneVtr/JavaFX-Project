@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'com.adarshr.test-logger' version '4.0.0'
     id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 repositories {
@@ -72,4 +73,13 @@ testlogger {
     showPassedStandardStreams true
     showSkippedStandardStreams true
     showFailedStandardStreams true
+}
+
+shadowJar {
+    archiveBaseName.set('day2')
+    archiveVersion.set('0.1.0')
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': 'eu.telecomnancy.labfx.Main'
+    }
 }
