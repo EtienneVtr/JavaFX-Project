@@ -1,39 +1,102 @@
+
 package eu.telecomnancy.labfx;
 
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.sql.Date;
+import java.sql.Time;
 
 // Description: Classe représentant une offre de service. Elle contient un titre, une description, une date et une heure.
-//              Elle peut être récurrente, auquel cas on lui ajoute un tableau de jours de la semaine où le service doit être réalisé.
+//              Elle peut être récurrente, auquel cas on lui ajoute un tableau de jours de la semaine où le service doit être réalisé.$
+
 public class ServiceOffer {
+    private int id;
     private User supplier;
     private String title;
     private String description;
     private LocalDate date;
     private LocalTime time;
-    private boolean is_recurrent;
-    private int[] days_of_service; // ici on ajoutera les jours où le service doit être réalisés lors d'une récurrence.
-                                   // On notera 1 = lundi, 2 = mardi, etc.
-    private int nb_recurrencing_weeks;
+    private boolean isRecurrent;
+    private String daysOfService; // Stocké comme une chaîne, par exemple "1,3,5"
+    private int nbRecurrencingWeeks;
+    private String supplier_mail;
 
-    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time){
-        this.supplier = supplier;
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.time = time;
-        this.is_recurrent = false;
+    // Constructeur
+    public ServiceOffer(String supplier_mail) {
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        loadServiceFromDB();
     }
 
-    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time, int[] days_of_service, int nb_recurrencing_weeks){
-        this.supplier = supplier;
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.time = time;
-        this.is_recurrent = true;
-        this.days_of_service = days_of_service;
-        this.nb_recurrencing_weeks = nb_recurrencing_weeks;
+    private void loadServiceFromDB() {
+        String sql = "SELECT * FROM service_offers WHERE supplier_mail = ?";
+
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, supplier_mail);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                this.id = rs.getInt("id");
+                this.title = rs.getString("title");
+                this.description = rs.getString("description");
+                String dateString = rs.getString("date");
+                if (dateString != null && !dateString.isEmpty()) {
+                    this.date = LocalDate.parse(dateString);
+                    } else {
+                    this.date = null;
+                    }
+                String timeString = rs.getString("time");
+                if (timeString != null && !timeString.isEmpty()) {
+                    this.time = LocalTime.parse(timeString);
+                    } else {
+                    this.time = null;
+                    }
+                this.isRecurrent = rs.getBoolean("is_recurrent");
+                this.daysOfService = rs.getString("days_of_service");
+                this.nbRecurrencingWeeks = rs.getInt("nb_recurrencing_weeks");
+   
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update() {
+        String sql = "UPDATE service_offers SET supplier_mail = ?, title = ?, description = ?, date = ?, time = ?, is_recurrent = ?, days_of_service = ?, nb_recurrencing_weeks = ? WHERE id = ?";
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setString(1, this.supplier.getMail());
+            pstmt.setString(2, this.title);
+            pstmt.setString(3, this.description);
+            pstmt.setString(4, (this.date != null) ? this.date.toString() : null);
+            pstmt.setString(5, (this.time != null) ? this.time.toString() : null);
+            pstmt.setBoolean(6, this.isRecurrent);
+            pstmt.setString(7, this.daysOfService);
+            pstmt.setInt(8, this.nbRecurrencingWeeks);
+            pstmt.setInt(9, this.id);
+    
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+
+    public String getSupplierMail(){
+        return supplier_mail;
+    }
+
+    public int getId(){
+        return id;
     }
 
     public String getTitle(){
@@ -76,23 +139,31 @@ public class ServiceOffer {
         this.time = time;
     }
 
-    public boolean getIsRecurrent(){
-        return is_recurrent;
+    public void setRecurrent(boolean isRecurrent) {
+        this.isRecurrent = isRecurrent;
     }
 
-    public int[] getDaysOfService() {
-        return this.days_of_service;
+    public void setDaysOfService(String daysOfService) {
+        this.daysOfService = daysOfService;
     }
 
-    public void setDaysOfService(int[] days_of_service) {
-        this.days_of_service = days_of_service;
+    public void setNbRecurrencingWeeks(int nbRecurrencingWeeks) {
+        this.nbRecurrencingWeeks = nbRecurrencingWeeks;
+    }
+
+    public boolean getIsRecurrent() {
+        return isRecurrent;
+    }
+
+    public String getDaysOfService() {
+        return daysOfService;
     }
 
     public int getNbRecurrencingWeeks() {
-        return this.nb_recurrencing_weeks;
+        return nbRecurrencingWeeks;
     }
 
-    public void setNbRecurrencingWeeks(int nb_recurrencing_weeks) {
-        this.nb_recurrencing_weeks = nb_recurrencing_weeks;
-    }
+
+
 }
+

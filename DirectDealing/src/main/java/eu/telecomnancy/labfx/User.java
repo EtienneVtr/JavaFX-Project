@@ -50,6 +50,7 @@ public class User {
                 this.photoProfil = rs.getString("photo_profil");
                 this.localisation = rs.getString("localisation");
                 String dateString = rs.getString("date_inscription");
+                System.out.println("datestring" + dateString);
                 if (dateString != null && !dateString.isEmpty()) {
                 this.dateInscription = LocalDate.parse(dateString);
                 } else {

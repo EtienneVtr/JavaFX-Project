@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class DataBase {
 
@@ -24,27 +26,58 @@ public class DataBase {
     // Méthode pour initialiser la base de données
     public static void initializeDatabase() {
         try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
-            // Vérifiez si la table "profil" existe et créez-la si nécessaire
-            String sql = "CREATE TABLE IF NOT EXISTS profil (" +
-                         "id INTEGER PRIMARY KEY, " +
-                         "prenom TEXT NOT NULL, " +
-                         "nom TEXT NOT NULL, " +
-                         "pseudo TEXT UNIQUE NOT NULL, " +
-                         "mail TEXT UNIQUE NOT NULL, " +
-                         "phone TEXT, " +
-                         "password TEXT NOT NULL, " +
-                         "photo_profil TEXT, " +
-                         "localisation TEXT NOT NULL, " +
-                         "date_inscription TEXT, " +
-                         "status_compte TEXT CHECK(status_compte IN ('particulier', 'professionnel')), " +
-                         "etat_compte TEXT CHECK(etat_compte IN ('sommeil', 'actif')), " +
-                         "nb_florain INTEGER, " +
-                         "historique_florain TEXT, " +
-                         "note REAL)";
-            stmt.execute(sql);
+            // Création de la table "profil" si elle n'existe pas
+            String sqlProfil = "CREATE TABLE IF NOT EXISTS profil (" +
+                             "id INTEGER PRIMARY KEY, " +
+                             "prenom TEXT NOT NULL, " +
+                             "nom TEXT NOT NULL, " +
+                             "pseudo TEXT UNIQUE NOT NULL, " +
+                             "mail TEXT UNIQUE NOT NULL, " +
+                             "phone TEXT, " +
+                             "password TEXT NOT NULL, " +
+                             "photo_profil TEXT, " +
+                             "localisation TEXT NOT NULL, " +
+                             "date_inscription TEXT, " +
+                             "status_compte TEXT CHECK(status_compte IN ('particulier', 'professionnel')), " +
+                             "etat_compte TEXT CHECK(etat_compte IN ('sommeil', 'actif')), " +
+                             "nb_florain INTEGER, " +
+                             "historique_florain TEXT, " +
+                             "note REAL)";
+            stmt.execute(sqlProfil);
+
+            // Création de la table "equipement" si elle n'existe pas
+            String sqlEquipement = "CREATE TABLE IF NOT EXISTS equipement (" +
+                                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                 "owner_mail INTEGER NOT NULL, " +
+                                 "name TEXT NOT NULL, " +
+                                 "description TEXT, " +
+                                 "quantity INTEGER NOT NULL, " +
+                                 "start_availability TEXT, " +
+                                 "end_availability TEXT, " +
+                                 "price INTEGER NOT NULL, " +
+                                 "FOREIGN KEY (owner_mail) REFERENCES profil (mail))";
+            stmt.execute(sqlEquipement);
+
+            // Création de la table "service_offers" si elle n'existe pas
+            String sqlServiceOffers = "CREATE TABLE IF NOT EXISTS service_offers (" +
+                                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                    "supplier_mail INTEGER NOT NULL, " +
+                                    "title TEXT NOT NULL, " +
+                                    "description TEXT, " +
+                                    "date TEXT, " +
+                                    "time TEXT, " +
+                                    "is_recurrent BOOLEAN, " +
+                                    "days_of_service TEXT, " + // Stocker les jours comme une chaîne de caractères, par exemple "1,3,5"
+                                    "nb_recurrencing_weeks INTEGER, " +
+                                    "FOREIGN KEY (supplier_mail) REFERENCES profil (mail))";
+            stmt.execute(sqlServiceOffers);
+
+
+
         } catch (SQLException e) {
             e.printStackTrace();
             // Gérer l'exception
         }
     }
+
 }
