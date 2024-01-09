@@ -3,13 +3,7 @@ package eu.telecomnancy.labfx;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
-import eu.telecomnancy.labfx.DataBase;
-import javafx.scene.Node;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -80,6 +74,11 @@ public class MainController {
     public void loadHomePage() {
         loadSkeleton();
         skeleton_controller.loadHomePage();
+    }
+
+    public void loadServicePage(){
+        loadSkeleton();
+        skeleton_controller.loadServicePage();
     }
 
 
