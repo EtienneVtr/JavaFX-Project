@@ -10,7 +10,7 @@
 <?import javafx.scene.shape.Line?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="6.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="6.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.PrivateProfileController">
    <children>
       <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
          <children>
@@ -46,7 +46,7 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="pseudo" />
-                  <TextField text="Pseudo" />
+                  <TextField fx:id="pseudo" text=pseudo />
                </children>
             </VBox>
          </children>
@@ -56,7 +56,7 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="prénom" />
-                  <TextField text="Prénom" />
+                  <TextField fx:id="prenom" text=prenom />
                </children>
             </VBox>
          </children>
@@ -66,7 +66,7 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="nom" />
-                  <TextField text="Nom" />
+                  <TextField fx:id="nom" text=nom />
                </children>
             </VBox>
          </children>
@@ -76,7 +76,7 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="mail" />
-                  <TextField text="Mail" />
+                  <TextField fx:id="mail" text=mail />
                </children>
             </VBox>
          </children>
@@ -86,7 +86,7 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="numéro de téléphone" />
-                  <TextField text="phone" />
+                  <TextField fx:id="phone" text=phone />
                </children>
             </VBox>
          </children>
@@ -96,7 +96,7 @@
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
                   <Label text="localisation" />
-                  <TextField text="localisation" />
+                  <TextField fx:id="localisation" text=localisation />
                </children>
             </VBox>
          </children>
