@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
-public class CreateEquipmentCrontroller {
+public class CreateEquipmentController {
     @FXML private TextField title;
     @FXML private TextField description;
     @FXML private TextField price;
@@ -15,6 +15,11 @@ public class CreateEquipmentCrontroller {
     @FXML private DatePicker end;
 
     private User currentUser;
+    private SkeletonController skeleton_controller;
+
+    public void setSkeletonController(SkeletonController skeleton_controller){
+        this.skeleton_controller = skeleton_controller;
+    }
 
     @FXML
     public void initialize() {

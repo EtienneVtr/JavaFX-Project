@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 
-
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="6.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.PrivateProfileController">
    <children>
       <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
@@ -75,6 +74,16 @@
          <children>
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                <children>
+                  <Label text="mail" />
+                  <TextField fx:id="mail" text="Mail" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox prefHeight="30.0" prefWidth="600.0">
+         <children>
+            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
+               <children>
                   <Label text="numéro de téléphone" />
                   <TextField fx:id="phone" text="phone" />
                </children>
@@ -91,23 +100,21 @@
             </VBox>
          </children>
       </HBox>
-      <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
-         <children>
-            <Label text="mail" />
-            <TextField fx:id="mail" text="Mail" />
-         </children>
-      </VBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
             <Button mnemonicParsing="false" text="*" />
-            <Label text="Appliquer les modifications" />
+            <Label text="Label" />
          </children>
       </HBox>
       <Line endX="300.0" startX="-100.0" />
-      <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="600.0">
+      <HBox prefHeight="30.0" prefWidth="600.0">
          <children>
-            <Button mnemonicParsing="false" text="*" />
-            <Label text="Passer en sommeil" />
+            <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="600.0">
+               <children>
+                  <Button mnemonicParsing="false" text="*" />
+                  <Label text="Passer en sommeil" />
+               </children>
+            </HBox>
          </children>
       </HBox>
    </children>
