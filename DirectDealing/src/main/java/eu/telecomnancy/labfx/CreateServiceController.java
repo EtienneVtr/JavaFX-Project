@@ -6,6 +6,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.RadioButton;
 
 public class CreateServiceController {
+
+    private SkeletonController skeleton_controller;
+
+    public void setSkeletonController(SkeletonController skeleton_controller){
+        this.skeleton_controller = skeleton_controller;
+    }
+
     @FXML private TextField title;
     @FXML private TextField description;
     @FXML private DatePicker date;
@@ -17,9 +24,11 @@ public class CreateServiceController {
     
     @FXML public void handleCreateOffer() {
         System.out.println("Create offer");
+        skeleton_controller.loadServiceOfferPage();
     }
 
     @FXML public void cancel() {
         System.out.println("cancel");
+        skeleton_controller.loadServicePage();
     }
 }

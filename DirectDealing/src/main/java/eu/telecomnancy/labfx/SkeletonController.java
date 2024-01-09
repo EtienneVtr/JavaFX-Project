@@ -169,6 +169,78 @@ public class SkeletonController {
             e.printStackTrace();
         }
     }
+
+    // Fonction qui permet de charger la page de liste des offres d'équipement
+    public void loadListEquipmentOfferPage(){
+        try {
+            System.out.println("Chargement de la page de liste des offres d'équipement");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/ConsultEquipment.fxml"));
+            Parent list_equipment_offer = loader.load();
+
+            ConsultEquipmentController list_equipment_offer_controller = loader.getController();
+            list_equipment_offer_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(list_equipment_offer);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page de liste des offres de service
+    public void loadListServiceOfferPage(){
+        try {
+            System.out.println("Chargement de la page de liste des offres de service");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/ConsultService.fxml"));
+            Parent list_service_offer = loader.load();
+
+            ConsultServiceController list_service_offer_controller = loader.getController();
+            list_service_offer_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(list_service_offer);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page d'affichage d'une offre de service
+    public void loadServiceOfferPage(){
+        try {
+            System.out.println("Chargement de la page d'une offre de service");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/ServiceOffer.fxml"));
+            Parent service_offer = loader.load();
+
+            ServiceOfferController service_offer_controller = loader.getController();
+            service_offer_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(service_offer);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page de création d'une offre de service
+    public void loadCreateServicePage(){
+        try {
+            System.out.println("Chargement de la page de création d'une offre de service");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/CreateService.fxml"));
+            Parent create_service = loader.load();
+
+            CreateServiceController create_service_controller = loader.getController();
+            create_service_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(create_service);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 

@@ -45,6 +45,7 @@ public class EquipmentOfferController {
 
     @FXML public void cancel(){
         System.out.println("Go back !");
+        skeleton_controller.loadListEquipmentOfferPage();
     }
 
 

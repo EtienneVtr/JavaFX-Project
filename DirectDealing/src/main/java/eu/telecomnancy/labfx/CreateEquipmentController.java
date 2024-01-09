@@ -71,6 +71,6 @@ public class CreateEquipmentController {
     
 
     @FXML public void cancel() {
-        System.out.println("cancel");
+        skeleton_controller.loadEquipmentPage();
     }
 }
