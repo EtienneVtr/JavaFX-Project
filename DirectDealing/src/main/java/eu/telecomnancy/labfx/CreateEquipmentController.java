@@ -64,6 +64,8 @@ public class CreateEquipmentController {
         } catch (NumberFormatException e) {
             System.out.println("Erreur de format de nombre");
         }
+
+        skeleton_controller.loadEquipmentOfferPage();
     }
     
     

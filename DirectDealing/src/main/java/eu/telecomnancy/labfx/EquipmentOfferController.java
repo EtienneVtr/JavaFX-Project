@@ -4,6 +4,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 public class EquipmentOfferController {
+    private SkeletonController skeleton_controller;
+
+    public void setSkeletonController(SkeletonController skeleton_controller){
+        this.skeleton_controller = skeleton_controller;
+    }
+    
     @FXML private Label title;
     @FXML private Label description;
     @FXML private Label quantity;
@@ -21,4 +27,6 @@ public class EquipmentOfferController {
     @FXML public void cancel(){
         System.out.println("Go back !");
     }
+
+
 }

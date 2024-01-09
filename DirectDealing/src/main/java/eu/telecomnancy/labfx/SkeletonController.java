@@ -150,6 +150,23 @@ public class SkeletonController {
         }
     }
     
+    // Fonction qui permet de charger la page d'affiche d'une offre d'équipement
+    public void loadEquipmentOfferPage(){
+        try {
+            System.out.println("Chargement de la page d'une offre d'équipement");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/EquipmentOffer.fxml"));
+            Parent equipment_offer = loader.load();
+
+            EquipmentOfferController equipment_offer_controller = loader.getController();
+            equipment_offer_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(equipment_offer);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 
