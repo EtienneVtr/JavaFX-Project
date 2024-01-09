@@ -24,5 +24,4 @@ public class MenuController {
         skeleton_controller.loadEquipmentPage();
     }
 
-
 }
