@@ -18,8 +18,8 @@
             </Circle>
             <VBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="100.0" spacing="5.0">
                <children>
-                  <Label text="Pseudo" />
-                  <Label text="Solde Florain" />
+                  <Label fx:id="labelPseudo" text="Pseudo" />
+                  <Label fx:id="labelSoldeFlorain" text="Solde Florain" />
                </children>
                <opaqueInsets>
                   <Insets top="5.0" />

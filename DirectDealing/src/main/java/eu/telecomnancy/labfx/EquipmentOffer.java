@@ -23,8 +23,51 @@ public class EquipmentOffer {
         this.owner_mail = owner_mail;
         this.owner = new User(owner_mail);
         loadEquipmentFromDB();
-
     }
+
+    public EquipmentOffer(User owner, String name, String description, int quantity, LocalDate start_availability, LocalDate end_availability, int price) {
+        this.owner = owner;
+        this.owner_mail = owner.getMail();
+        this.name = name;
+        this.description = description;
+        this.quantity = quantity;
+        this.start_availability = start_availability;
+        this.end_availability = end_availability;
+        this.price = price;
+        createNewOffer();
+    }
+
+
+    public void createNewOffer() {
+        String sql = "INSERT INTO equipement (owner_mail, name, description, quantity, start_availability, end_availability, price) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+    
+            pstmt.setString(1, this.owner.getMail());
+            pstmt.setString(2, this.name);
+            pstmt.setString(3, this.description);
+            pstmt.setInt(4, this.quantity);
+            pstmt.setString(5, (this.start_availability != null) ? this.start_availability.toString() : null);
+            pstmt.setString(6, (this.end_availability != null) ? this.end_availability.toString() : null);
+            pstmt.setInt(7, this.price);
+    
+            int affectedRows = pstmt.executeUpdate();
+    
+            // Vérifier si l'insertion a réussi et récupérer l'ID généré
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        this.id = generatedKeys.getInt(1);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
     
     private void loadEquipmentFromDB() {
         String sql = "SELECT * FROM equipement WHERE owner_mail = ?";
@@ -81,12 +124,21 @@ public class EquipmentOffer {
     }
     
 
+    public void setTitle(String title) {
+        this.name = title;
+    }
+
     public String getName() {
         return name;
     }
 
     public String getDescription() {
         return description;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setDescription(String description) {
