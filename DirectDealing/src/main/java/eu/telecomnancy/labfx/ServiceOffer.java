@@ -26,6 +26,7 @@ public class ServiceOffer {
     private int nbRecurrencingWeeks;
     private String supplier_mail;
     private int price;
+    private String estPris;
 
     // Constructeur
     public ServiceOffer(String supplier_mail) {
@@ -44,7 +45,7 @@ public class ServiceOffer {
         this.isRecurrent = isRecurrent;
         this.daysOfService = daysOfService;
         this.price = price;
-        //set nbRecurrencingWeeks
+        this.estPris = null;
         if (isRecurrent) {
             String[] days = daysOfService.split(",");
             this.nbRecurrencingWeeks = days.length;
@@ -58,7 +59,7 @@ public class ServiceOffer {
 
 
     public void createNewOffer(){
-        String sql = "INSERT INTO service_offers (supplier_mail, title, description, date, time, is_recurrent, days_of_service, nb_recurrencing_weeks) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO service_offers (supplier_mail, title, description, date, time, is_recurrent, days_of_service, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
     
@@ -114,7 +115,7 @@ public class ServiceOffer {
                     }
                 this.isRecurrent = rs.getBoolean("is_recurrent");
                 this.daysOfService = rs.getString("days_of_service");
-                this.nbRecurrencingWeeks = rs.getInt("nb_recurrencing_weeks");
+                this.price = rs.getInt("price");
    
             }
         } catch (SQLException e) {
@@ -123,7 +124,7 @@ public class ServiceOffer {
     }
 
     public void update() {
-        String sql = "UPDATE service_offers SET supplier_mail = ?, title = ?, description = ?, date = ?, time = ?, is_recurrent = ?, days_of_service = ?, nb_recurrencing_weeks = ? WHERE id = ?";
+        String sql = "UPDATE service_offers SET supplier_mail = ?, title = ?, description = ?, date = ?, time = ?, is_recurrent = ?, days_of_service = ?, price = ? WHERE id = ?";
     
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -141,6 +142,35 @@ public class ServiceOffer {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    
+
+    public boolean reserveOffer(ServiceOffer offer, String currentUserEmail) {
+        try (Connection conn = DataBase.getConnection()) {
+            // Vérifier si l'offre est déjà réservée
+            String sql = "SELECT estPris FROM service_offers WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, offer.getId());
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next() && rs.getString("estPris") != null) {
+                    System.out.println("Cette offre a déjà été réservée");
+                    return false;
+                }
+            }
+    
+            // Réserver l'offre
+            sql = "UPDATE service_offers SET estPris = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, currentUserEmail);
+                pstmt.setInt(2, offer.getId());
+                pstmt.executeUpdate();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Erreur lors de la réservation de l'offre");
+            return false;
         }
     }
     
@@ -231,6 +261,15 @@ public class ServiceOffer {
         }
     }
 
+    //get estPris
+    public String getEstPris(){
+        return estPris;
+    }
+
+    //set estPris
+    public void setEstPris(String estPris) {
+        this.estPris = estPris;
+    }
 
 }
 

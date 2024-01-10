@@ -81,7 +81,7 @@ public class CreateServiceController {
                 );
                 System.out.println("Offre de service bien créé");
                 //print info newoffer
-                System.out.println("id: " + newOffer.getId() + " title: " + newOffer.getTitle() + " description: " + newOffer.getDescription() + " date: " + newOffer.getDate() + " time: " + newOffer.getTime() + " isRecurrent: " + newOffer.getIsRecurrent() + " repetitionDay: " + newOffer.getDaysOfService() + " price: " + newOffer.getPrice() + " nb recurrence: " + newOffer.getRecurrency());
+                System.out.println("id: " + newOffer.getId() + " title: " + newOffer.getTitle() + " description: " + newOffer.getDescription() + " date: " + newOffer.getDate() + " time: " + newOffer.getTime() + " isRecurrent: " + newOffer.getIsRecurrent() + " repetitionDay: " + newOffer.getDaysOfService() + " price: " + newOffer.getPrice() + " nb recurrence: " + newOffer.getRecurrency() + " supplier mail: " + newOffer.getSupplierMail() + " est pris: " + newOffer.getEstPris());
                 skeleton_controller.loadServiceOfferPage(newOffer);
 
             } catch (Exception e) {

@@ -1,6 +1,7 @@
 package eu.telecomnancy.labfx;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 public class ServiceOfferController {
@@ -18,6 +19,9 @@ public class ServiceOfferController {
     @FXML private Label recurrency;
     @FXML private Label price;
 
+    @FXML private Button book;
+    @FXML private Button cancel;
+
     public void setCurrentOffer(ServiceOffer offer) {
         this.service_offer = offer;
         displayOfferInfo();
@@ -33,9 +37,27 @@ public class ServiceOfferController {
         price.setText("Coût en florains : " + service_offer.getPrice());
     }
 
-    @FXML public void handleBook(){
-        System.out.println("Book !");
+    @FXML public void handleBook() {
+        System.out.println("Tentative de réservation de l'offre");
+        
+        // Obtenir l'email de l'utilisateur actuel
+        String currentUserEmail = Main.getCurrentUser().getMail();
+    
+        // Vérifier que l'utilisateur actuel n'est pas le fournisseur de l'offre
+        if (currentUserEmail.equals(service_offer.getSupplierMail())) {
+            System.out.println("Vous ne pouvez pas réserver votre propre offre");
+            return;
+        }
+    
+        // Tenter de réserver l'offre
+        if (service_offer.reserveOffer(service_offer, currentUserEmail)) {
+            System.out.println("Offre réservée avec succès");
+            service_offer.setEstPris(currentUserEmail);
+        } else {
+            System.out.println("La réservation de l'offre a échoué");
+        }
     }
+    
 
     @FXML public void handleContact(){
         System.out.println("Contact !");
