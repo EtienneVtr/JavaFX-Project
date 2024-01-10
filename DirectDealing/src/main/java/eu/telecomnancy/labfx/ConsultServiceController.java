@@ -50,8 +50,19 @@ public class ConsultServiceController {
         // Ajoute les données au TableView
         ArrayList<ServiceOffer> all_service = Main.getAllService();
         results.setItems(FXCollections.observableArrayList(all_service));
+
+        results.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && !results.getSelectionModel().isEmpty()) {
+                ServiceOffer selectedService = results.getSelectionModel().getSelectedItem();
+                handleDoubleClickOnService(selectedService);
+            }
+        });
     }
     
+    private void handleDoubleClickOnService(ServiceOffer service) {
+        // Ici, tu peux effectuer une action avec l'objet ServiceOffer sélectionné
+        skeleton_controller.loadServiceOfferPage(service);
+    }
 
     @FXML public void handleSearch() {
         System.out.println("Search");
