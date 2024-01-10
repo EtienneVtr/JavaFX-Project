@@ -76,6 +76,8 @@ public class DataBase {
                             "FOREIGN KEY (supplier_mail) REFERENCES profil (mail), " +
                             "FOREIGN KEY (estPris) REFERENCES profil (mail))";
             stmt.execute(sqlServiceOffers);
+            
+            
 
 
 

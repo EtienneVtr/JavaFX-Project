@@ -22,6 +22,8 @@ public class SkeletonController {
     @FXML
     private VBox menuContent;
 
+    @FXML private ProfileController profil_controller;
+
     @FXML
     private VBox profileContent;
 
@@ -35,6 +37,10 @@ public class SkeletonController {
     public void initialize(){
         System.out.println("Initialisation de la session");
         currentUser = Main.getCurrentUser();
+    }
+
+    public void setProfileController(ProfileController profil_controller){
+        this.profil_controller = profil_controller;
     }
 
     // Vous pouvez également ajouter des méthodes spécifiques pour charger le menu et le profil si nécessaire
@@ -60,8 +66,9 @@ public class SkeletonController {
 
             ProfileController profile_controller = loader.getController();
             profile_controller.setSkeletonController(this);
-
+            setProfileController(profile_controller);
             profileContent.getChildren().setAll(profil_page);
+            
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -304,6 +311,9 @@ public class SkeletonController {
     }
 
 
+    public void updateProfile(){
+        profil_controller.updateProfileInfo(currentUser);
+    }
 
     
 }
