@@ -1,4 +1,3 @@
-
 package eu.telecomnancy.labfx;
 
 
@@ -32,6 +31,14 @@ public class ServiceOffer {
     public ServiceOffer(String supplier_mail) {
         this.supplier_mail = supplier_mail;
         this.supplier = new User(supplier_mail);
+        loadServiceFromDB();
+    }
+
+    public ServiceOffer(String supplier_mail, String title, String description){
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        this.title = title;
+        this.description = description;
         loadServiceFromDB();
     }
 
@@ -89,12 +96,14 @@ public class ServiceOffer {
     }
     
     private void loadServiceFromDB() {
-        String sql = "SELECT * FROM service_offers WHERE supplier_mail = ?";
+        String sql = "SELECT * FROM service_offers WHERE supplier_mail = ? AND title = ? AND description = ?";
 
         try (Connection conn = DataBase.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, supplier_mail);
+            pstmt.setString(2, title); // Assure-toi que la variable 'title' est définie et contient le titre à vérifier
+            pstmt.setString(3, description); // Assure-toi que la variable 'description' est définie et contient la description à vérifier
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -177,6 +186,10 @@ public class ServiceOffer {
 
     public String getSupplierMail(){
         return supplier_mail;
+    }
+
+    public User getSupplier(){
+        return supplier;
     }
 
     public int getId(){
