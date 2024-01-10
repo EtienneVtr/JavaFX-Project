@@ -1,20 +1,12 @@
 package eu.telecomnancy.labfx;
 
-import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
-
+import java.util.ArrayList;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class SkeletonController {
 
@@ -199,7 +191,6 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(list_service_offer);
-            
         } catch (IOException e) {
             e.printStackTrace();
         }
