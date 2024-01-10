@@ -24,6 +24,7 @@ public class ServiceOffer {
     private String daysOfService; // Stocké comme une chaîne, par exemple "1,3,5"
     private int nbRecurrencingWeeks;
     private String supplier_mail;
+    private int price;
 
     // Constructeur
     public ServiceOffer(String supplier_mail) {
@@ -40,7 +41,15 @@ public class ServiceOffer {
         loadServiceFromDB();
     }
 
-    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time, boolean isRecurrent, String daysOfService, int nbRecurrencingWeeks) {
+    public ServiceOffer(String supplier_mail, String title, String description){
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        this.title = title;
+        this.description = description;
+        loadServiceFromDB();
+    }
+
+    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time, boolean isRecurrent, String daysOfService, int price) {
         this.supplier = supplier;
         this.supplier_mail = supplier.getMail();
         this.title = title;
@@ -49,9 +58,18 @@ public class ServiceOffer {
         this.time = time;
         this.isRecurrent = isRecurrent;
         this.daysOfService = daysOfService;
-        this.nbRecurrencingWeeks = nbRecurrencingWeeks;
+        this.price = price;
+        //set nbRecurrencingWeeks
+        if (isRecurrent) {
+            String[] days = daysOfService.split(",");
+            this.nbRecurrencingWeeks = days.length;
+        } else {
+            this.nbRecurrencingWeeks = 0;
+        }
         createNewOffer();
     }
+
+
 
 
     public void createNewOffer(){
@@ -66,7 +84,7 @@ public class ServiceOffer {
             pstmt.setString(5, (this.time != null) ? this.time.toString() : null);
             pstmt.setBoolean(6, this.isRecurrent);
             pstmt.setString(7, this.daysOfService);
-            pstmt.setInt(8, this.nbRecurrencingWeeks);
+            pstmt.setInt(8, this.price);
     
             int affectedRows = pstmt.executeUpdate();
     
@@ -204,9 +222,6 @@ public class ServiceOffer {
         this.daysOfService = daysOfService;
     }
 
-    public void setNbRecurrencingWeeks(int nbRecurrencingWeeks) {
-        this.nbRecurrencingWeeks = nbRecurrencingWeeks;
-    }
 
     public boolean getIsRecurrent() {
         return isRecurrent;
@@ -216,10 +231,26 @@ public class ServiceOffer {
         return daysOfService;
     }
 
-    public int getNbRecurrencingWeeks() {
+    public int getRecurrency() {
         return nbRecurrencingWeeks;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setNbRecurrencingWeeks(String daysOfService) {
+        if (this.isRecurrent) {
+            String[] days = daysOfService.split(",");
+            this.nbRecurrencingWeeks = days.length;
+        } else {
+            this.nbRecurrencingWeeks = 0;
+        }
+    }
 
 
 }

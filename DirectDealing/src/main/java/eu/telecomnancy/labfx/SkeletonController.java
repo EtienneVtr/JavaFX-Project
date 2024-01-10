@@ -142,7 +142,6 @@ public class SkeletonController {
         }
     }
     
-    // Fonction qui permet de charger la page d'affiche d'une offre d'équipement
     public void loadEquipmentOfferPage(EquipmentOffer offer){
         try {
             System.out.println("Chargement de la page d'une offre d'équipement");
@@ -196,15 +195,33 @@ public class SkeletonController {
             e.printStackTrace();
         }
     }
+    // Fonction qui permet de charger la page de profile privé
+    public void loadPrivateProfile() {
+        try {
+            System.out.println("Chargement de la page de profile privé");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/PrivateProfilePage.fxml"));
+            Parent privateProfile = loader.load();
+
+            PrivateProfileController privateProfile_controller = loader.getController();
+            privateProfile_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(privateProfile);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     // Fonction qui permet de charger la page d'affichage d'une offre de service
-    public void loadServiceOfferPage(){
+    public void loadServiceOfferPage(ServiceOffer offer){
         try {
             System.out.println("Chargement de la page d'une offre de service");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/ServiceOffer.fxml"));
             Parent service_offer = loader.load();
             ServiceOfferController service_offer_controller = loader.getController();
             service_offer_controller.setSkeletonController(this);
+            service_offer_controller.setCurrentOffer(offer);
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(service_offer);
