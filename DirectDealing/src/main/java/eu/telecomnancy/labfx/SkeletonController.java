@@ -248,6 +248,64 @@ public class SkeletonController {
             e.printStackTrace();
         }
     }
+
+    // Fonction qui permet de charger la page de la carte
+    public void loadMapPage(){
+        try {
+            System.out.println("Chargement de la Map page");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Map.fxml"));
+            Parent map = loader.load();
+
+            MapController map_controller = loader.getController();
+            map_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(map);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page du planning
+    public void loadPlanningPage(){
+        try {
+            System.out.println("Chargement de la page planning");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Planning.fxml"));
+            Parent planning = loader.load();
+
+            PlanningController planning_controller = loader.getController();
+            planning_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(planning);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page de la messagerie
+    public void loadMessageriePage(){
+        try {
+            System.out.println("Chargement de la page messagerie");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Messagerie.fxml"));
+            Parent messagerie = loader.load();
+
+            MessagerieController messagerie_controller = loader.getController();
+            messagerie_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(messagerie);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    
 }
 
 
