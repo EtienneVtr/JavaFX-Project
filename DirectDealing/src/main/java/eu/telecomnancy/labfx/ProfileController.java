@@ -78,4 +78,6 @@ public class ProfileController {
         System.out.println("Affichage du profil privé");
         skeleton_controller.loadPrivateProfile();
     }
+
+    
 }
