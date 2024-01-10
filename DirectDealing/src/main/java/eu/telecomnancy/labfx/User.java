@@ -117,7 +117,7 @@ public class User {
         return mail;
     }
 
-    public String setMail() {
+    public String setMail(String mail) {
         return this.mail;
     }
     
