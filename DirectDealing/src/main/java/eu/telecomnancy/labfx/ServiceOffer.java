@@ -24,6 +24,7 @@ public class ServiceOffer {
     private String supplier_mail;
     private int price;
     private String estPris;
+    private String date_publication;
 
     // Constructeur
     public ServiceOffer(String supplier_mail) {
@@ -64,7 +65,7 @@ public class ServiceOffer {
 
 
     public void createNewOffer(){
-        String sql = "INSERT INTO service_offers (supplier_mail, title, description, date, time, is_recurrent, days_of_service, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO service_offers (supplier_mail, title, description, date, time, is_recurrent, days_of_service, price, date_publication) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
     
@@ -76,6 +77,7 @@ public class ServiceOffer {
             pstmt.setBoolean(6, this.isRecurrent);
             pstmt.setString(7, this.daysOfService);
             pstmt.setInt(8, this.price);
+            pstmt.setString(9, LocalDate.now().toString());
     
             int affectedRows = pstmt.executeUpdate();
     
@@ -123,6 +125,7 @@ public class ServiceOffer {
                 this.isRecurrent = rs.getBoolean("is_recurrent");
                 this.daysOfService = rs.getString("days_of_service");
                 this.price = rs.getInt("price");
+                this.date_publication = rs.getString("date_publication");
    
             }
         } catch (SQLException e) {
@@ -131,7 +134,7 @@ public class ServiceOffer {
     }
 
     public void update() {
-        String sql = "UPDATE service_offers SET supplier_mail = ?, title = ?, description = ?, date = ?, time = ?, is_recurrent = ?, days_of_service = ?, price = ? WHERE id = ?";
+        String sql = "UPDATE service_offers SET supplier_mail = ?, title = ?, description = ?, date = ?, time = ?, is_recurrent = ?, days_of_service = ?, price = ?, WHERE id = ?";
     
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -337,6 +340,11 @@ public class ServiceOffer {
     //set estPris
     public void setEstPris(String estPris) {
         this.estPris = estPris;
+    }
+
+    //get date_publication
+    public String getDate_publication(){
+        return date_publication;
     }
 
 }

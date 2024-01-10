@@ -19,6 +19,7 @@ public class EquipmentOffer {
     private int price;
     private String owner_mail;
     private String estPris;
+    private String date_publication;
 
     public EquipmentOffer(String owner_mail) {
         this.owner_mail = owner_mail;
@@ -49,7 +50,7 @@ public class EquipmentOffer {
 
 
     public void createNewOffer() {
-        String sql = "INSERT INTO equipement (owner_mail, name, description, quantity, start_availability, end_availability, price) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO equipement (owner_mail, name, description, quantity, start_availability, end_availability, price, date_publication) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -61,6 +62,7 @@ public class EquipmentOffer {
             pstmt.setString(5, (this.start_availability != null) ? this.start_availability.toString() : null);
             pstmt.setString(6, (this.end_availability != null) ? this.end_availability.toString() : null);
             pstmt.setInt(7, this.price);
+            pstmt.setString(8, LocalDate.now().toString());
             
             int affectedRows = pstmt.executeUpdate();
     
@@ -113,12 +115,14 @@ public class EquipmentOffer {
     
     
     private void loadEquipmentFromDB() {
-        String sql = "SELECT * FROM equipement WHERE owner_mail = ?";
+        String sql = "SELECT * FROM equipement WHERE owner_mail = ? AND name = ? AND description = ?";
     
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
     
             pstmt.setString(1, this.owner.getMail());
+            pstmt.setString(2, this.name);
+            pstmt.setString(3, this.description);
             ResultSet rs = pstmt.executeQuery();
     
             if (rs.next()) {
@@ -139,6 +143,7 @@ public class EquipmentOffer {
                     this.end_availability = null;
                     }
                 this.price = rs.getInt("price");
+                this.date_publication = rs.getString("date_publication");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -329,5 +334,9 @@ public class EquipmentOffer {
         this.estPris = estPris;
     }
 
+    //get date_publication
+    public String getDate_publication(){
+        return date_publication;
+    }
 
 }

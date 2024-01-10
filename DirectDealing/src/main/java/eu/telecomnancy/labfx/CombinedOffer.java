@@ -11,6 +11,7 @@ public class CombinedOffer {
     private String description;
     private int price;
     private String estPris;
+    private String date_publication;
 
     // Champs spécifiques à EquipmentOffer
     private int quantity;
@@ -43,6 +44,7 @@ public class CombinedOffer {
         this.startAvailability = equipmentOffer.getStartAvailability();
         this.endAvailability = equipmentOffer.getEndAvaibility();
         this.type = OfferType.EQUIPMENT_OFFER;
+        this.date_publication = equipmentOffer.getDate_publication();
     }
 
     // Constructeur pour ServiceOffer
@@ -59,12 +61,21 @@ public class CombinedOffer {
         this.daysOfService = serviceOffer.getDaysOfService();
         this.nbRecurrencingWeeks = serviceOffer.getRecurrency();
         this.type = OfferType.SERVICE_OFFER;
+        this.date_publication = serviceOffer.getDate_publication();
     }
 
     // Getters et setters pour les champs communs et spécifiques
 
     public OfferType getType() {
         return type;
+    }
+
+    public String getTypeString() {
+        if (this.type == OfferType.EQUIPMENT_OFFER) {
+            return "Equipment";
+        } else {
+            return "Service";
+        }
     }
 
     // Autres getters et setters...
@@ -77,11 +88,7 @@ public class CombinedOffer {
     }
 
     public String getOwnerName() {
-        if (this.type == OfferType.EQUIPMENT_OFFER) {
-            return owner.getPrenom();
-        } else {
-            return owner.getNom();
-        }
+        return owner.getNom();
     }
 
     public String getTitle() {
@@ -162,5 +169,9 @@ public class CombinedOffer {
         } else {
             throw new UnsupportedOperationException("getNbRecurrencingWeeks is not supported for EquipmentOffer");
         }
+    }
+
+    public String getDate_publication() {
+        return date_publication;
     }
 }
