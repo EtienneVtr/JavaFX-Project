@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.sql.Date;
-import java.sql.Time;
 
 // Description: Classe représentant une offre de service. Elle contient un titre, une description, une date et une heure.
 //              Elle peut être récurrente, auquel cas on lui ajoute un tableau de jours de la semaine où le service doit être réalisé.$
