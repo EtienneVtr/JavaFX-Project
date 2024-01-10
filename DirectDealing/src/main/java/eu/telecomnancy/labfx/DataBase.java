@@ -68,7 +68,7 @@ public class DataBase {
                                     "time TEXT, " +
                                     "is_recurrent BOOLEAN, " +
                                     "days_of_service TEXT, " + // Stocker les jours comme une chaîne de caractères, par exemple "1,3,5"
-                                    "nb_recurrencing_weeks INTEGER, " +
+                                    "price INTEGER, " +
                                     "FOREIGN KEY (supplier_mail) REFERENCES profil (mail))";
             stmt.execute(sqlServiceOffers);
 
