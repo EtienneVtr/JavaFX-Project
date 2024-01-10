@@ -79,7 +79,7 @@ public class CreateServiceController {
                     price
                 );
                 System.out.println("Offre de service bien créé");
-                skeleton_controller.loadServicePage();
+                skeleton_controller.loadServiceOfferPage();
 
             } catch (Exception e) {
                 System.out.println("Veuillez remplir tous les champs requis.");
