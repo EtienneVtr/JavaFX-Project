@@ -1,6 +1,7 @@
 package eu.telecomnancy.labfx;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,18 +28,26 @@ public class ProfileController {
         currentUser = Main.getCurrentUser();
         String cheminImageProfil = currentUser.getPhotoProfil();
         //Chemin type : /Users/maxence/Downloads/chat.png
-        if (cheminImageProfil == null) {
+        
+        //Set de l'image de profil
+        if (cheminImageProfil == null) { //Si il y en a pas de personalisé on met l'image par défaut
             System.out.println("L'utilisateur n'a pas de photo de profil");
             cheminImageProfil = "src/main/resources/eu/telecomnancy/labfx/images/default_profile.png";
         }
         Image image = new Image("file:" + cheminImageProfil);
         photoProfil.setImage(image);
-    
-        // Assurez-vous que l'ImageView est carrée
+        //Redimensionner l'image pour qu'elle soit ronde
         photoProfil.setFitWidth(100); // Largeur de l'image
         photoProfil.setFitHeight(100); // Hauteur de l'image
-        photoProfil.setPreserveRatio(true); // Conserve le ratio de l'image
-    
+        photoProfil.setPreserveRatio(false); // Conserve le ratio de l'image
+        // Appliquer un viewport pour zoomer sur l'image
+        double width = image.getWidth();
+        double height = image.getHeight();
+        double size = Math.min(width, height);
+        double x = (width - size) / 2;
+        double y = (height - size) / 2;
+        Rectangle2D viewport = new Rectangle2D(x, y, size, size);
+        photoProfil.setViewport(viewport);
         // Créez un Circle comme un clip pour l'ImageView
         double radius = photoProfil.getFitWidth() / 2;
         Circle clip = new Circle(radius, radius, radius);
