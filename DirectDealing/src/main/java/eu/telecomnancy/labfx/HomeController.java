@@ -64,7 +64,9 @@ public class HomeController {
             latest_offers.setItems(FXCollections.observableArrayList(all_offers));
         }
 
-
+        Planning planning = new Planning();
+        planning.printMyDemand();
+        planning.printMyOffer();
     }
 
     @FXML public void handleDeconnexion(){
