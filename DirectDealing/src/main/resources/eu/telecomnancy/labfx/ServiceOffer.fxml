@@ -11,7 +11,7 @@
       <Label fx:id="date" layoutX="255.0" layoutY="107.0" text="Date et heure" />
       <Label fx:id="recurrency" layoutX="196.0" layoutY="145.0" text="Récurrence ? Si oui, fréquence ?" textAlignment="CENTER" />
       <Label fx:id="price" layoutX="249.0" layoutY="181.0" text="Coût en florains" textAlignment="CENTER" />
-      <Button layoutX="77.0" layoutY="254.0" mnemonicParsing="false" text="Réserver l'offre" />
+      <Button fx:id="ButtonBook" layoutX="77.0" layoutY="254.0" mnemonicParsing="false" onAction = "#handleBook" text="Réserver l'offre" />
       <Button layoutX="212.0" layoutY="254.0" mnemonicParsing="false" text="Contacter le propriétaire" />
       <Button fx:id="ButtonCancel" layoutX="407.0" layoutY="254.0" mnemonicParsing="false" onAction="#cancel" text="Liste des offres" />
    </children>

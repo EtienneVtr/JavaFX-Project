@@ -1,20 +1,12 @@
 package eu.telecomnancy.labfx;
 
-import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
-
+import java.util.ArrayList;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class SkeletonController {
 
@@ -150,7 +142,6 @@ public class SkeletonController {
         }
     }
     
-    // Fonction qui permet de charger la page d'affiche d'une offre d'équipement
     public void loadEquipmentOfferPage(EquipmentOffer offer){
         try {
             System.out.println("Chargement de la page d'une offre d'équipement");
@@ -200,7 +191,6 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(list_service_offer);
-            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -224,13 +214,14 @@ public class SkeletonController {
     }
 
     // Fonction qui permet de charger la page d'affichage d'une offre de service
-    public void loadServiceOfferPage(){
+    public void loadServiceOfferPage(ServiceOffer offer){
         try {
             System.out.println("Chargement de la page d'une offre de service");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/ServiceOffer.fxml"));
             Parent service_offer = loader.load();
             ServiceOfferController service_offer_controller = loader.getController();
             service_offer_controller.setSkeletonController(this);
+            service_offer_controller.setCurrentOffer(offer);
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(service_offer);
@@ -257,6 +248,64 @@ public class SkeletonController {
             e.printStackTrace();
         }
     }
+
+    // Fonction qui permet de charger la page de la carte
+    public void loadMapPage(){
+        try {
+            System.out.println("Chargement de la Map page");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Map.fxml"));
+            Parent map = loader.load();
+
+            MapController map_controller = loader.getController();
+            map_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(map);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page du planning
+    public void loadPlanningPage(){
+        try {
+            System.out.println("Chargement de la page planning");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Planning.fxml"));
+            Parent planning = loader.load();
+
+            PlanningController planning_controller = loader.getController();
+            planning_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(planning);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page de la messagerie
+    public void loadMessageriePage(){
+        try {
+            System.out.println("Chargement de la page messagerie");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Messagerie.fxml"));
+            Parent messagerie = loader.load();
+
+            MessagerieController messagerie_controller = loader.getController();
+            messagerie_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(messagerie);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    
 }
 
 
