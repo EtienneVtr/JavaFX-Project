@@ -17,6 +17,7 @@ public class SkeletonController {
     }
 
     @FXML
+
     private SplitPane skeletonContent;
 
     @FXML
@@ -302,10 +303,6 @@ public class SkeletonController {
             e.printStackTrace();
         }
     }
-
-
-
-    
 }
 
 

@@ -77,6 +77,23 @@ public class DataBase {
                             "FOREIGN KEY (estPris) REFERENCES profil (mail))";
             stmt.execute(sqlServiceOffers);
 
+            // Création de la table "Conversations" si elle n'existe pas
+            String sqlConversations = "CREATE TABLE IF NOT EXISTS conversations (" +
+                                      "conversation_id INTEGER PRIMARY KEY," +
+                                      "participant1_id INTEGER NOT NULL," +
+                                      "participant2_id INTEGER NOT NULL);";
+            stmt.execute(sqlConversations);
+
+            // Création de la table "Messages" si elle n'existe pas
+            String sqlMessages = "CREATE TABLE IF NOT EXISTS messages (" +
+                                 "message_id INTEGER PRIMARY KEY," +
+                                 "conversation_id INTEGER NOT NULL," +
+                                 "sender_id INTEGER NOT NULL," +
+                                 "message_text TEXT NOT NULL," +
+                                 "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP," +
+                                 "FOREIGN KEY (conversation_id) REFERENCES conversations(conversation_id));";
+            stmt.execute(sqlMessages);
+
 
 
         } catch (SQLException e) {
