@@ -221,7 +221,11 @@ public class EquipmentOffer {
     }
 
     public String getEndAvailabilityStr(){
-        return end_availability.toString();
+        if(end_availability == null){
+            return "À définir";
+        }else{
+            return end_availability.toString();
+        }
     }
 
     public void setEndAvailability(LocalDate end){

@@ -215,7 +215,11 @@ public class ServiceOffer {
     }
 
     public String getDateStr(){
-        return date.toString();
+        if(date == null){
+            return "À définir";
+        }else{
+            return date.toString();
+        }
     }
 
     public void setDate(LocalDate date){
@@ -227,7 +231,11 @@ public class ServiceOffer {
     }
 
     public String getTimeStr(){
-        return time.toString();
+        if(time == null){
+            return "À définir";
+        }else{
+            return time.toString();
+        }
     }
 
     public void setTime(LocalTime time){

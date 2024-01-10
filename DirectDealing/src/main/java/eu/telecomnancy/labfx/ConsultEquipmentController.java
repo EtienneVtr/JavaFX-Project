@@ -48,9 +48,9 @@ public class ConsultEquipmentController {
         results.getColumns().add(descriptionColumn);
 
         // Ajoute les données au TableView
-        ArrayList<EquipmentOffer> all_service = Main.getAllEquipment();
-        if(all_service != null){
-            results.setItems(FXCollections.observableArrayList(all_service));
+        ArrayList<EquipmentOffer> all_equipment = Main.getAllEquipment();
+        if(all_equipment != null){
+            results.setItems(FXCollections.observableArrayList(all_equipment));
         }
 
         results.setOnMouseClicked(event -> {

@@ -52,7 +52,9 @@ public class ConsultServiceController {
 
         // Ajoute les données au TableView
         ArrayList<ServiceOffer> all_service = Main.getAllService();
-        results.setItems(FXCollections.observableArrayList(all_service));
+        if(all_service != null){
+            results.setItems(FXCollections.observableArrayList(all_service));
+        }
 
         results.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && !results.getSelectionModel().isEmpty()) {
