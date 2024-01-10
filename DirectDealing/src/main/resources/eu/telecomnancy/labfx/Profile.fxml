@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="ProfileContent" prefHeight="236.0" prefWidth="335.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.ProfileController">
+<VBox fx:id="ProfileContent" prefHeight="236.0" prefWidth="335.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.ProfileController">
    <children>
       <HBox alignment="CENTER" prefHeight="73.0" prefWidth="177.0" spacing="20.0">
          <children>
