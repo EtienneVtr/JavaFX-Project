@@ -4,6 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+
 
 public class ProfileController {
 
@@ -13,9 +16,10 @@ public class ProfileController {
     @FXML private Label labelPseudo;
 
     @FXML private Label labelSoldeFlorain;
-    
 
-
+    @FXML
+    private VBox vbox;
+  
     @FXML private ImageView photoProfil;
 
     public void initialize(){
@@ -29,8 +33,18 @@ public class ProfileController {
         }
         Image image = new Image("file:" + cheminImageProfil);
         photoProfil.setImage(image);
+    
+        // Assurez-vous que l'ImageView est carrée
+        photoProfil.setFitWidth(100); // Largeur de l'image
+        photoProfil.setFitHeight(100); // Hauteur de l'image
+        photoProfil.setPreserveRatio(true); // Conserve le ratio de l'image
+    
+        // Créez un Circle comme un clip pour l'ImageView
+        double radius = photoProfil.getFitWidth() / 2;
+        Circle clip = new Circle(radius, radius, radius);
+        photoProfil.setClip(clip);
+    
         updateProfileInfo(currentUser);
-
     }
     
 
