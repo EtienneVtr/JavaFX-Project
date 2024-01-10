@@ -17,7 +17,6 @@ public class Main extends Application {
     private static Stage primaryStage;
     private static User currentUser;
 
-
     public static User getCurrentUser() {
         return currentUser;
     }
