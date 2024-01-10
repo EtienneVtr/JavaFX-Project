@@ -26,6 +26,14 @@ public class EquipmentOffer {
         loadEquipmentFromDB();
     }
 
+    public EquipmentOffer(String owner_mail, String name, String description){
+        this.owner_mail = owner_mail;
+        this.owner = new User(owner_mail);
+        this.name = name;
+        this.description = description;
+        loadEquipmentFromDB();
+    }
+
     public EquipmentOffer(User owner, String name, String description, int quantity, LocalDate start_availability, LocalDate end_availability, int price) {
         this.owner = owner;
         this.owner_mail = owner.getMail();
@@ -158,12 +166,14 @@ public class EquipmentOffer {
         }
     }
 
+    public User getOwner() {
+        return owner;
+    }
 
     public int getId() {
         return id;
     }
     
-
     public String getName() {
         return name;
     }
@@ -195,7 +205,11 @@ public class EquipmentOffer {
     }
 
     public String getStartAvailabilityStr(){
-        return start_availability.toString();
+        if(start_availability == null){
+            return "À définir";
+        }else{
+            return start_availability.toString();
+        }
     }
 
     public void setStartAvailability(LocalDate begin){
