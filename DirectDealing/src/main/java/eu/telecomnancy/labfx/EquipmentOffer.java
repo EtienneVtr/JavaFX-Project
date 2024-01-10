@@ -144,6 +144,7 @@ public class EquipmentOffer {
                     }
                 this.price = rs.getInt("price");
                 this.date_publication = rs.getString("date_publication");
+                this.estPris = rs.getString("estPris");
             }
         } catch (SQLException e) {
             e.printStackTrace();
