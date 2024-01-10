@@ -26,7 +26,6 @@
             </VBox>
          </children></HBox>
         <Separator />
-        <!-- Section Pseudo -->
         <HBox prefHeight="30.0" prefWidth="600.0">
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
                 <Label text="pseudo" />
