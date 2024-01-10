@@ -59,8 +59,14 @@ public class ServiceOfferController {
         // Tenter de réserver l'offre
         if (service_offer.reserveOffer(service_offer, currentUserEmail)) {
             System.out.println("Offre réservée avec succès");
+
             service_offer.setEstPris(currentUserEmail);
-            skeleton_controller.loadListServiceOfferPage();
+            //set nb florain user
+            currentUser = Main.getCurrentUser();
+            currentUser.setNbFlorain(currentUser.getNbFlorain() - service_offer.getPrice());
+            skeleton_controller.updateProfile();
+  
+   
         } else {
             System.out.println("La réservation de l'offre a échoué");
         }

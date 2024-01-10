@@ -11,7 +11,7 @@
       <Label fx:id="quantity" layoutX="272.0" layoutY="107.0" text="Quantité" />
       <Label fx:id="dates" layoutX="226.0" layoutY="145.0" text="Dates de début / de fin" textAlignment="CENTER" />
       <Label fx:id="price" layoutX="249.0" layoutY="181.0" text="Coût en florains" textAlignment="CENTER" />
-      <Button layoutX="77.0" layoutY="254.0" mnemonicParsing="false" text="Réserver l'offre" onAction="#handleBook"/>
+      <Button fx:id="book" layoutX="77.0" layoutY="254.0" mnemonicParsing="false" onAction="#handleBook" text="Réserver l'offre" />
       <Button layoutX="212.0" layoutY="254.0" mnemonicParsing="false" text="Contacter le propriétaire" />
       <Button fx:id="ButtonCancel" layoutX="407.0" layoutY="254.0" mnemonicParsing="false" onAction="#cancel" text="Liste des offres" />
    </children>

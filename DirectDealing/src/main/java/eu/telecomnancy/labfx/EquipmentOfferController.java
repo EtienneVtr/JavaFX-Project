@@ -19,6 +19,8 @@ public class EquipmentOfferController {
     @FXML private Label price;
 
     private EquipmentOffer currentOffer;
+    private User currentUser;
+
 
     public void setCurrentOffer(EquipmentOffer offer) {
         this.currentOffer = offer;
@@ -36,8 +38,36 @@ public class EquipmentOfferController {
     }
 
     @FXML public void handleBook(){
-        System.out.println("Book !");
-        skeleton_controller.loadListEquipmentOfferPage();
+        System.out.println("Tentative de réservation de l'équipement !");
+
+        // Obtenir l'email de l'utilisateur actuel
+        String currentUserEmail = Main.getCurrentUser().getMail();
+
+        // Vérifier que l'utilisateur actuel n'est pas le fournisseur de l'offre
+        if (currentUserEmail.equals(currentOffer.getMail())) {
+            System.out.println("Vous ne pouvez pas réserver votre propre offre");
+            return;
+        }
+        // Vérifier qu'un utilisateur n'a pas déjà réservé l'offre
+        if (currentOffer.getEstPris() != null) {
+            System.out.println("Cette offre a déjà été réservée");
+            return;
+        }
+
+        // Tenter de réserver l'offre
+        if (currentOffer.reserveOffer(currentOffer, currentUserEmail)) {
+            System.out.println("Réservation réussie");
+
+            currentOffer.setEstPris(currentUserEmail);
+            System.out.println("L'offre est maintenant réservée par " + currentOffer.getEstPris() + "estpris: " + currentOffer.getEstPris());
+            currentUser = Main.getCurrentUser();
+            currentUser.setNbFlorain(currentUser.getNbFlorain() - currentOffer.getPrice());
+            skeleton_controller.updateProfile();
+
+            skeleton_controller.loadListEquipmentOfferPage();
+        } else {
+            System.out.println("Réservation échouée");
+        }
     }
 
     @FXML public void handleContact(){
