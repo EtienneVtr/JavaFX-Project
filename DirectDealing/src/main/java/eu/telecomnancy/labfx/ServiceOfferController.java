@@ -60,6 +60,7 @@ public class ServiceOfferController {
         if (service_offer.reserveOffer(service_offer, currentUserEmail)) {
             System.out.println("Offre réservée avec succès");
             service_offer.setEstPris(currentUserEmail);
+            skeleton_controller.loadListServiceOfferPage();
         } else {
             System.out.println("La réservation de l'offre a échoué");
         }

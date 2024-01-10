@@ -37,6 +37,7 @@ public class EquipmentOfferController {
 
     @FXML public void handleBook(){
         System.out.println("Book !");
+        skeleton_controller.loadListEquipmentOfferPage();
     }
 
     @FXML public void handleContact(){
