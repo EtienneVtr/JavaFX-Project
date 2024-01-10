@@ -16,11 +16,17 @@ public class PrivateProfileController {
     @FXML private TextField phone;
     @FXML private TextField localisation;
     @FXML private Button toggleStateButton;
+    @FXML private Label dateInscription;
+    @FXML private Label nbFlorain;
+    @FXML private Label note;
 
     public void initialize(){
         System.out.println("Initialisation du profile privé");
         currentUser = Main.getCurrentUser();
         updateUIWithUserData();
+        dateInscription.setText(currentUser.getDateInscription().toString());
+        nbFlorain.setText(String.valueOf(currentUser.getNbFlorain()));
+        note.setText(String.valueOf(currentUser.getNote()));
         updateToggleButton();
     }    
 
