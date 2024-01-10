@@ -96,6 +96,13 @@ public class User {
 
 
     // Getters et Setters
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
     
     public String getPrenom() {
         return prenom;
