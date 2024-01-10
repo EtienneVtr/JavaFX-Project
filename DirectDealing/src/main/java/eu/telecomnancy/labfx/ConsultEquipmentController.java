@@ -10,10 +10,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
 import java.util.ArrayList;
+import java.util.List;
+import java.time.LocalDate;
 
 public class ConsultEquipmentController {
 
     private SkeletonController skeleton_controller;
+    private User currentUser;
 
     public void setSkeletonController(SkeletonController skeleton_controller){
         this.skeleton_controller = skeleton_controller;
@@ -27,6 +30,7 @@ public class ConsultEquipmentController {
 
     @FXML public void initialize() {
         // Création des colonnes
+        currentUser = Main.getCurrentUser();
         TableColumn<EquipmentOffer, String> userNameColumn = new TableColumn<>("User Name");
         TableColumn<EquipmentOffer, String> titleColumn = new TableColumn<>("Title");
         TableColumn<EquipmentOffer, String> priceColumn = new TableColumn<>("Price");
@@ -66,12 +70,24 @@ public class ConsultEquipmentController {
         skeleton_controller.loadEquipmentOfferPage(equipment);
     }
 
-    @FXML public void handleSearch() {
-        System.out.println("Search");
+    @FXML
+    public void handleSearch() {
+        String keywordText = keywords.getText();
+        LocalDate startDate = begin.getValue();
+        LocalDate endDate = end.getValue();
+
+        List<EquipmentOffer> searchResults = EquipmentOffer.searchOffers(currentUser, keywordText, startDate, endDate);
+
+        // Mettre à jour le TableView avec les résultats
+        results.getItems().setAll(searchResults);
     }
+
+        
 
     @FXML public void handleReset() {
         System.out.println("Reset");
+        skeleton_controller.loadListEquipmentOfferPage();
+        
     }
 
     @FXML public void cancel(){
