@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 
+import java.io.InputStream;
 
 public class ProfileController {
 
@@ -18,10 +19,10 @@ public class ProfileController {
 
     @FXML private Label labelSoldeFlorain;
 
-    @FXML
-    private VBox vbox;
+    @FXML private VBox vbox;
   
     @FXML private ImageView photoProfil;
+
 
     public void initialize(){
         System.out.println("Initialisation du profile");
@@ -71,7 +72,30 @@ public class ProfileController {
     public void updateProfileInfo(User user) {
         labelPseudo.setText(user.getPseudo());
         labelSoldeFlorain.setText(String.valueOf(user.getNbFlorain()));
+    
+        String imagePath = user.getPhotoProfil();
+        Image profileImage;
+
+    
+        if (imagePath != null && !imagePath.isEmpty()) {
+            try {
+                profileImage = new Image("file:" + imagePath);
+            } catch (IllegalArgumentException e) {
+                // Image invalide ou non trouvée, utiliser une image par défaut
+                InputStream inputStream;
+                inputStream = getClass().getResourceAsStream("/eu/telecomnancy/labfx/images/kawai.png");
+                profileImage = new Image(inputStream);
+                }
+        } else {
+                InputStream inputStream;
+                inputStream = getClass().getResourceAsStream("/eu/telecomnancy/labfx/images/kawai.png");
+                profileImage = new Image(inputStream);
+            
+        }
+    
+        photoProfil.setImage(profileImage);
     }
+    
 
     @FXML 
     public void handlePrivateProfile() {
