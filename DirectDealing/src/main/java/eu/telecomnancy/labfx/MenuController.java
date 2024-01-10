@@ -24,4 +24,19 @@ public class MenuController {
         skeleton_controller.loadEquipmentPage();
     }
 
+
+    @FXML public void handleMap() {
+        System.out.println("Map");
+        skeleton_controller.loadMapPage();
+    }
+
+    @FXML public void handlePlanning() {
+        System.out.println("Planning");
+        skeleton_controller.loadPlanningPage();
+    }
+
+    @FXML public void handleMessagerie() {
+        System.out.println("Messagerie");
+        skeleton_controller.loadMessageriePage();
+    }
 }
