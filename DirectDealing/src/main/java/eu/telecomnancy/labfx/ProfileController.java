@@ -33,4 +33,10 @@ public class ProfileController {
         labelPseudo.setText(user.getPseudo());
         labelSoldeFlorain.setText(String.valueOf(user.getNbFlorain()));
     }
+
+    @FXML 
+    public void handlePrivateProfile() {
+        System.out.println("Affichage du profil privé");
+        skeleton_controller.main_controller.loadPrivateProfile();
+    }
 }
