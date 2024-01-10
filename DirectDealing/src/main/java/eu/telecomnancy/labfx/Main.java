@@ -81,7 +81,7 @@ public class Main extends Application {
                 EquipmentOffer equipment = new EquipmentOffer(owner_mail, name, description);
                 all_equipment.add(equipment);
             }
-
+            
             return all_equipment;
         } catch (SQLException e) {
             System.out.println(e.getMessage());

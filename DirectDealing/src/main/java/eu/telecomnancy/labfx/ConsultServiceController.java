@@ -9,11 +9,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableView;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ConsultServiceController {
 
     private SkeletonController skeleton_controller;
+    private User currentUser;
 
     public void setSkeletonController(SkeletonController skeleton_controller){
         this.skeleton_controller = skeleton_controller;
@@ -26,7 +30,9 @@ public class ConsultServiceController {
     @FXML private TableView<ServiceOffer> results;
 
     @FXML public void initialize() {
+        currentUser = Main.getCurrentUser();
         // Création des colonnes
+        
         TableColumn<ServiceOffer, String> userNameColumn = new TableColumn<>("User Name");
         TableColumn<ServiceOffer, String> titleColumn = new TableColumn<>("Title");
         TableColumn<ServiceOffer, String> priceColumn = new TableColumn<>("Price");
@@ -71,10 +77,21 @@ public class ConsultServiceController {
 
     @FXML public void handleSearch() {
         System.out.println("Search");
-    }
+        String keywordText = keywords.getText();
+        LocalDate startDate = begin.getValue();
+        LocalDate endDate = end.getValue();
+
+        // Appeler une méthode pour effectuer la recherche dans la base de données
+        List<ServiceOffer> searchResults = ServiceOffer.searchOffers(currentUser, keywordText, startDate, endDate);
+
+        // Mettre à jour le TableView avec les résultats
+        results.setItems(FXCollections.observableArrayList(searchResults));
+        }
+        
 
     @FXML public void handleReset() {
         System.out.println("Reset");
+        skeleton_controller.loadListServiceOfferPage();
     }
 
     @FXML public void cancel() {

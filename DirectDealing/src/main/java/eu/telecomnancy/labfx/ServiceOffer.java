@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.*;
 
 // Description: Classe représentant une offre de service. Elle contient un titre, une description, une date et une heure.
 //              Elle peut être récurrente, auquel cas on lui ajoute un tableau de jours de la semaine où le service doit être réalisé.$
@@ -31,6 +32,18 @@ public class ServiceOffer {
         this.supplier = new User(supplier_mail);
         loadServiceFromDB();
     }
+
+    public ServiceOffer(String supplierMail, String title, String description, LocalDate date, LocalTime time, int price) {
+        this.supplier_mail = supplierMail;
+        this.supplier = new User(supplierMail);
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.time = time;
+        this.price = price;
+
+    }
+
 
     public ServiceOffer(String supplier_mail, String title, String description){
         this.supplier_mail = supplier_mail;
@@ -229,6 +242,46 @@ public class ServiceOffer {
         return true;
     }
     
+    public static List<ServiceOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end) {
+        System.out.println("Recherche d'offres de service");
+        List<ServiceOffer> offers = new ArrayList<>();
+        String sql = "SELECT id, supplier_mail, title, description, date, time, price, estPris FROM service_offers WHERE " +
+                     "estPris IS NULL AND " +
+                     "title LIKE ? AND " +
+                     "(? IS NULL OR date >= ?) AND " +
+                     "(? IS NULL OR date <= ?)";
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setString(1, "%" + keywords + "%");
+            pstmt.setString(2, begin != null ? begin.toString() : null);
+            pstmt.setString(3, end != null ? end.toString() : null);
+    
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    LocalDate serviceDate = rs.getString("date") != null ? LocalDate.parse(rs.getString("date")) : null;
+                    LocalTime time = rs.getString("time") != null ? LocalTime.parse(rs.getString("time")) : null;
+                    ServiceOffer offer = new ServiceOffer(
+                        rs.getString("supplier_mail"),
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        serviceDate,
+                        time,
+                        rs.getInt("price")
+                    );
+                    offers.add(offer);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        for (ServiceOffer offer : offers) {
+            System.out.println("id: " + offer.getId() + " title: " + offer.getTitle() + " description: " + offer.getDescription() + " date: " + offer.getDate() + " time: " + offer.getTime() + " isRecurrent: " + offer.getIsRecurrent() + " repetitionDay: " + offer.getDaysOfService() + " price: " + offer.getPrice() + " nb recurrence: " + offer.getRecurrency() + " supplier mail: " + offer.getSupplierMail() + " est pris: " + offer.getEstPris());
+        }
+        return offers;
+
+    }
     
 
     public String getSupplierMail(){
