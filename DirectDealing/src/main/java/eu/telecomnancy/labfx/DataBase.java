@@ -47,29 +47,34 @@ public class DataBase {
 
             // Création de la table "equipement" si elle n'existe pas
             String sqlEquipement = "CREATE TABLE IF NOT EXISTS equipement (" +
-                                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                 "owner_mail INTEGER NOT NULL, " +
-                                 "name TEXT NOT NULL, " +
-                                 "description TEXT, " +
-                                 "quantity INTEGER NOT NULL, " +
-                                 "start_availability TEXT, " +
-                                 "end_availability TEXT, " +
-                                 "price INTEGER NOT NULL, " +
-                                 "FOREIGN KEY (owner_mail) REFERENCES profil (mail))";
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                            "owner_mail TEXT NOT NULL, " +
+                            "name TEXT NOT NULL, " +
+                            "description TEXT, " +
+                            "quantity INTEGER NOT NULL, " +
+                            "start_availability TEXT, " +
+                            "end_availability TEXT, " +
+                            "price INTEGER NOT NULL, " +
+                            "estPris TEXT, " +
+                            "FOREIGN KEY (owner_mail) REFERENCES profil (mail), " +
+                            "FOREIGN KEY (estPris) REFERENCES profil (mail))";
             stmt.execute(sqlEquipement);
+
 
             // Création de la table "service_offers" si elle n'existe pas
             String sqlServiceOffers = "CREATE TABLE IF NOT EXISTS service_offers (" +
-                                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                    "supplier_mail INTEGER NOT NULL, " +
-                                    "title TEXT NOT NULL, " +
-                                    "description TEXT, " +
-                                    "date TEXT, " +
-                                    "time TEXT, " +
-                                    "is_recurrent BOOLEAN, " +
-                                    "days_of_service TEXT, " + // Stocker les jours comme une chaîne de caractères, par exemple "1,3,5"
-                                    "price INTEGER, " +
-                                    "FOREIGN KEY (supplier_mail) REFERENCES profil (mail))";
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                            "supplier_mail TEXT NOT NULL, " +
+                            "title TEXT NOT NULL, " +
+                            "description TEXT, " +
+                            "date TEXT, " +
+                            "time TEXT, " +
+                            "is_recurrent BOOLEAN, " +
+                            "days_of_service TEXT, " +
+                            "price INTEGER, " +
+                            "estPris TEXT, " +
+                            "FOREIGN KEY (supplier_mail) REFERENCES profil (mail), " +
+                            "FOREIGN KEY (estPris) REFERENCES profil (mail))";
             stmt.execute(sqlServiceOffers);
 
 
