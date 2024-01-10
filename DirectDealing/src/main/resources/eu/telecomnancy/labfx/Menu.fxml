@@ -25,7 +25,7 @@
             <Insets bottom="20.0" top="20.0" />
          </padding>
       </HBox>
-      <Button fx:id="meterielButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleEquipment" prefHeight="33.0" prefWidth="224.0" text="Matériel">
+      <Button fx:id="materielButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleEquipment" prefHeight="33.0" prefWidth="224.0" text="Matériel">
          <font>
             <Font size="18.0" />
          </font></Button>
@@ -33,15 +33,15 @@
          <font>
             <Font size="18.0" />
          </font></Button>
-      <Button fx:id="carteButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Carte">
+      <Button fx:id="carteButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Carte" onAction="#handleMap">
          <font>
             <Font size="18.0" />
          </font></Button>
-      <Button fx:id="planningButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Mon planning">
+      <Button fx:id="planningButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Mon planning" onAction="#handlePlanning">
          <font>
             <Font size="18.0" />
          </font></Button>
-      <Button fx:id="messagerieButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Ma messagerie">
+      <Button fx:id="messagerieButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Ma messagerie" onAction="#handleMessagerie">
          <font>
             <Font size="18.0" />
          </font></Button>
