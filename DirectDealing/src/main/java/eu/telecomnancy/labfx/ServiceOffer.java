@@ -47,6 +47,8 @@ public class ServiceOffer {
     }
 
 
+
+
     public void createNewOffer(){
         String sql = "INSERT INTO service_offers (supplier_mail, title, description, date, time, is_recurrent, days_of_service, nb_recurrencing_weeks) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DataBase.getConnection();
