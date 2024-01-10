@@ -11,6 +11,8 @@ public class ProfileController {
     @FXML private Label labelPseudo;
 
     @FXML private Label labelSoldeFlorain;
+    
+
 
     public void initialize(){
         System.out.println("Initialisation du profile");
@@ -37,6 +39,6 @@ public class ProfileController {
     @FXML 
     public void handlePrivateProfile() {
         System.out.println("Affichage du profil privé");
-        skeleton_controller.main_controller.loadPrivateProfile();
+        skeleton_controller.loadPrivateProfile();
     }
 }

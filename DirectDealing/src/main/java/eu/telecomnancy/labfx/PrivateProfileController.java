@@ -24,6 +24,7 @@ public class PrivateProfileController {
         updateToggleButton();
     }    
 
+
     private void updateUIWithUserData() {
         if (currentUser != null) {
             pseudo.setText(currentUser.getPseudo());
@@ -71,8 +72,5 @@ public class PrivateProfileController {
         this.skeleton_controller = skeleton_controller;
     }
 
-    @FXML public void handlePrivateProfile(){
-        System.out.println("Deconnexion de la session");
-        skeleton_controller.main_controller.loadPrivateProfile();
-    }
+
 }

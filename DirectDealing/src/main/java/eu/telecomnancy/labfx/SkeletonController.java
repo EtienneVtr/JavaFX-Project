@@ -205,6 +205,19 @@ public class SkeletonController {
             e.printStackTrace();
         }
     }
+    // Fonction qui permet de charger la page de profile privé
+    public void loadPrivateProfile() {
+        System.out.println("Chargement de la page de profile privé");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/PrivateProfilePage.fxml"));
+            Parent welcomePage = loader.load();
+
+            // Ajouter le WelcomePage à la scène
+            Main.getPrimaryStage().getScene().setRoot(welcomePage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     // Fonction qui permet de charger la page d'affichage d'une offre de service
     public void loadServiceOfferPage(){
