@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class Main extends Application {
 
-    private static User user;
     private static Stage primaryStage;
     private static User currentUser;
 
