@@ -47,6 +47,11 @@ public class PlanningController {
         // Désactiver le bouton d'ajout de sources de calendrier
         planningCalendar.setShowAddCalendarButton(false);
 
+        // Définir les calendriers en lecture seule
+        serviceOfferedCalendar.setReadOnly(true);
+        equipmentOfferedCalendar.setReadOnly(true);
+
+        
         AddEventToCalendar();
     }
 
