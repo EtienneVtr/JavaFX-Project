@@ -13,6 +13,8 @@ public class ProfileController {
     @FXML private Label labelPseudo;
 
     @FXML private Label labelSoldeFlorain;
+    
+
 
     @FXML private ImageView photoProfil;
 
@@ -46,5 +48,11 @@ public class ProfileController {
     public void updateProfileInfo(User user) {
         labelPseudo.setText(user.getPseudo());
         labelSoldeFlorain.setText(String.valueOf(user.getNbFlorain()));
+    }
+
+    @FXML 
+    public void handlePrivateProfile() {
+        System.out.println("Affichage du profil privé");
+        skeleton_controller.loadPrivateProfile();
     }
 }

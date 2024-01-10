@@ -73,7 +73,7 @@ public class InscriptionController {
                 return;
             }
     
-            String sql = "INSERT INTO profil (prenom, nom, pseudo, mail, password, phone, localisation, date_inscription, nb_florain, photo_profil) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 100, ?)";
+            String sql = "INSERT INTO profil (prenom, nom, pseudo, mail, password, phone, localisation, date_inscription, nb_florain, photo_profil, etat_compte) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 100, ?, 'actif')";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, prenomValue);
                 pstmt.setString(2, nomValue);

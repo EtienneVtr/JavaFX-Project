@@ -62,10 +62,8 @@
                <font>
                   <Font name="Ubuntu" size="20.0" />
                </font></Label>
-            <Button mnemonicParsing="false" onAction="#handleDeconnexion" text="Deconnexion">
-               <font>
-                  <Font size="18.0" />
-               </font></Button>
+            <Button mnemonicParsing="false" onAction="#handleDeconnexion" text="Deconnexion" />
+            <Button mnemonicParsing="false" onAction="#handlePrivateProfile" text="Button" />
          </children>
          <VBox.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
