@@ -21,7 +21,7 @@
             </VBox>
             <VBox alignment="BOTTOM_RIGHT" prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <ImageView fitHeight="53.0" fitWidth="77.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="photoProfil" fitHeight="53.0" fitWidth="77.0" onMouseClicked="#onPhotoProfilClicked" pickOnBounds="true" preserveRatio="true" />
                </children>
             </VBox>
          </children></HBox>

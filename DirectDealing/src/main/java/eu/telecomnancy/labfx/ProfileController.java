@@ -27,8 +27,10 @@ public class ProfileController {
             System.out.println("L'utilisateur n'a pas de photo de profil");
             cheminImageProfil = "src/main/resources/eu/telecomnancy/labfx/images/default_profile.png";
         }
-        Image image = new Image("file:" + cheminImageProfil);
-        photoProfil.setImage(image);
+        else{
+            Image image = new Image("file:" + cheminImageProfil);
+            photoProfil.setImage(image);
+        }
         updateProfileInfo(currentUser);
 
     }
