@@ -8,6 +8,7 @@ public class ServiceOfferController {
 
     private SkeletonController skeleton_controller;
     private ServiceOffer service_offer;
+    private User currentUser;
 
     public void setSkeletonController(SkeletonController skeleton_controller){
         this.skeleton_controller = skeleton_controller;
@@ -49,6 +50,12 @@ public class ServiceOfferController {
             return;
         }
     
+        // Vérifier qu'un utilisateur n'a pas déjà réservé l'offre
+        if (service_offer.getEstPris() != null) {
+            System.out.println("Cette offre a déjà été réservée");
+            return;
+        }
+
         // Tenter de réserver l'offre
         if (service_offer.reserveOffer(service_offer, currentUserEmail)) {
             System.out.println("Offre réservée avec succès");

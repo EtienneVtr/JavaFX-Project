@@ -154,7 +154,11 @@ public class ServiceOffer {
     
 
     public boolean reserveOffer(ServiceOffer offer, String currentUserEmail) {
-        try (Connection conn = DataBase.getConnection()) {
+        Connection conn = null;
+        try {
+            conn = DataBase.getConnection();
+            conn.setAutoCommit(false); // Démarrer une transaction
+    
             // Vérifier si l'offre est déjà réservée
             String sql = "SELECT estPris FROM service_offers WHERE id = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -162,8 +166,15 @@ public class ServiceOffer {
                 ResultSet rs = pstmt.executeQuery();
                 if (rs.next() && rs.getString("estPris") != null) {
                     System.out.println("Cette offre a déjà été réservée");
+                    conn.rollback();
                     return false;
                 }
+            }
+    
+            // Mettre à jour les florains
+            if (!updateFlorains(conn, currentUserEmail, offer.getSupplierMail(), offer.getPrice())) {
+                conn.rollback();
+                return false;
             }
     
             // Réserver l'offre
@@ -172,14 +183,52 @@ public class ServiceOffer {
                 pstmt.setString(1, currentUserEmail);
                 pstmt.setInt(2, offer.getId());
                 pstmt.executeUpdate();
-                return true;
             }
+    
+            conn.commit(); // Valider la transaction
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Erreur lors de la réservation de l'offre");
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Annuler la transaction en cas d'erreur
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
             return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true); // Restaurer le mode de commit automatique
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
         }
     }
+
+    public boolean updateFlorains(Connection conn, String buyerEmail, String sellerEmail, int price) throws SQLException {
+        // Déduire les florains du compte de l'acheteur
+        String sql = "UPDATE profil SET nb_florain = nb_florain - ? WHERE mail = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, price);
+            pstmt.setString(2, buyerEmail);
+            pstmt.executeUpdate();
+        }
+    
+        // Ajouter les florains au compte du vendeur
+        sql = "UPDATE profil SET nb_florain = nb_florain + ? WHERE mail = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, price);
+            pstmt.setString(2, sellerEmail);
+            pstmt.executeUpdate();
+        }
+    
+        return true;
+    }
+    
     
 
     public String getSupplierMail(){
