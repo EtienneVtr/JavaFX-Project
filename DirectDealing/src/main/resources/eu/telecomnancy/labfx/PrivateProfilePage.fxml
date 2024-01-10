@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="785.0" prefWidth="602.0" spacing="6.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.PrivateProfileController">
+    <children>
+        <!-- Section Photo de Profil -->
+        <HBox prefHeight="70.0" prefWidth="402.0">
+         <children>
+            <VBox alignment="BOTTOM_LEFT" prefHeight="70.0" prefWidth="368.0">
+               <children>
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox alignment="BOTTOM_RIGHT" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <ImageView fx:id="photoProfil" fitHeight="53.0" fitWidth="77.0" onMouseClicked="#onPhotoProfilClicked" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </VBox>
+         </children></HBox>
+        <Separator />
+        <HBox prefHeight="30.0" prefWidth="600.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
+                <Label text="pseudo" />
+                <TextField fx:id="pseudo" text="Pseudo" />
+            </VBox>
+        </HBox>
+        <!-- Section Prénom -->
+        <HBox prefHeight="30.0" prefWidth="600.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
+                <Label text="prénom" />
+                <TextField fx:id="prenom" text="Prénom" />
+            </VBox>
+        </HBox>
+        <!-- Section Nom -->
+        <HBox prefHeight="30.0" prefWidth="600.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
+                <Label text="nom" />
+                <TextField fx:id="nom" text="Nom" />
+            </VBox>
+        </HBox>
+        <!-- Section Téléphone -->
+        <HBox prefHeight="30.0" prefWidth="600.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
+                <Label text="numéro de téléphone" />
+                <TextField fx:id="phone" text="phone" />
+            </VBox>
+        </HBox>
+        <!-- Section Localisation -->
+        <HBox prefHeight="30.0" prefWidth="600.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
+                <Label text="localisation" />
+                <TextField fx:id="localisation" text="localisation" />
+            </VBox>
+        </HBox>
+        <!-- Section Bouton Appliquer -->
+        <HBox alignment="CENTER_LEFT" prefHeight="43.0" prefWidth="402.0">
+            <Button fx:id="appliquer" mnemonicParsing="false" onAction="#handleSaveButtonAction" text="*" />
+            <Label text="Appliquer les changements" />
+        </HBox>
+        <Separator />
+        <!-- Section Passer en Sommeil -->
+        <HBox prefHeight="30.0" prefWidth="600.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="600.0">
+                <Button fx:id="toggleStateButton" mnemonicParsing="false" onAction="#onToggleStateAction" text="*" />
+                <Label text="Passer en sommeil" />
+            </HBox>
+        </HBox>
+      <Separator />
+        <!-- Section Email -->
+        <HBox prefHeight="30.0" prefWidth="600.0">
+             <Label fx:id="mail" text="mail" />
+        </HBox>
+      <HBox prefHeight="34.0" prefWidth="402.0">
+         <children>
+            <Label fx:id="dateInscription" text="date d'inscription" />
+         </children>
+      </HBox>
+      <HBox prefHeight="34.0" prefWidth="402.0">
+         <children>
+            <Label fx:id="nbFlorain" text="nombre de florain" />
+         </children>
+      </HBox>
+      <HBox prefHeight="34.0" prefWidth="402.0">
+         <children>
+            <Label fx:id="note" text="note" />
+         </children>
+      </HBox>
+    </children>
+    <padding>
+        <Insets left="100.0" right="100.0" />
+    </padding>
+</VBox>
