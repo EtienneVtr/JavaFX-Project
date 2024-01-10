@@ -47,13 +47,6 @@
                 <TextField fx:id="nom" text="Nom" />
             </VBox>
         </HBox>
-        <!-- Section Email -->
-        <HBox prefHeight="30.0" prefWidth="600.0">
-            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
-                <Label text="mail" />
-                <TextField fx:id="mail" text="Mail" />
-            </VBox>
-        </HBox>
         <!-- Section Téléphone -->
         <HBox prefHeight="30.0" prefWidth="600.0">
             <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
@@ -82,6 +75,10 @@
             </HBox>
         </HBox>
       <Separator />
+        <!-- Section Email -->
+        <HBox prefHeight="30.0" prefWidth="600.0">
+             <Label fx:id="mail" text="mail" />
+        </HBox>
       <HBox prefHeight="34.0" prefWidth="402.0">
          <children>
             <Label fx:id="dateInscription" text="date d'inscription" />

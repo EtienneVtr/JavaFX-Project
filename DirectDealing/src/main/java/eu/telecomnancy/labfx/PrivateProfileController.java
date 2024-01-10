@@ -21,7 +21,7 @@ public class PrivateProfileController {
     @FXML private TextField pseudo;
     @FXML private TextField prenom;
     @FXML private TextField nom;
-    @FXML private TextField mail;
+    @FXML private Label mail;
     @FXML private TextField phone;
     @FXML private TextField localisation;
     @FXML private Button toggleStateButton;
@@ -63,7 +63,6 @@ public class PrivateProfileController {
             pseudo.setText(currentUser.getPseudo());
             prenom.setText(currentUser.getPrenom());
             nom.setText(currentUser.getNom());
-            mail.setText(currentUser.getMail());
             phone.setText(currentUser.getPhone());
             localisation.setText(currentUser.getLocalisation());
 
@@ -84,7 +83,6 @@ public class PrivateProfileController {
             currentUser.setPseudo(pseudo.getText());
             currentUser.setPrenom(prenom.getText());
             currentUser.setNom(nom.getText());
-            currentUser.setMail(mail.getText());
             currentUser.setPhone(phone.getText());
             currentUser.setLocalisation(localisation.getText());
 
