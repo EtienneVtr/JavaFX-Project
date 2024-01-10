@@ -56,6 +56,7 @@ public class DataBase {
                             "end_availability TEXT, " +
                             "price INTEGER NOT NULL, " +
                             "estPris TEXT, " +
+                            "date_publication TEXT, " +
                             "FOREIGN KEY (owner_mail) REFERENCES profil (mail), " +
                             "FOREIGN KEY (estPris) REFERENCES profil (mail))";
             stmt.execute(sqlEquipement);
@@ -73,9 +74,12 @@ public class DataBase {
                             "days_of_service TEXT, " +
                             "price INTEGER, " +
                             "estPris TEXT, " +
+                            "date_publication TEXT, " +
                             "FOREIGN KEY (supplier_mail) REFERENCES profil (mail), " +
                             "FOREIGN KEY (estPris) REFERENCES profil (mail))";
             stmt.execute(sqlServiceOffers);
+            
+            
 
 
 

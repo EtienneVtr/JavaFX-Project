@@ -86,8 +86,8 @@ public class PrivateProfileController {
             currentUser.setNom(nom.getText());
             currentUser.setPhone(phone.getText());
             currentUser.setLocalisation(localisation.getText());
-
             currentUser.update(); 
+            skeleton_controller.updateProfile();
         }
     }
 
