@@ -174,7 +174,11 @@ public class User {
     }
     
     public void setEtatCompte(String etatCompte) {
-        this.etatCompte = etatCompte;
+        if (etatCompte.equals("actif") || etatCompte.equals("inactif")) {
+            this.etatCompte = etatCompte;
+        } else {
+            throw new IllegalArgumentException("L'état du compte doit être 'actif' ou 'inactif'");
+        }
     }
     
     public int getNbFlorain() {
