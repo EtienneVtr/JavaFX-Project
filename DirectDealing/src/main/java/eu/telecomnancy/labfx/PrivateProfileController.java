@@ -37,6 +37,7 @@ public class PrivateProfileController {
         updateUIWithUserData();
         dateInscription.setText(currentUser.getDateInscription().toString());
         nbFlorain.setText(String.valueOf(currentUser.getNbFlorain()));
+        mail.setText(currentUser.getMail());
         note.setText(String.valueOf(currentUser.getNote()));
         updateToggleButton();
 
