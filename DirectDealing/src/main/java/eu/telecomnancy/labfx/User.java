@@ -117,7 +117,7 @@ public class User {
         return mail;
     }
 
-    public String setMail() {
+    public String setMail(String mail) {
         return this.mail;
     }
     
@@ -174,7 +174,11 @@ public class User {
     }
     
     public void setEtatCompte(String etatCompte) {
-        this.etatCompte = etatCompte;
+        if (etatCompte.equals("actif") || etatCompte.equals("sommeil")) {
+            this.etatCompte = etatCompte;
+        } else {
+            throw new IllegalArgumentException("L'état du compte doit être 'actif' ou 'inactif'");
+        }
     }
     
     public int getNbFlorain() {

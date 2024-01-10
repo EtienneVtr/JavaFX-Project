@@ -205,6 +205,23 @@ public class SkeletonController {
             e.printStackTrace();
         }
     }
+    // Fonction qui permet de charger la page de profile privé
+    public void loadPrivateProfile() {
+        try {
+            System.out.println("Chargement de la page de profile privé");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/PrivateProfilePage.fxml"));
+            Parent privateProfile = loader.load();
+
+            PrivateProfileController privateProfile_controller = loader.getController();
+            privateProfile_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(privateProfile);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     // Fonction qui permet de charger la page d'affichage d'une offre de service
     public void loadServiceOfferPage(){

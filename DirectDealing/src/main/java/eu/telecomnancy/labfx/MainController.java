@@ -102,6 +102,8 @@ public class MainController {
         loadWelcomePage();
     }
 
+
+
     // Bouton qui tente la connexion
     @FXML
     private void handleConnexion() {

@@ -102,8 +102,8 @@
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button mnemonicParsing="false" text="*" />
-            <Label text="Label" />
+            <Button fx:id="appliquer" mnemonicParsing="false" onAction="#handleSaveButtonAction" text="*" />
+            <Label text="Appliquer les changements" />
          </children>
       </HBox>
       <Line endX="300.0" startX="-100.0" />
@@ -111,7 +111,7 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="600.0">
                <children>
-                  <Button mnemonicParsing="false" text="*" />
+                  <Button fx:id="toggleStateButton" mnemonicParsing="false" onAction="#onToggleStateAction" text="*" />
                   <Label text="Passer en sommeil" />
                </children>
             </HBox>
