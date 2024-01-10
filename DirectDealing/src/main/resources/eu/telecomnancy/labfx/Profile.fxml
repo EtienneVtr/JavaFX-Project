@@ -17,9 +17,6 @@
             <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 50;">
                <children>
                   <ImageView fx:id="photoProfil" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/kawai.png" />
-                     </image>
                   </ImageView>
                </children>
             </VBox>
