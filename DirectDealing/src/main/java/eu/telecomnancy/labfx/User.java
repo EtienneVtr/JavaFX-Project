@@ -174,7 +174,7 @@ public class User {
     }
     
     public void setEtatCompte(String etatCompte) {
-        if (etatCompte.equals("actif") || etatCompte.equals("inactif")) {
+        if (etatCompte.equals("actif") || etatCompte.equals("sommeil")) {
             this.etatCompte = etatCompte;
         } else {
             throw new IllegalArgumentException("L'état du compte doit être 'actif' ou 'inactif'");

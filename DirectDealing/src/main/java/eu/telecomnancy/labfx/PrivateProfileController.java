@@ -15,11 +15,13 @@ public class PrivateProfileController {
     @FXML private TextField mail;
     @FXML private TextField phone;
     @FXML private TextField localisation;
+    @FXML private Button toggleStateButton;
 
     public void initialize(){
         System.out.println("Initialisation du profile privé");
         currentUser = Main.getCurrentUser();
         updateUIWithUserData();
+        updateToggleButton();
     }    
 
     private void updateUIWithUserData() {
@@ -31,6 +33,11 @@ public class PrivateProfileController {
             phone.setText(currentUser.getPhone());
             localisation.setText(currentUser.getLocalisation());
 
+        }
+    }
+    private void updateToggleButton() {
+        if (currentUser != null) {
+            toggleStateButton.setText(currentUser.getEtatCompte().equals("actif") ? "Passer en inactif" : "Passer en actif");
         }
     }
     
@@ -48,6 +55,17 @@ public class PrivateProfileController {
             currentUser.update(); 
         }
     }
+
+    @FXML
+    private void onToggleStateAction() {
+    if (currentUser != null) {
+        String nouvelEtat = currentUser.getEtatCompte().equals("actif") ? "sommeil" : "actif";
+        currentUser.setEtatCompte(nouvelEtat);
+        toggleStateButton.setText(nouvelEtat.equals("actif") ? "Passer en sommeil" : "Passer en actif");
+        currentUser.update(); 
+        System.out.println(currentUser.getEtatCompte());
+    }
+}
 
     public void setSkeletonController(SkeletonController skeleton_controller){
         this.skeleton_controller = skeleton_controller;
