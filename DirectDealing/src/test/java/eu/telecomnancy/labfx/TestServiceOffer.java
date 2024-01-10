@@ -16,7 +16,7 @@ public class TestServiceOffer {
         testUser = new User("maxence@gmail.com"); 
         offer = new ServiceOffer("maxence@gmail.com");
         System.out.println("Chargement des données de l'offre");
-        System.out.println("Titre: " + offer.getTitle() + " \nDescription: " + offer.getDescription() + " \nDate: " + offer.getDate() + " \nHeure: " + offer.getTime() + " \nEst récurrente: " + offer.getIsRecurrent() + " \nJours de service: " + offer.getDaysOfService() + " \nNombre de semaines de récurrence: " + offer.getNbRecurrencingWeeks() + " \nMail du fournisseur: " + offer.getSupplierMail());
+        System.out.println("Titre: " + offer.getTitle() + " \nDescription: " + offer.getDescription() + " \nDate: " + offer.getDate() + " \nHeure: " + offer.getTime() + " \nEst récurrente: " + offer.getIsRecurrent() + " \nJours de service: " + offer.getDaysOfService() + " \nNombre de semaines de récurrence: " + offer.getRecurrency() + " \nMail du fournisseur: " + offer.getSupplierMail());
     }
     @Order(1)
     @Test
@@ -67,6 +67,6 @@ public class TestServiceOffer {
         assertEquals(testTime, newOffer.getTime());
         assertEquals(testIsRecurrent, newOffer.getIsRecurrent());
         assertEquals(testDaysOfService, newOffer.getDaysOfService());
-        assertEquals(testNbRecurrencingWeeks, newOffer.getNbRecurrencingWeeks());
+        assertEquals(testNbRecurrencingWeeks, newOffer.getRecurrency());
     }
 }
