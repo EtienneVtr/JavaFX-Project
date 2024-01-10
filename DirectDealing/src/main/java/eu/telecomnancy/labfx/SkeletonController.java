@@ -207,13 +207,17 @@ public class SkeletonController {
     }
     // Fonction qui permet de charger la page de profile privé
     public void loadPrivateProfile() {
-        System.out.println("Chargement de la page de profile privé");
         try {
+            System.out.println("Chargement de la page de profile privé");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/PrivateProfilePage.fxml"));
-            Parent welcomePage = loader.load();
+            Parent privateProfile = loader.load();
 
-            // Ajouter le WelcomePage à la scène
-            Main.getPrimaryStage().getScene().setRoot(welcomePage);
+            PrivateProfileController privateProfile_controller = loader.getController();
+            privateProfile_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(privateProfile);
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
