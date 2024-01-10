@@ -34,6 +34,7 @@ public class CreateServiceController {
     @FXML private RadioButton no;
     @FXML private TextField days_of_repetition;
     @FXML private TextField price;
+
     
     private ToggleGroup recurrenceGroup = new ToggleGroup();
 
@@ -79,7 +80,9 @@ public class CreateServiceController {
                     price
                 );
                 System.out.println("Offre de service bien créé");
-                skeleton_controller.loadServiceOfferPage();
+                //print info newoffer
+                System.out.println("id: " + newOffer.getId() + " title: " + newOffer.getTitle() + " description: " + newOffer.getDescription() + " date: " + newOffer.getDate() + " time: " + newOffer.getTime() + " isRecurrent: " + newOffer.getIsRecurrent() + " repetitionDay: " + newOffer.getDaysOfService() + " price: " + newOffer.getPrice() + " nb recurrence: " + newOffer.getRecurrency() + " supplier mail: " + newOffer.getSupplierMail() + " est pris: " + newOffer.getEstPris());
+                skeleton_controller.loadServiceOfferPage(newOffer);
 
             } catch (Exception e) {
                 System.out.println("Veuillez remplir tous les champs requis.");

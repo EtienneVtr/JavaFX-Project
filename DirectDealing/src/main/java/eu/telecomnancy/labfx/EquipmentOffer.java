@@ -18,10 +18,19 @@ public class EquipmentOffer {
     private LocalDate end_availability;
     private int price;
     private String owner_mail;
+    private String estPris;
 
     public EquipmentOffer(String owner_mail) {
         this.owner_mail = owner_mail;
         this.owner = new User(owner_mail);
+        loadEquipmentFromDB();
+    }
+
+    public EquipmentOffer(String owner_mail, String name, String description){
+        this.owner_mail = owner_mail;
+        this.owner = new User(owner_mail);
+        this.name = name;
+        this.description = description;
         loadEquipmentFromDB();
     }
 
@@ -34,6 +43,7 @@ public class EquipmentOffer {
         this.start_availability = start_availability;
         this.end_availability = end_availability;
         this.price = price;
+        this.estPris = null;
         createNewOffer();
     }
 
@@ -51,7 +61,7 @@ public class EquipmentOffer {
             pstmt.setString(5, (this.start_availability != null) ? this.start_availability.toString() : null);
             pstmt.setString(6, (this.end_availability != null) ? this.end_availability.toString() : null);
             pstmt.setInt(7, this.price);
-    
+            
             int affectedRows = pstmt.executeUpdate();
     
             // Vérifier si l'insertion a réussi et récupérer l'ID généré
@@ -156,18 +166,18 @@ public class EquipmentOffer {
         }
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
     public int getId() {
         return id;
     }
     
-
-    public void setTitle(String title) {
-        this.name = title;
-    }
-
     public String getName() {
         return name;
     }
+
 
     public String getDescription() {
         return description;
@@ -195,7 +205,11 @@ public class EquipmentOffer {
     }
 
     public String getStartAvailabilityStr(){
-        return start_availability.toString();
+        if(start_availability == null){
+            return "À définir";
+        }else{
+            return start_availability.toString();
+        }
     }
 
     public void setStartAvailability(LocalDate begin){

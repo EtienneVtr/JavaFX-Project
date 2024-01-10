@@ -1,4 +1,3 @@
-
 package eu.telecomnancy.labfx;
 
 
@@ -8,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.sql.Date;
-import java.sql.Time;
 
 // Description: Classe représentant une offre de service. Elle contient un titre, une description, une date et une heure.
 //              Elle peut être récurrente, auquel cas on lui ajoute un tableau de jours de la semaine où le service doit être réalisé.$
@@ -25,6 +22,8 @@ public class ServiceOffer {
     private String daysOfService; // Stocké comme une chaîne, par exemple "1,3,5"
     private int nbRecurrencingWeeks;
     private String supplier_mail;
+    private int price;
+    private String estPris;
 
     // Constructeur
     public ServiceOffer(String supplier_mail) {
@@ -33,7 +32,15 @@ public class ServiceOffer {
         loadServiceFromDB();
     }
 
-    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time, boolean isRecurrent, String daysOfService, int nbRecurrencingWeeks) {
+    public ServiceOffer(String supplier_mail, String title, String description){
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        this.title = title;
+        this.description = description;
+        loadServiceFromDB();
+    }
+
+    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time, boolean isRecurrent, String daysOfService, int price) {
         this.supplier = supplier;
         this.supplier_mail = supplier.getMail();
         this.title = title;
@@ -42,7 +49,14 @@ public class ServiceOffer {
         this.time = time;
         this.isRecurrent = isRecurrent;
         this.daysOfService = daysOfService;
-        this.nbRecurrencingWeeks = nbRecurrencingWeeks;
+        this.price = price;
+        this.estPris = null;
+        if (isRecurrent) {
+            String[] days = daysOfService.split(",");
+            this.nbRecurrencingWeeks = days.length;
+        } else {
+            this.nbRecurrencingWeeks = 0;
+        }
         createNewOffer();
     }
 
@@ -50,7 +64,7 @@ public class ServiceOffer {
 
 
     public void createNewOffer(){
-        String sql = "INSERT INTO service_offers (supplier_mail, title, description, date, time, is_recurrent, days_of_service, nb_recurrencing_weeks) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO service_offers (supplier_mail, title, description, date, time, is_recurrent, days_of_service, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
     
@@ -61,7 +75,7 @@ public class ServiceOffer {
             pstmt.setString(5, (this.time != null) ? this.time.toString() : null);
             pstmt.setBoolean(6, this.isRecurrent);
             pstmt.setString(7, this.daysOfService);
-            pstmt.setInt(8, this.nbRecurrencingWeeks);
+            pstmt.setInt(8, this.price);
     
             int affectedRows = pstmt.executeUpdate();
     
@@ -80,12 +94,14 @@ public class ServiceOffer {
     }
     
     private void loadServiceFromDB() {
-        String sql = "SELECT * FROM service_offers WHERE supplier_mail = ?";
+        String sql = "SELECT * FROM service_offers WHERE supplier_mail = ? AND title = ? AND description = ?";
 
         try (Connection conn = DataBase.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, supplier_mail);
+            pstmt.setString(2, title); // Assure-toi que la variable 'title' est définie et contient le titre à vérifier
+            pstmt.setString(3, description); // Assure-toi que la variable 'description' est définie et contient la description à vérifier
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -106,7 +122,7 @@ public class ServiceOffer {
                     }
                 this.isRecurrent = rs.getBoolean("is_recurrent");
                 this.daysOfService = rs.getString("days_of_service");
-                this.nbRecurrencingWeeks = rs.getInt("nb_recurrencing_weeks");
+                this.price = rs.getInt("price");
    
             }
         } catch (SQLException e) {
@@ -115,7 +131,7 @@ public class ServiceOffer {
     }
 
     public void update() {
-        String sql = "UPDATE service_offers SET supplier_mail = ?, title = ?, description = ?, date = ?, time = ?, is_recurrent = ?, days_of_service = ?, nb_recurrencing_weeks = ? WHERE id = ?";
+        String sql = "UPDATE service_offers SET supplier_mail = ?, title = ?, description = ?, date = ?, time = ?, is_recurrent = ?, days_of_service = ?, price = ? WHERE id = ?";
     
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -137,8 +153,41 @@ public class ServiceOffer {
     }
     
 
+    public boolean reserveOffer(ServiceOffer offer, String currentUserEmail) {
+        try (Connection conn = DataBase.getConnection()) {
+            // Vérifier si l'offre est déjà réservée
+            String sql = "SELECT estPris FROM service_offers WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, offer.getId());
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next() && rs.getString("estPris") != null) {
+                    System.out.println("Cette offre a déjà été réservée");
+                    return false;
+                }
+            }
+    
+            // Réserver l'offre
+            sql = "UPDATE service_offers SET estPris = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, currentUserEmail);
+                pstmt.setInt(2, offer.getId());
+                pstmt.executeUpdate();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Erreur lors de la réservation de l'offre");
+            return false;
+        }
+    }
+    
+
     public String getSupplierMail(){
         return supplier_mail;
+    }
+
+    public User getSupplier(){
+        return supplier;
     }
 
     public int getId(){
@@ -193,9 +242,6 @@ public class ServiceOffer {
         this.daysOfService = daysOfService;
     }
 
-    public void setNbRecurrencingWeeks(int nbRecurrencingWeeks) {
-        this.nbRecurrencingWeeks = nbRecurrencingWeeks;
-    }
 
     public boolean getIsRecurrent() {
         return isRecurrent;
@@ -205,11 +251,36 @@ public class ServiceOffer {
         return daysOfService;
     }
 
-    public int getNbRecurrencingWeeks() {
+    public int getRecurrency() {
         return nbRecurrencingWeeks;
     }
 
+    public int getPrice() {
+        return price;
+    }
 
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setNbRecurrencingWeeks(String daysOfService) {
+        if (this.isRecurrent) {
+            String[] days = daysOfService.split(",");
+            this.nbRecurrencingWeeks = days.length;
+        } else {
+            this.nbRecurrencingWeeks = 0;
+        }
+    }
+
+    //get estPris
+    public String getEstPris(){
+        return estPris;
+    }
+
+    //set estPris
+    public void setEstPris(String estPris) {
+        this.estPris = estPris;
+    }
 
 }
 
