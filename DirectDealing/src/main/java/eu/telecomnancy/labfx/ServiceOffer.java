@@ -41,14 +41,6 @@ public class ServiceOffer {
         loadServiceFromDB();
     }
 
-    public ServiceOffer(String supplier_mail, String title, String description){
-        this.supplier_mail = supplier_mail;
-        this.supplier = new User(supplier_mail);
-        this.title = title;
-        this.description = description;
-        loadServiceFromDB();
-    }
-
     public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time, boolean isRecurrent, String daysOfService, int price) {
         this.supplier = supplier;
         this.supplier_mail = supplier.getMail();
