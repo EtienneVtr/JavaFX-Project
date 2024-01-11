@@ -23,39 +23,22 @@ public class CreateServiceController {
         this.skeleton_controller = skeleton_controller;
     }
 
-    private User currentUser;
+    private User currentUser = Main.getCurrentUser();
 
 
     @FXML private TextField title;
     @FXML private TextField description;
-    @FXML private DatePicker date;
+    @FXML private DatePicker start;
+    @FXML private DatePicker end;
     @FXML private TextField time;
-    @FXML private RadioButton yes;
-    @FXML private RadioButton no;
-    @FXML private TextField days_of_repetition;
     @FXML private TextField price;
-
-    
-    private ToggleGroup recurrenceGroup = new ToggleGroup();
-
-    @FXML public void initialize() {
-        // Assignation des RadioButton au ToggleGroup
-        yes.setToggleGroup(recurrenceGroup);
-        no.setToggleGroup(recurrenceGroup);
-        currentUser = Main.getCurrentUser();
-
-        // Définir "Non" comme valeur par défaut
-        no.setSelected(true);
-    }
 
     @FXML public void handleCreateOffer() {
             System.out.println("Create service");
+
             String titleField = title.getText();
             String descriptionField = description.getText();
             String priceStr = price.getText();
-            String repetitionDay = days_of_repetition.getText();
-
-            boolean isRecurrent = yes.isSelected();
             
             if (titleField.isEmpty() || descriptionField.isEmpty() || priceStr.isEmpty()) {
                 System.out.println("Veuillez remplir tous les champs requis.");
@@ -63,29 +46,34 @@ public class CreateServiceController {
             }
             
             try{
-
                 int price = Integer.parseInt(priceStr);
-                LocalDate dateField = date.getValue();
+
+                LocalDate startField = start.getValue();
+                LocalDate endField = end.getValue();
                 LocalTime time = LocalTime.parse(this.time.getText()); //transform textfield to local time
-                //transform textfield to local time
+                
+                if (startField == null || endField == null || time == null) {
+                    System.out.println("Veuillez remplir tous les champs requis.");
+                    return;
+                }
                 
                 ServiceOffer newOffer = new ServiceOffer(
-                    currentUser, 
+                    currentUser.getMail(), 
                     titleField, 
                     descriptionField, 
-                    dateField, 
-                    time, 
-                    isRecurrent, 
-                    repetitionDay, 
+                    startField,
+                    endField, 
+                    time,
                     price
                 );
                 System.out.println("Offre de service bien créé");
                 //print info newoffer
-                System.out.println("id: " + newOffer.getId() + " title: " + newOffer.getTitle() + " description: " + newOffer.getDescription() + " date: " + newOffer.getDate() + " time: " + newOffer.getTime() + " isRecurrent: " + newOffer.getIsRecurrent() + " repetitionDay: " + newOffer.getDaysOfService() + " price: " + newOffer.getPrice() + " nb recurrence: " + newOffer.getRecurrency() + " supplier mail: " + newOffer.getSupplierMail() + " est pris: " + newOffer.getEstPris());
+                //System.out.println("id: " + newOffer.getId() + " title: " + newOffer.getTitle() + " description: " + newOffer.getDescription() + " start: " + newOffer.getStart() + " end: " + newOffer.getEnd() + " time: " + newOffer.getTime() + " price: " + newOffer.getPrice() + " nb recurrence: " + newOffer.getRecurrency() + " supplier mail: " + newOffer.getSupplierMail() + " est pris: " + newOffer.getEstPris());
                 skeleton_controller.loadServiceOfferPage(newOffer);
 
             } catch (Exception e) {
-                System.out.println("Veuillez remplir tous les champs requis.");
+                System.out.println("Veuillez remplir tous les champs requis. Recommencez !");
+                System.err.println(e);
                 return;
             }
         }

@@ -56,6 +56,8 @@ public class DataBase {
                             "end_availability TEXT, " +
                             "price INTEGER NOT NULL, " +
                             "estPris TEXT, " +
+                            "book_begin TEXT, " +
+                            "book_end TEXT, " +
                             "date_publication TEXT, " +
                             "FOREIGN KEY (owner_mail) REFERENCES profil (mail), " +
                             "FOREIGN KEY (estPris) REFERENCES profil (mail))";
@@ -68,12 +70,15 @@ public class DataBase {
                             "supplier_mail TEXT NOT NULL, " +
                             "title TEXT NOT NULL, " +
                             "description TEXT, " +
-                            "date TEXT, " +
+                            "start TEXT, " +
+                            "end TEXT, " +
                             "time TEXT, " +
                             "is_recurrent BOOLEAN, " +
                             "days_of_service TEXT, " +
                             "price INTEGER, " +
                             "estPris TEXT, " +
+                            "book_begin TEXT, " +
+                            "book_end TEXT, " +
                             "date_publication TEXT, " +
                             "FOREIGN KEY (supplier_mail) REFERENCES profil (mail), " +
                             "FOREIGN KEY (estPris) REFERENCES profil (mail))";

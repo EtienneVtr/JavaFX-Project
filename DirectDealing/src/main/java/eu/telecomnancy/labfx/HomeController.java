@@ -63,8 +63,6 @@ public class HomeController {
         if(all_offers != null){
             latest_offers.setItems(FXCollections.observableArrayList(all_offers));
         }
-
-
     }
 
     @FXML public void handleDeconnexion(){

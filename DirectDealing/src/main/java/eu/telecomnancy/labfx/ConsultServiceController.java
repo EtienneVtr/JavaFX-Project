@@ -41,7 +41,8 @@ public class ConsultServiceController {
         TableColumn<ServiceOffer, String> userNameColumn = new TableColumn<>("User Name");
         TableColumn<ServiceOffer, String> titleColumn = new TableColumn<>("Title");
         TableColumn<ServiceOffer, String> priceColumn = new TableColumn<>("Price");
-        TableColumn<ServiceOffer, String> dateColumn = new TableColumn<>("Date");
+        TableColumn<ServiceOffer, String> startColumn = new TableColumn<>("Start");
+        TableColumn<ServiceOffer, String> endColumn = new TableColumn<>("End");
         TableColumn<ServiceOffer, String> timeColumn = new TableColumn<>("Time");
         TableColumn<ServiceOffer, String> descriptionColumn = new TableColumn<>("Description");
 
@@ -49,7 +50,8 @@ public class ConsultServiceController {
         userNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSupplier().getPrenom()));
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
         priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPrice())));
-        dateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDateStr()));
+        startColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStartStr()));
+        endColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEndStr()));
         timeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTimeStr()));
         descriptionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
 
@@ -57,12 +59,13 @@ public class ConsultServiceController {
         results.getColumns().add(userNameColumn);
         results.getColumns().add(titleColumn);
         results.getColumns().add(priceColumn);
-        results.getColumns().add(dateColumn);
+        results.getColumns().add(startColumn);
+        results.getColumns().add(endColumn);
         results.getColumns().add(timeColumn);
         results.getColumns().add(descriptionColumn);
 
         // Ajoute les données au TableView
-        ArrayList<ServiceOffer> all_service = Main.getAllService();
+        ArrayList<ServiceOffer> all_service = Main.getAllServiceHome();
         if(all_service != null){
             results.setItems(FXCollections.observableArrayList(all_service));
         }

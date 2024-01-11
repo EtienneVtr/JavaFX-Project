@@ -26,6 +26,8 @@ public class EquipmentOffer {
     private String owner_mail;
     private String estPris;
     private String date_publication;
+    private LocalDate book_begin;
+    private LocalDate book_end;
 
     public EquipmentOffer(String owner_mail) {
         this.owner_mail = owner_mail;
@@ -39,6 +41,16 @@ public class EquipmentOffer {
         this.name = name;
         this.description = description;
         loadEquipmentFromDB();
+    }
+
+    public EquipmentOffer(String owner_mail, String name, String description, String start, String estPris){
+        this.owner_mail = owner_mail;
+        this.owner = new User(owner_mail);
+        this.name = name;
+        this.description = description;
+        this.start_availability = LocalDate.parse(start);
+        this.estPris = estPris;
+        loadEquipmentFromDBHome();
     }
 
     public EquipmentOffer(String name, String description, String owner_mail, int quantity, LocalDate startAvailability, LocalDate endAvailability, int price) {
@@ -129,6 +141,20 @@ public class EquipmentOffer {
                     this.end_availability = null;
                     }
                 this.price = rs.getInt("price");
+                this.date_publication = rs.getString("date_publication");
+                this.estPris = rs.getString("estPris");
+                String book_beginString = rs.getString("book_begin");
+                if (book_beginString != null && !book_beginString.isEmpty()) {
+                    this.book_begin = LocalDate.parse(book_beginString);
+                    } else {
+                    this.book_begin = null;
+                    }
+                String book_endString = rs.getString("book_end");
+                if (book_endString != null && !book_endString.isEmpty()) {
+                    this.book_end = LocalDate.parse(book_endString);
+                    } else {
+                    this.book_end = null;
+                    }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -167,6 +193,71 @@ public class EquipmentOffer {
                 this.price = rs.getInt("price");
                 this.date_publication = rs.getString("date_publication");
                 this.estPris = rs.getString("estPris");
+                String book_beginString = rs.getString("book_begin");
+                if (book_beginString != null && !book_beginString.isEmpty()) {
+                    this.book_begin = LocalDate.parse(book_beginString);
+                    } else {
+                    this.book_begin = null;
+                    }
+                String book_endString = rs.getString("book_end");
+                if (book_endString != null && !book_endString.isEmpty()) {
+                    this.book_end = LocalDate.parse(book_endString);
+                    } else {
+                    this.book_end = null;
+                    }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadEquipmentFromDBHome() {
+        String sql = "SELECT * FROM equipement WHERE owner_mail = ? AND name = ? AND description = ? AND start_availability = ? AND estPris IS NULL";
+
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setString(1, this.owner.getMail());
+            pstmt.setString(2, this.name);
+            pstmt.setString(3, this.description);
+            pstmt.setString(4, this.start_availability.toString());
+            ResultSet rs = pstmt.executeQuery();
+    
+            if (rs.next()) {
+                this.name = rs.getString("name");
+                this.id = rs.getInt("id");
+                this.description = rs.getString("description");
+                this.quantity = rs.getInt("quantity");
+                String start_availabilityString = rs.getString("start_availability");
+                if (start_availabilityString != null && !start_availabilityString.isEmpty()) {
+                    this.start_availability = LocalDate.parse(start_availabilityString);
+                    } else {
+                    this.start_availability = null;
+                    }
+                String end_availabilityString = rs.getString("end_availability");
+                if (end_availabilityString != null && !end_availabilityString.isEmpty()) {
+                    this.end_availability = LocalDate.parse(end_availabilityString);
+                    } else {
+                    this.end_availability = null;
+                    }
+                this.price = rs.getInt("price");
+                this.date_publication = rs.getString("date_publication");
+                this.estPris = rs.getString("estPris");
+                String book_beginString = rs.getString("book_begin");
+                if (book_beginString != null && !book_beginString.isEmpty()) {
+                    this.book_begin = LocalDate.parse(book_beginString);
+                    } else {
+                    this.book_begin = null;
+                    }
+                String book_endString = rs.getString("book_end");
+                if (book_endString != null && !book_endString.isEmpty()) {
+                    this.book_end = LocalDate.parse(book_endString);
+                    } else {
+                    this.book_end = null;
+                    }
+                
+                // Afffichage du résultat :
+                System.out.println("Offre trouvée: " + this.name + " " + this.description + " " + this.owner_mail + " " + this.quantity + " " + this.start_availability + " " + this.end_availability + " " + this.price);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -194,7 +285,7 @@ public class EquipmentOffer {
         }
     }
 
-    public boolean reserveOffer(EquipmentOffer offer, String currentUserEmail){
+    public boolean reserveOffer(EquipmentOffer offer, String currentUserEmail, LocalDate begin, LocalDate end){
         Connection conn = null;
         try {
             conn = DataBase.getConnection();
@@ -225,6 +316,17 @@ public class EquipmentOffer {
                 pstmt.setInt(2, offer.getId());
                 pstmt.executeUpdate();
             }
+
+            // Mettre à jour les dates de réservation
+            sql = "UPDATE equipement SET book_begin = ?, book_end = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, begin.toString());
+                pstmt.setString(2, end.toString());
+                pstmt.setInt(3, offer.getId());
+                pstmt.executeUpdate();
+            }
+            this.book_begin = begin;
+            this.book_end = end;
     
             conn.commit(); // Valider la transaction
             return true;
@@ -456,4 +558,13 @@ public class EquipmentOffer {
         return date_publication;
     }
 
+    //get début réservation
+    public LocalDate getBook_begin(){
+        return book_begin;
+    }
+
+    //get fin réservation
+    public LocalDate getBook_end(){
+        return book_end;
+    }
 }

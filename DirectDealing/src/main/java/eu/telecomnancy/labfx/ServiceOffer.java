@@ -17,7 +17,8 @@ public class ServiceOffer {
     private User supplier;
     private String title;
     private String description;
-    private LocalDate date;
+    private LocalDate start;
+    private LocalDate end;
     private LocalTime time;
     private boolean isRecurrent;
     private String daysOfService; // Stocké comme une chaîne, par exemple "1,3,5"
@@ -26,6 +27,8 @@ public class ServiceOffer {
     private int price;
     private String estPris;
     private String date_publication;
+    private LocalDate book_begin;
+    private LocalDate book_end;
 
     // Constructeur
     public ServiceOffer(String supplier_mail) {
@@ -34,15 +37,16 @@ public class ServiceOffer {
         loadServiceFromDB();
     }
 
-    public ServiceOffer(String supplierMail, String title, String description, LocalDate date, LocalTime time, int price) {
+    public ServiceOffer(String supplierMail, String title, String description, LocalDate start, LocalDate end, LocalTime time, int price) {
         this.supplier_mail = supplierMail;
         this.supplier = new User(supplierMail);
         this.title = title;
         this.description = description;
-        this.date = date;
+        this.start = start;
+        this.end = end;
         this.time = time;
         this.price = price;
-
+        createNewOffer();
     }
 
 
@@ -54,12 +58,23 @@ public class ServiceOffer {
         loadServiceFromDB();
     }
 
-    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time, boolean isRecurrent, String daysOfService, int price) {
+    public ServiceOffer(String supplier_mail, String title, String description, String start, String estPris){
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        this.title = title;
+        this.description = description;
+        this.start = LocalDate.parse(start);
+        this.estPris = estPris;
+        loadServiceFromDBHome();
+    }
+
+    public ServiceOffer(User supplier, String title, String description, LocalDate start, LocalDate end, LocalTime time, boolean isRecurrent, String daysOfService, int price) {
         this.supplier = supplier;
         this.supplier_mail = supplier.getMail();
         this.title = title;
         this.description = description;
-        this.date = date;
+        this.start = start;
+        this.end = end;
         this.time = time;
         this.isRecurrent = isRecurrent;
         this.daysOfService = daysOfService;
@@ -78,19 +93,20 @@ public class ServiceOffer {
 
 
     public void createNewOffer(){
-        String sql = "INSERT INTO service_offers (supplier_mail, title, description, date, time, is_recurrent, days_of_service, price, date_publication) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO service_offers (supplier_mail, title, description, start, end, time, is_recurrent, days_of_service, price, date_publication) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
     
             pstmt.setString(1, this.supplier.getMail());
             pstmt.setString(2, this.title);
             pstmt.setString(3, this.description);
-            pstmt.setString(4, (this.date != null) ? this.date.toString() : null);
-            pstmt.setString(5, (this.time != null) ? this.time.toString() : null);
-            pstmt.setBoolean(6, this.isRecurrent);
-            pstmt.setString(7, this.daysOfService);
-            pstmt.setInt(8, this.price);
-            pstmt.setString(9, LocalDate.now().toString());
+            pstmt.setString(4, (this.start != null) ? this.start.toString() : null);
+            pstmt.setString(5, (this.end != null) ? this.end.toString() : null);
+            pstmt.setString(6, (this.time != null) ? this.time.toString() : null);
+            pstmt.setBoolean(7, this.isRecurrent);
+            pstmt.setString(8, this.daysOfService);
+            pstmt.setInt(9, this.price);
+            pstmt.setString(10, LocalDate.now().toString());
     
             int affectedRows = pstmt.executeUpdate();
     
@@ -123,11 +139,17 @@ public class ServiceOffer {
                 this.id = rs.getInt("id");
                 this.title = rs.getString("title");
                 this.description = rs.getString("description");
-                String dateString = rs.getString("date");
-                if (dateString != null && !dateString.isEmpty()) {
-                    this.date = LocalDate.parse(dateString);
+                String startDateString = rs.getString("start");
+                if (startDateString != null && !startDateString.isEmpty()) {
+                    this.start = LocalDate.parse(startDateString);
                     } else {
-                    this.date = null;
+                    this.start = null;
+                    }
+                String endDateString = rs.getString("end");
+                if (endDateString != null && !endDateString.isEmpty()) {
+                    this.end = LocalDate.parse(endDateString);
+                    } else {
+                    this.end = null;
                     }
                 String timeString = rs.getString("time");
                 if (timeString != null && !timeString.isEmpty()) {
@@ -140,6 +162,75 @@ public class ServiceOffer {
                 this.price = rs.getInt("price");
                 this.date_publication = rs.getString("date_publication");
                 this.estPris = rs.getString("estPris");
+                String bookingBeginString = rs.getString("book_begin");
+                if (bookingBeginString != null && !bookingBeginString.isEmpty()) {
+                    this.book_begin = LocalDate.parse(bookingBeginString);
+                    } else {
+                    this.book_begin = null;
+                    }
+                String bookingEndString = rs.getString("book_end");
+                if (bookingEndString != null && !bookingEndString.isEmpty()) {
+                    this.book_end = LocalDate.parse(bookingEndString);
+                    } else {
+                    this.book_end = null;
+                    }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadServiceFromDBHome() {
+        String sql = "SELECT * FROM service_offers WHERE supplier_mail = ? AND title = ? AND description = ? AND start = ? AND estPris IS NULL";
+
+        try (Connection conn = DataBase.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, supplier_mail);
+            pstmt.setString(2, title); // Assure-toi que la variable 'title' est définie et contient le titre à vérifier
+            pstmt.setString(3, description); // Assure-toi que la variable 'description' est définie et contient la description à vérifier
+            pstmt.setString(4, this.start.toString());
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                this.id = rs.getInt("id");
+                this.title = rs.getString("title");
+                this.description = rs.getString("description");
+                String startDateString = rs.getString("start");
+                if (startDateString != null && !startDateString.isEmpty()) {
+                    this.start = LocalDate.parse(startDateString);
+                    } else {
+                    this.start = null;
+                    }
+                String endDateString = rs.getString("end");
+                if (endDateString != null && !endDateString.isEmpty()) {
+                    this.end = LocalDate.parse(endDateString);
+                    } else {
+                    this.end = null;
+                    }
+                String timeString = rs.getString("time");
+                if (timeString != null && !timeString.isEmpty()) {
+                    this.time = LocalTime.parse(timeString);
+                    } else {
+                    this.time = null;
+                    }
+                this.isRecurrent = rs.getBoolean("is_recurrent");
+                this.daysOfService = rs.getString("days_of_service");
+                this.price = rs.getInt("price");
+                this.date_publication = rs.getString("date_publication");
+                this.estPris = rs.getString("estPris");
+                String bookingBeginString = rs.getString("book_begin");
+                if (bookingBeginString != null && !bookingBeginString.isEmpty()) {
+                    this.book_begin = LocalDate.parse(bookingBeginString);
+                    } else {
+                    this.book_begin = null;
+                    }
+                String bookingEndString = rs.getString("book_end");
+                if (bookingEndString != null && !bookingEndString.isEmpty()) {
+                    this.book_end = LocalDate.parse(bookingEndString);
+                    } else {
+                    this.book_end = null;
+                    }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -147,7 +238,7 @@ public class ServiceOffer {
     }
 
     public void update() {
-        String sql = "UPDATE service_offers SET supplier_mail = ?, title = ?, description = ?, date = ?, time = ?, is_recurrent = ?, days_of_service = ?, price = ?, WHERE id = ?";
+        String sql = "UPDATE service_offers SET supplier_mail = ?, title = ?, description = ?, start = ?, end = ?, time = ?, is_recurrent = ?, days_of_service = ?, price = ?, WHERE id = ?";
     
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -155,12 +246,13 @@ public class ServiceOffer {
             pstmt.setString(1, this.supplier.getMail());
             pstmt.setString(2, this.title);
             pstmt.setString(3, this.description);
-            pstmt.setString(4, (this.date != null) ? this.date.toString() : null);
-            pstmt.setString(5, (this.time != null) ? this.time.toString() : null);
-            pstmt.setBoolean(6, this.isRecurrent);
-            pstmt.setString(7, this.daysOfService);
-            pstmt.setInt(8, this.nbRecurrencingWeeks);
-            pstmt.setInt(9, this.id);
+            pstmt.setString(4, (this.start != null) ? this.start.toString() : null);
+            pstmt.setString(5, (this.end != null) ? this.end.toString() : null);
+            pstmt.setString(6, (this.time != null) ? this.time.toString() : null);
+            pstmt.setBoolean(7, this.isRecurrent);
+            pstmt.setString(8, this.daysOfService);
+            pstmt.setInt(9, this.nbRecurrencingWeeks);
+            pstmt.setInt(10, this.id);
     
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -169,7 +261,7 @@ public class ServiceOffer {
     }
     
 
-    public boolean reserveOffer(ServiceOffer offer, String currentUserEmail) {
+    public boolean reserveOffer(ServiceOffer offer, String currentUserEmail, LocalDate begin, LocalDate end) {
         Connection conn = null;
         try {
             conn = DataBase.getConnection();
@@ -201,6 +293,17 @@ public class ServiceOffer {
                 pstmt.executeUpdate();
             }
     
+            // Ajouter les dates de réservation
+            sql = "UPDATE service_offers SET book_begin = ?, book_end = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, begin.toString());
+                pstmt.setString(2, end.toString());
+                pstmt.setInt(3, offer.getId());
+                pstmt.executeUpdate();
+            }
+            this.book_begin = begin;
+            this.book_end = end;
+
             conn.commit(); // Valider la transaction
             return true;
         } catch (SQLException e) {
@@ -309,14 +412,16 @@ public class ServiceOffer {
     
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    LocalDate serviceDate = rs.getString("date") != null ? LocalDate.parse(rs.getString("date")) : null;
+                    LocalDate serviceStart = rs.getString("start") != null ? LocalDate.parse(rs.getString("start")) : null;
+                    LocalDate serviceEnd = rs.getString("end") != null ? LocalDate.parse(rs.getString("end")) : null;
                     LocalTime time = rs.getString("time") != null ? LocalTime.parse(rs.getString("time")) : null;
     
                     ServiceOffer offer = new ServiceOffer(
                         rs.getString("supplier_mail"),
                         rs.getString("title"),
                         rs.getString("description"),
-                        serviceDate,
+                        serviceStart,
+                        serviceEnd,
                         time,
                         rs.getInt("price")
                     );
@@ -325,6 +430,9 @@ public class ServiceOffer {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        for (ServiceOffer offer : offers) {
+            System.out.println("id: " + offer.getId() + " title: " + offer.getTitle() + " description: " + offer.getDescription() + " start: " + offer.getStart() + " end: " + offer.getEnd() + " time: " + offer.getTime() + " isRecurrent: " + offer.getIsRecurrent() + " repetitionDay: " + offer.getDaysOfService() + " price: " + offer.getPrice() + " nb recurrence: " + offer.getRecurrency() + " supplier mail: " + offer.getSupplierMail() + " est pris: " + offer.getEstPris());
         }
         return offers;
     }
@@ -361,20 +469,36 @@ public class ServiceOffer {
         this.description = description;
     }
 
-    public LocalDate getDate(){
-        return date;
+    public LocalDate getStart(){
+        return start;
     }
 
-    public String getDateStr(){
-        if(date == null){
+    public String getStartStr(){
+        if(start == null){
             return "À définir";
         }else{
-            return date.toString();
+            return start.toString();
         }
     }
 
-    public void setDate(LocalDate date){
-        this.date = date;
+    public void setStart(LocalDate start){
+        this.start = start;
+    }
+
+    public LocalDate getEnd(){
+        return end;
+    }
+
+    public String getEndStr(){
+        if(end == null){
+            return "À définir";
+        }else{
+            return end.toString();
+        }
+    }
+
+    public void setEnd(LocalDate end){
+        this.end = end;
     }
 
     public LocalTime getTime(){
@@ -444,6 +568,16 @@ public class ServiceOffer {
     //get date_publication
     public String getDate_publication(){
         return date_publication;
+    }
+
+    //get book_begin
+    public LocalDate getBook_begin(){
+        return book_begin;
+    }
+
+    //get book_end
+    public LocalDate getBook_end(){
+        return book_end;
     }
 
 }

@@ -3,6 +3,8 @@ package eu.telecomnancy.labfx;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.DatePicker;
+import java.time.LocalDate;
 
 public class ServiceOfferController {
 
@@ -23,6 +25,9 @@ public class ServiceOfferController {
     @FXML private Button book;
     @FXML private Button cancel;
 
+    @FXML private DatePicker booking_begin;
+    @FXML private DatePicker booking_end;
+
     public void setCurrentOffer(ServiceOffer offer) {
         this.service_offer = offer;
         displayOfferInfo();
@@ -31,9 +36,10 @@ public class ServiceOfferController {
     private void displayOfferInfo() {
         title.setText("Titre : " + service_offer.getTitle());
         description.setText("Description : " + service_offer.getDescription());
-        String startDateString = service_offer.getDate() != null ? service_offer.getDate().toString() : "Pas de date renseigné";
+        String startDateString = service_offer.getStart() != null ? service_offer.getStart().toString() : "Pas de date renseigné";
+        String endDateString = service_offer.getEnd() != null ? service_offer.getEnd().toString() : "Pas de date renseigné";
         String time = service_offer.getTime() != null ? service_offer.getTime().toString() : "Pas d'heure renseigné";
-        date.setText("Date : " + startDateString + " / " + time);
+        date.setText("Date : " + startDateString + " to " + endDateString + " at " + time);
         recurrency.setText("Récurrence : " + service_offer.getRecurrency() + " jours par semaine" + "(" + service_offer.getDaysOfService() + ")");
         price.setText("Coût en florains : " + service_offer.getPrice());
     }
@@ -56,11 +62,37 @@ public class ServiceOfferController {
             return;
         }
 
+        LocalDate begin = booking_begin.getValue();
+        LocalDate end = booking_end.getValue();
+
+        if(begin == null || end == null){
+            System.out.println("Veuillez renseigner une date de début et de fin");
+            return;
+        }else if(begin.isAfter(end)){
+            System.out.println("La date de début doit être avant la date de fin");
+            return;
+        }else if(begin.isBefore(service_offer.getStart()) || end.isAfter(service_offer.getStart())){
+            System.out.println("La date de début et de fin doivent être comprises dans la période de disponibilité de l'offre");
+            return;
+        }
+
+
         // Tenter de réserver l'offre
-        if (service_offer.reserveOffer(service_offer, currentUserEmail)) {
+        if (service_offer.reserveOffer(service_offer, currentUserEmail, begin, end)) {
             System.out.println("Offre réservée avec succès");
 
-            service_offer.setEstPris(currentUserEmail);
+            // Création de deux nouvelles offres avant et après la période de réservation
+            // si le premier jour de réservation est le même que le début de l'offre de base, on en crée qu'une après
+            // inverse pour le dernier jour de réservation
+            /* if(begin.equals(service_offer.getStart()) && end.equals(service_offer.getEnd())){
+                System.out.println("Offre bien créée");
+            }else if(begin.equals(service_offer.getStart())){
+                System.out.println("Offre bien créée");
+                ServiceOffer newOffer = new ServiceOffer(service_offer.getTitle(), service_offer.getDescription(), service_offer.getSupplierMail(), service_offer.getPrice(), end.plusDays(1), service_offer.getEnd(), service_offer.getRecurrency(), service_offer.getDaysOfService(), service_offer.getTime());
+
+
+
+            service_offer.setEstPris(currentUserEmail); */
             //set nb florain user
             currentUser = Main.getCurrentUser();
             currentUser.setNbFlorain(currentUser.getNbFlorain() - service_offer.getPrice());

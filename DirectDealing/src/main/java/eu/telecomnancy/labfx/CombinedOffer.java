@@ -12,11 +12,11 @@ public class CombinedOffer {
     private int price;
     private String estPris;
     private String date_publication;
+    private LocalDate start;
+    private LocalDate end;
 
     // Champs spécifiques à EquipmentOffer
     private int quantity;
-    private LocalDate startAvailability;
-    private LocalDate endAvailability;
 
     // Champs spécifiques à ServiceOffer
     private LocalDate date;
@@ -41,8 +41,8 @@ public class CombinedOffer {
         this.price = equipmentOffer.getPrice();
         this.estPris = equipmentOffer.getEstPris();
         this.quantity = equipmentOffer.getQuantity();
-        this.startAvailability = equipmentOffer.getStartAvailability();
-        this.endAvailability = equipmentOffer.getEndAvaibility();
+        this.start = equipmentOffer.getStartAvailability();
+        this.end = equipmentOffer.getEndAvaibility();
         this.type = OfferType.EQUIPMENT_OFFER;
         this.date_publication = equipmentOffer.getDate_publication();
     }
@@ -55,7 +55,8 @@ public class CombinedOffer {
         this.description = serviceOffer.getDescription();
         this.price = serviceOffer.getPrice();
         this.estPris = serviceOffer.getEstPris();
-        this.date = serviceOffer.getDate();
+        this.start = serviceOffer.getStart();
+        this.end = serviceOffer.getEnd();
         this.time = serviceOffer.getTime();
         this.isRecurrent = serviceOffer.getIsRecurrent();
         this.daysOfService = serviceOffer.getDaysOfService();
@@ -115,28 +116,12 @@ public class CombinedOffer {
         }
     }
 
-    public LocalDate getStartAvailability() {
-        if (this.type == OfferType.EQUIPMENT_OFFER) {
-            return startAvailability;
-        } else {
-            throw new UnsupportedOperationException("getStartAvailability is not supported for ServiceOffer");
-        }
+    public LocalDate getStart() {
+        return start;
     }
 
-    public LocalDate getEndAvailability() {
-        if (this.type == OfferType.EQUIPMENT_OFFER) {
-            return endAvailability;
-        } else {
-            throw new UnsupportedOperationException("getEndAvailability is not supported for ServiceOffer");
-        }
-    }
-
-    public LocalDate getDate() {
-        if (this.type == OfferType.SERVICE_OFFER) {
-            return date;
-        } else {
-            throw new UnsupportedOperationException("getDate is not supported for EquipmentOffer");
-        }
+    public LocalDate getEnd() {
+        return end;
     }
 
     public LocalTime getTime() {

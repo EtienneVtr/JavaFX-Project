@@ -37,7 +37,7 @@ public class CreateEquipmentController {
         String priceStr = price.getText();
         String quantityStr = quantity.getText();
     
-        if (titleField.isEmpty() || priceStr.isEmpty() || descriptionField.isEmpty() || quantityStr.isEmpty()) {
+        if (titleField.isEmpty() || priceStr.isEmpty() || descriptionField.isEmpty() || quantityStr.isEmpty() || begin.getValue() == null || end.getValue() == null) {
             System.out.println("Veuillez remplir tous les champs requis.");
             return;
         }
