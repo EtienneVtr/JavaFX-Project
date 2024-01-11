@@ -68,6 +68,8 @@ public class ConsultServiceController {
 
         // Ajoute les données au TableView
         ArrayList<ServiceOffer> all_service = Main.getAllServiceHome();
+        all_service.removeIf(item -> item.getSupplier().getEtatCompte().equals("sommeil"));
+
         if(all_service != null){
             results.setItems(FXCollections.observableArrayList(all_service));
         }

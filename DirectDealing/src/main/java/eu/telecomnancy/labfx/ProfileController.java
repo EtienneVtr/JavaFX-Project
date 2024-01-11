@@ -17,6 +17,7 @@ public class ProfileController {
     
     @FXML private Label labelPseudo;
     @FXML private Label labelSoldeFlorain;
+    @FXML private Label State;
     @FXML private VBox vbox;
     @FXML private ImageView photoProfil;
     @FXML private Label unreadMessagesLabel;
@@ -25,6 +26,9 @@ public class ProfileController {
     public void initialize(){
         System.out.println("Initialisation du profile");
         currentUser = Main.getCurrentUser();
+
+        State.setText(currentUser.getEtatCompte());
+
         String cheminImageProfil = currentUser.getPhotoProfil();
         //Chemin type : /Users/maxence/Downloads/chat.png
         

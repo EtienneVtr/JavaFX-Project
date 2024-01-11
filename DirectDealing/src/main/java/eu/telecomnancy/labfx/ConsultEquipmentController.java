@@ -63,6 +63,8 @@ public class ConsultEquipmentController {
 
         // Ajoute les données au TableView
         ArrayList<EquipmentOffer> all_equipment = Main.getAllEquipmentHome();
+        all_equipment.removeIf(item -> item.getOwner().getEtatCompte().equals("sommeil"));
+
         if(all_equipment != null){
             results.setItems(FXCollections.observableArrayList(all_equipment));
         }
