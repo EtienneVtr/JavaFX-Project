@@ -19,7 +19,6 @@ public class ServiceOfferController {
     @FXML private Label title;
     @FXML private Label description;
     @FXML private Label date;
-    @FXML private Label recurrency;
     @FXML private Label price;
 
     @FXML private Button book;
@@ -40,7 +39,6 @@ public class ServiceOfferController {
         String endDateString = service_offer.getEnd() != null ? service_offer.getEnd().toString() : "Pas de date renseigné";
         String time = service_offer.getTime() != null ? service_offer.getTime().toString() : "Pas d'heure renseigné";
         date.setText("Date : " + startDateString + " to " + endDateString + " at " + time);
-        recurrency.setText("Récurrence : " + service_offer.getRecurrency() + " jours par semaine" + "(" + service_offer.getDaysOfService() + ")");
         price.setText("Coût en florains : " + service_offer.getPrice());
     }
 
@@ -88,11 +86,11 @@ public class ServiceOfferController {
                 System.out.println("Offre bien créée");
             }else if(begin.equals(service_offer.getStart())){
                 System.out.println("Offre bien créée");
-                ServiceOffer newOffer = new ServiceOffer(service_offer.getTitle(), service_offer.getDescription(), service_offer.getSupplierMail(), service_offer.getPrice(), end.plusDays(1), service_offer.getEnd(), service_offer.getRecurrency(), service_offer.getDaysOfService(), service_offer.getTime());
+                ServiceOffer newOffer = new ServiceOffer(); */
 
 
 
-            service_offer.setEstPris(currentUserEmail); */
+            service_offer.setEstPris(currentUserEmail);
             //set nb florain user
             currentUser = Main.getCurrentUser();
             currentUser.setNbFlorain(currentUser.getNbFlorain() - service_offer.getPrice());

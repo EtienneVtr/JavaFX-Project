@@ -136,10 +136,10 @@ public class PlanningController {
     private void handleOffer(CombinedOffer offer) {
         if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
 
-            ajouterEvenement(offer.getDate(), offer.getDate(), offer.getTime(), LocalTime.of(23, 59),  offer);
+            ajouterEvenement(offer.getStart(), offer.getEnd(), offer.getTime(), LocalTime.of(23, 59),  offer);
         } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
 ;
-            ajouterEvenement(offer.getStartAvailability(), offer.getEndAvailability(), LocalTime.of(7, 00), LocalTime.of(23, 59), offer);
+            ajouterEvenement(offer.getStart(), offer.getEnd(), LocalTime.of(7, 00), LocalTime.of(23, 59), offer);
         }
     }
 }
