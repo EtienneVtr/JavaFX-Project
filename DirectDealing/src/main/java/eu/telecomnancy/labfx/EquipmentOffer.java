@@ -67,7 +67,7 @@ public class EquipmentOffer {
 
     public void createNewOffer() {
               System.out.println("Début de la recherche des offres.création");
-        String sql = "INSERT INTO equipement (owner_mail, name, description, quantity, start_availability, end_availability, price) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO equipement (owner_mail, name, description, quantity, start_availability, end_availability, price, date_publication) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
