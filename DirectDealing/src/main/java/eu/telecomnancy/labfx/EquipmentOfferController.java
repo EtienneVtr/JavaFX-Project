@@ -77,7 +77,7 @@ public class EquipmentOfferController {
 
 
         // Tenter de réserver l'offre
-        if (currentOffer.reserveOffer(currentOffer, currentUserEmail, begin, end)) {
+        if (currentOffer.reserveOffer(currentUserEmail, begin, end)) {
             System.out.println("Réservation réussie");
 
             // Création de deux nouvelles offres avant et après la période de réservation
@@ -85,19 +85,34 @@ public class EquipmentOfferController {
             // inverse pour le dernier jour de réservation
             if(begin.equals(currentOffer.getStartAvailability()) && end.equals(currentOffer.getEndAvaibility())){
                 System.out.println("Offre bien créée");
+                currentOffer.setEstPris(currentUserEmail);
+                currentOffer.setBook_begin(begin);
+                currentOffer.setBook_end(end);
             }else if(begin.equals(currentOffer.getStartAvailability())){
                 EquipmentOffer newOffer = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), end.plusDays(1), currentOffer.getEndAvaibility(), currentOffer.getPrice());
+                currentOffer.setEstPris(currentUserEmail);
+                currentOffer.setBook_begin(begin);
+                currentOffer.setBook_end(end);
+                currentOffer.setEndAvailability(end);
                 System.out.println("Offre bien créée");
             }else if(end.equals(currentOffer.getEndAvaibility())){
                 EquipmentOffer newOffer = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), currentOffer.getStartAvailability(), begin.minusDays(1), currentOffer.getPrice());
+                currentOffer.setEstPris(currentUserEmail);
+                currentOffer.setBook_begin(begin);
+                currentOffer.setBook_end(end);
+                currentOffer.setStartAvailability(begin);
                 System.out.println("Offre bien créée");
             }else{
                 EquipmentOffer newOffer1 = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), currentOffer.getStartAvailability(), begin.minusDays(1), currentOffer.getPrice());
                 EquipmentOffer newOffer2 = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), end.plusDays(1), currentOffer.getEndAvaibility(), currentOffer.getPrice());
+                currentOffer.setEstPris(currentUserEmail);
+                currentOffer.setBook_begin(begin);
+                currentOffer.setBook_end(end);
+                currentOffer.setStartAvailability(begin);
+                currentOffer.setEndAvailability(end);
                 System.out.println("Offres bien créées");
             }
 
-            currentOffer.setEstPris(currentUserEmail);
             System.out.println("L'offre est maintenant réservée par " + currentOffer.getEstPris() + "estpris: " + currentOffer.getEstPris());
             currentUser = Main.getCurrentUser();
             currentUser.setNbFlorain(currentUser.getNbFlorain() - currentOffer.getPrice());
