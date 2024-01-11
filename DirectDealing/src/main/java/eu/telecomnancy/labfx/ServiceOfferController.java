@@ -74,7 +74,7 @@ public class ServiceOfferController {
     
 
     @FXML public void handleContact(){
-        System.out.println("Contact !");
+        System.out.println("Lancement d'une conversation avec le propriétaire de l'offre");
     }
 
     @FXML public void cancel(){

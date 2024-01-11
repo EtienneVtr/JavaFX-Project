@@ -6,16 +6,20 @@ public class Message {
     private int messageId;
     private int conversationId;
     private int senderId;
+    private int receiverId;
     private String messageText;
     private Timestamp sendTime;
+    private boolean isRead;
 
     // Constructeur
-    public Message(int messageId, int conversationId, int senderId, String messageText, Timestamp sendTime) {
+    public Message(int messageId, int conversationId, int senderId,int receiver_id, String messageText, Timestamp sendTime, boolean isRead) {
         this.messageId = messageId;
         this.conversationId = conversationId;
         this.senderId = senderId;
+        this.receiverId = receiverId;
         this.messageText = messageText;
         this.sendTime = sendTime;
+        this.isRead = isRead;
     }
 
     // Getters et setters de messageId
@@ -42,6 +46,14 @@ public class Message {
         this.senderId = senderId;
     }
 
+    // Getters et setters de receiverId
+    public int getReceiverId() {
+        return receiverId;
+    }
+    public void setReceiverId(int receiverId) {
+        this.receiverId = receiverId;
+    }
+
     // Getters et setters de messageText
     public String getMessageText() {
         return messageText;
@@ -56,6 +68,14 @@ public class Message {
     }
     public void setSendTime(Timestamp sendTime) {
         this.sendTime = sendTime;
+    }
+
+    // Getters et setters de isRead
+    public boolean isRead() {
+        return isRead;
+    }
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
     }
 
     
