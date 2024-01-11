@@ -20,6 +20,10 @@ public class PlanningController {
     
     private Calendar serviceOfferedCalendar; // services que j'ai publiés et qui sont réservés
     private Calendar equipmentOfferedCalendar; // équipements que j'ai publiés et qui sont réservés
+    private Calendar serviceNoneOfferedCalendar; // services que j'ai publiés et qui ne sont pas réservés
+    private Calendar equipmentNoneOfferedCalendar; // équipements que j'ai publiés et qui ne sont pas réservés
+    private Calendar serviceDemandedCalendar; // services que j'ai réservés
+    private Calendar equipmentDemandedCalendar; // équipements que j'ai réservés
 
     public void setSkeletonController(SkeletonController skeleton_controller) {
         this.skeleton_controller = skeleton_controller;
@@ -31,10 +35,18 @@ public class PlanningController {
 
         serviceOfferedCalendar = new Calendar("Services Offered");
         equipmentOfferedCalendar = new Calendar("Equipments Offered");
+        serviceNoneOfferedCalendar = new Calendar("Services None Offered");
+        equipmentNoneOfferedCalendar = new Calendar("Equipments None Offered");
+        serviceDemandedCalendar = new Calendar("Services Demanded");
+        equipmentDemandedCalendar = new Calendar("Equipments Demanded");
 
         // set des styles des calendriers
         serviceOfferedCalendar.setStyle(Calendar.Style.STYLE1);
         equipmentOfferedCalendar.setStyle(Calendar.Style.STYLE2);
+        serviceNoneOfferedCalendar.setStyle(Calendar.Style.STYLE3);
+        equipmentNoneOfferedCalendar.setStyle(Calendar.Style.STYLE4);
+        serviceDemandedCalendar.setStyle(Calendar.Style.STYLE5);
+        equipmentDemandedCalendar.setStyle(Calendar.Style.STYLE6);
 
         // Ajout des calendriers à la vue
         CalendarSource myCalendarSource = new CalendarSource("Ma Source");
@@ -64,9 +76,25 @@ public class PlanningController {
         evenement.setLocation(offer.getDescription());
 
         if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
-            serviceOfferedCalendar.addEntry(evenement);
+            if (offer.getEstPris().equals(null)) {
+                serviceNoneOfferedCalendar.addEntry(evenement);
+            } else {
+                if (offer.getOwnerName().equal(currentUser.getName())) {
+                    serviceOfferedCalendar.addEntry(evenement);
+                } else {
+                    serviceDemandedCalendar.addEntry(evenement);
+                }
+            }
         } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
-            equipmentOfferedCalendar.addEntry(evenement);
+            if (offer.getEstPris().equals(null)) {
+                equipmentNoneOfferedCalendar.addEntry(evenement);
+            } else {
+                if (offer.getOwnerName().equal(currentUser.getName())) {
+                    equipmentOfferedCalendar.addEntry(evenement);
+                } else {
+                    equipmentDemandedCalendar.addEntry(evenement);
+                }
+            }
         }
     }
 
