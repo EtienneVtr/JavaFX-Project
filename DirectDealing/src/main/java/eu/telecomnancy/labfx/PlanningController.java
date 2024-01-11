@@ -55,16 +55,17 @@ public class PlanningController {
         AddEventToCalendar();
     }
 
-    public void ajouterEvenement(LocalDate date, LocalTime heureDebut, LocalTime heureFin, String nomEvenement, CombinedOffer.OfferType type) {
-        Entry<String> evenement = new Entry<>(nomEvenement);
-        evenement.changeStartDate(date);
+    public void ajouterEvenement(LocalDate dateDebut, LocalDate dateFin, LocalTime heureDebut, LocalTime heureFin, CombinedOffer offer) {
+        Entry<String> evenement = new Entry<>(offer.getTitle());
+        evenement.changeStartDate(dateDebut);
         evenement.changeStartTime(heureDebut);
-        evenement.changeEndDate(date);
+        evenement.changeEndDate(dateFin);
         evenement.changeEndTime(heureFin);
+        evenement.setLocation(offer.getDescription());
 
-        if (type == CombinedOffer.OfferType.SERVICE_OFFER) {
+        if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
             serviceOfferedCalendar.addEntry(evenement);
-        } else if (type == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
+        } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
             equipmentOfferedCalendar.addEntry(evenement);
         }
     }
@@ -81,16 +82,11 @@ public class PlanningController {
 
     private void handleOffer(CombinedOffer offer) {
         if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
-            LocalDate date = offer.getDate();
-            LocalTime startTime = offer.getTime();
-            LocalTime endTime = startTime.plusHours(1); // Heure de fin
-            ajouterEvenement(date, startTime, endTime, offer.getTitle(), offer.getType());
+
+            ajouterEvenement(offer.getDate(), offer.getDate(), offer.getTime(), LocalTime.of(23, 59),  offer);
         } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
-            LocalDate startDate = offer.getStartAvailability();
-            LocalDate endDate = offer.getEndAvailability();
-            LocalTime startTime = LocalTime.of(9, 0);
-            LocalTime endTime = LocalTime.of(17, 0);
-            ajouterEvenement(startDate, startTime, endTime, offer.getTitle(), offer.getType());
+;
+            ajouterEvenement(offer.getStartAvailability(), offer.getEndAvailability(), LocalTime.of(7, 00), LocalTime.of(23, 59), offer);
         }
     }
 }
