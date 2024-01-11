@@ -36,9 +36,10 @@ public class ServiceOfferController {
     private void displayOfferInfo() {
         title.setText("Titre : " + service_offer.getTitle());
         description.setText("Description : " + service_offer.getDescription());
-        String startDateString = service_offer.getDate() != null ? service_offer.getDate().toString() : "Pas de date renseigné";
+        String startDateString = service_offer.getStart() != null ? service_offer.getStart().toString() : "Pas de date renseigné";
+        String endDateString = service_offer.getEnd() != null ? service_offer.getEnd().toString() : "Pas de date renseigné";
         String time = service_offer.getTime() != null ? service_offer.getTime().toString() : "Pas d'heure renseigné";
-        date.setText("Date : " + startDateString + " / " + time);
+        date.setText("Date : " + startDateString + " to " + endDateString + " at " + time);
         recurrency.setText("Récurrence : " + service_offer.getRecurrency() + " jours par semaine" + "(" + service_offer.getDaysOfService() + ")");
         price.setText("Coût en florains : " + service_offer.getPrice());
     }

@@ -81,13 +81,13 @@ public class PlanningController {
 
     private void handleOffer(CombinedOffer offer) {
         if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
-            LocalDate date = offer.getDate();
+            LocalDate date = offer.getStart();
             LocalTime startTime = offer.getTime();
             LocalTime endTime = startTime.plusHours(1); // Heure de fin
             ajouterEvenement(date, startTime, endTime, offer.getTitle(), offer.getType());
         } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
-            LocalDate startDate = offer.getStartAvailability();
-            LocalDate endDate = offer.getEndAvailability();
+            LocalDate startDate = offer.getStart();
+            LocalDate endDate = offer.getEnd();
             LocalTime startTime = LocalTime.of(9, 0);
             LocalTime endTime = LocalTime.of(17, 0);
             ajouterEvenement(startDate, startTime, endTime, offer.getTitle(), offer.getType());

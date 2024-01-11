@@ -70,7 +70,8 @@ public class DataBase {
                             "supplier_mail TEXT NOT NULL, " +
                             "title TEXT NOT NULL, " +
                             "description TEXT, " +
-                            "date TEXT, " +
+                            "start TEXT, " +
+                            "end TEXT, " +
                             "time TEXT, " +
                             "is_recurrent BOOLEAN, " +
                             "days_of_service TEXT, " +
