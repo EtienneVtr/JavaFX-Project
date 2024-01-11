@@ -45,6 +45,33 @@ public class DataBase {
                              "note REAL)";
             stmt.execute(sqlProfil);
 
+            // Ajout de admin dans la table "profil" si elle n'existe pas
+            String emailToCheck = "admin"; // L'e-mail que tu veux vérifier
+            // Préparer une requête SQL pour vérifier si l'e-mail existe déjà
+            String sqlCheck = "SELECT COUNT(*) FROM profil WHERE mail = ?";
+            try (PreparedStatement checkStmt = conn.prepareStatement(sqlCheck)) {
+                checkStmt.setString(1, emailToCheck);
+
+                // Exécuter la requête et obtenir le résultat
+                ResultSet resultSet = checkStmt.executeQuery();
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+
+                    // Vérifier si l'e-mail existe déjà
+                    if (count == 0) {
+                        // L'e-mail n'existe pas, exécuter la requête d'insertion
+                        String sqlAdmin = "INSERT INTO profil (prenom, nom, pseudo, mail, phone, password, localisation, date_inscription, status_compte, etat_compte, nb_florain, historique_florain, note) " +
+                                        "VALUES ('admin', 'admin', 'admin', 'admin', '0000000000', 'admin', 'Paris', ?, NULL, 'actif', 10000, NULL, 5)";
+                        try (PreparedStatement insertStmt = conn.prepareStatement(sqlAdmin)) {
+                            insertStmt.setDate(1, new java.sql.Date(System.currentTimeMillis())); // Remplacer par la date actuelle
+                            insertStmt.execute();
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
             // Création de la table "equipement" si elle n'existe pas
             String sqlEquipement = "CREATE TABLE IF NOT EXISTS equipement (" +
                             "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
