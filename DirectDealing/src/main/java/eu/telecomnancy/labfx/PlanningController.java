@@ -50,7 +50,7 @@ public class PlanningController {
 
         // Ajout des calendriers à la vue
         CalendarSource myCalendarSource = new CalendarSource("Ma Source");
-        myCalendarSource.getCalendars().addAll(serviceOfferedCalendar, equipmentOfferedCalendar);
+        myCalendarSource.getCalendars().addAll(serviceOfferedCalendar, equipmentOfferedCalendar, serviceNoneOfferedCalendar, equipmentNoneOfferedCalendar, serviceDemandedCalendar, equipmentDemandedCalendar);
         planningCalendar.getCalendarSources().add(myCalendarSource);
 
         // on set le calendrier en mois de base
@@ -62,6 +62,10 @@ public class PlanningController {
         // Définir les calendriers en lecture seule
         serviceOfferedCalendar.setReadOnly(true);
         equipmentOfferedCalendar.setReadOnly(true);
+        serviceNoneOfferedCalendar.setReadOnly(true);
+        equipmentNoneOfferedCalendar.setReadOnly(true);
+        serviceDemandedCalendar.setReadOnly(true);
+        equipmentDemandedCalendar.setReadOnly(true);
 
         
         AddEventToCalendar();
@@ -69,6 +73,19 @@ public class PlanningController {
 
     public void ajouterEvenement(LocalDate dateDebut, LocalDate dateFin, LocalTime heureDebut, LocalTime heureFin, CombinedOffer offer) {
         Entry<String> evenement = new Entry<>(offer.getTitle());
+        if(dateDebut == null) {
+            dateDebut = LocalDate.now();
+        }
+        if(dateFin == null) {
+            dateFin = dateDebut;
+        }
+        if(heureDebut == null) {
+            heureDebut = LocalTime.of(0, 0);
+        }
+        if(heureFin == null) {
+            heureFin = LocalTime.of(23, 59);
+        }
+
         evenement.changeStartDate(dateDebut);
         evenement.changeStartTime(heureDebut);
         evenement.changeEndDate(dateFin);
@@ -77,22 +94,28 @@ public class PlanningController {
         if (dateDebut != null) {
 
             if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
-                if (offer.getEstPris() == null) { // Changed to '== null'
+                if (offer.getEstPris() == null) { 
+                    // on est dans le cas d un service de user offre mais qui n'a pas encore été réservé
                     serviceNoneOfferedCalendar.addEntry(evenement);
                 } else {
                     if (offer.getOwnerName() != null && offer.getOwnerName().equals(currentUser.getMail())) {
+                        // dans ce cas on a un service réservé et proposé par user
                         serviceOfferedCalendar.addEntry(evenement);
                     } else {
+                        // dans ce cas la c'est alors user qui à réserver le service
                         serviceDemandedCalendar.addEntry(evenement);
                     }
                 }
             } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
-                if (offer.getEstPris() == null) { // Changed to '== null'
+                if (offer.getEstPris() == null) { 
+                    // on est dans le cas d un équipement de user offre mais qui n'a pas encore été réservé
                     equipmentNoneOfferedCalendar.addEntry(evenement);
                 } else {
-                    if (offer.getOwnerName() != null && offer.getOwnerName().equals(currentUser.getMail())) { // Added null check
+                    if (offer.getOwnerName() != null && offer.getOwnerName().equals(currentUser.getMail())) { 
+                        // dans ce cas on a un équipement réservé et proposé par user
                         equipmentOfferedCalendar.addEntry(evenement);
                     } else {
+                        // dans ce cas la c'est alors user qui à réserver l'équipement
                         equipmentDemandedCalendar.addEntry(evenement);
                     }
                 }
