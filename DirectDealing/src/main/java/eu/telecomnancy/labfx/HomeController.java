@@ -67,24 +67,17 @@ public class HomeController {
     
         ArrayList<CombinedOffer> all_offers = new ArrayList<>();
     
-        // Seuil de distance pour filtrer les offres
-        double distanceThreshold = 100000000.0; // 100 km
-    
         // Ajouter les offres d'équipement après les avoir filtrées
         if(all_equipment != null){
             for(EquipmentOffer equipment : all_equipment){
-                if (currentUser.calculateDistanceTo(equipment.getOwner()) <= distanceThreshold) {
-                    all_offers.add(new CombinedOffer(equipment));
-                }
+                if(equipment.getOwner().getEtatCompte().equals("actif")){all_offers.add(new CombinedOffer(equipment));}
             }
         }
     
         // Ajouter les offres de service après les avoir filtrées
         if(all_service != null){
             for(ServiceOffer service : all_service){
-                if (currentUser.calculateDistanceTo(service.getSupplier()) <= distanceThreshold) {
-                    all_offers.add(new CombinedOffer(service));
-                }
+                if(service.getSupplier().getEtatCompte().equals("actif")){all_offers.add(new CombinedOffer(service));}
             }
         }
     
