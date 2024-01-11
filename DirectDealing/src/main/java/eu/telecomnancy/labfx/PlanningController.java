@@ -72,6 +72,7 @@ public class PlanningController {
     }
 
     public void ajouterEvenement(LocalDate dateDebut, LocalDate dateFin, LocalTime heureDebut, LocalTime heureFin, CombinedOffer offer) {
+        System.out.println("ajouterEvenement");
         Entry<String> evenement = new Entry<>(offer.getTitle());
         if(dateDebut == null) {
             dateDebut = LocalDate.now();
@@ -125,6 +126,7 @@ public class PlanningController {
 
     private void AddEventToCalendar() {
         // Vérifiez que les méthodes getMyOffer() et getMyDemand() existent dans la classe Planning
+        System.out.println("planning.getMyOffer()");
         for (CombinedOffer offer : planning.getMyOffer()) {
             handleOffer(offer);
         }
@@ -134,12 +136,13 @@ public class PlanningController {
     }
 
     private void handleOffer(CombinedOffer offer) {
+        System.out.println("offer.getType()" );
         if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
 
-            ajouterEvenement(offer.getDate(), offer.getDate(), offer.getTime(), LocalTime.of(23, 59),  offer);
+            ajouterEvenement(offer.getStart(), offer.getEnd(), offer.getTime(), LocalTime.of(23, 59),  offer);
         } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
 ;
-            ajouterEvenement(offer.getStartAvailability(), offer.getEndAvailability(), LocalTime.of(7, 00), LocalTime.of(23, 59), offer);
+            ajouterEvenement(offer.getStart(), offer.getEnd(), LocalTime.of(7, 00), LocalTime.of(23, 59), offer);
         }
     }
 }
