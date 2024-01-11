@@ -402,8 +402,7 @@ public class EquipmentOffer {
             sql += " AND price <= ?";
         }
 
-        System.out.println(sql);
-    
+        
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
     

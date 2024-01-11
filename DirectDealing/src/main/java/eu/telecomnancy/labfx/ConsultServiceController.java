@@ -92,6 +92,7 @@ public class ConsultServiceController {
         Integer maxPrice = null;
         String timeMin = timeMinInput.getText();
         String timeMax = timeMaxInput.getText();
+        double selectedRadius = radius.getValue();
     
         try {
             if (!priceMin.getText().isEmpty()) {
@@ -107,7 +108,7 @@ public class ConsultServiceController {
         // Vérifiez que les formats d'heure sont valides ou gérez les exceptions comme vous le souhaitez
     
         // Appeler une méthode pour effectuer la recherche dans la base de données
-        List<ServiceOffer> searchResults = ServiceOffer.searchOffers(currentUser, keywordText, startDate, endDate, minPrice, maxPrice, timeMin, timeMax);
+        List<ServiceOffer> searchResults = ServiceOffer.searchOffers(currentUser, keywordText, startDate, endDate, minPrice, maxPrice, timeMin, timeMax, selectedRadius);
 
         // Mettre à jour le TableView avec les résultats
         results.setItems(FXCollections.observableArrayList(searchResults));

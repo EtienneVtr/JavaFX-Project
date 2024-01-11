@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 // Description: Classe représentant une offre de service. Elle contient un titre, une description, une date et une heure.
 //              Elle peut être récurrente, auquel cas on lui ajoute un tableau de jours de la semaine où le service doit être réalisé.$
@@ -66,6 +67,17 @@ public class ServiceOffer {
         this.start = LocalDate.parse(start);
         this.estPris = estPris;
         loadServiceFromDBHome();
+    }
+
+    public ServiceOffer(String supplier_mail, String title, String description, LocalDate start, LocalDate end, LocalTime time, int price, String estPris){
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        this.title = title;
+        this.description = description;
+        this.start = start;
+        this.end = end;
+        this.time = time;
+        this.price = price;
     }
 
     public ServiceOffer(User supplier, String title, String description, LocalDate start, LocalDate end, LocalTime time, boolean isRecurrent, String daysOfService, int price) {
@@ -347,28 +359,27 @@ public class ServiceOffer {
     
         return true;
     }
-    public static List<ServiceOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end, Integer minPrice, Integer maxPrice, String timeMin, String timeMax) {
-        System.out.println("Recherche d'offres de service");
+    public static List<ServiceOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end, Integer minPrice, Integer maxPrice, String timeMin, String timeMax, double radius) {
+        System.out.println("Début de la recherche des offres avec un rayon de " + radius + " km et les mots clés " + keywords + " et les dates " + begin + " " + end + " et les prix " + minPrice + " " + maxPrice);
+    
         List<ServiceOffer> offers = new ArrayList<>();
     
         // Construction de la requête SQL avec les filtres nécessaires
-        String sql = "SELECT id, supplier_mail, title, description, date, time, price, estPris FROM service_offers WHERE estPris IS NULL";
+        String sql = "SELECT id, supplier_mail, title, description, start, end, time, price, estPris FROM service_offers WHERE estPris IS NULL";
     
         if (!keywords.isEmpty()) {
             sql += " AND title LIKE ?";
         }
-        if (begin != null || end != null) {
-            sql += " AND (date IS NULL OR";
-            if (begin != null) {
-                sql += " date >= ?";
-            }
-            if (end != null) {
-                if (begin != null) {
-                    sql += " AND";
-                }
-                sql += " date <= ?";
-            }
-            sql += ")";
+        if (begin != null && end != null) {
+            // Les offres doivent être disponibles pour toute la période demandée
+            sql += " AND (start <= ? AND end >= ?)";
+        
+        } else if (begin != null) {
+            // Les offres doivent commencer au plus tard à la date de début
+            sql += " AND (start <= ?)";
+        } else if (end != null) {
+            // Les offres doivent se terminer au plus tôt à la date de fin
+            sql += " AND (end >= ?)";
         }
         if (minPrice != null) {
             sql += " AND price >= ?";
@@ -424,6 +435,7 @@ public class ServiceOffer {
                         serviceEnd,
                         time,
                         rs.getInt("price")
+
                     );
                     offers.add(offer);
                 }
@@ -434,7 +446,19 @@ public class ServiceOffer {
         for (ServiceOffer offer : offers) {
             System.out.println("id: " + offer.getId() + " title: " + offer.getTitle() + " description: " + offer.getDescription() + " start: " + offer.getStart() + " end: " + offer.getEnd() + " time: " + offer.getTime() + " isRecurrent: " + offer.getIsRecurrent() + " repetitionDay: " + offer.getDaysOfService() + " price: " + offer.getPrice() + " nb recurrence: " + offer.getRecurrency() + " supplier mail: " + offer.getSupplierMail() + " est pris: " + offer.getEstPris());
         }
-        return offers;
+// Filtrer les offres par rayon
+        return offers.stream()
+            .filter(offer -> isWithinRadius(currentUser, offer.getSupplier(), radius))
+            .collect(Collectors.toList());
+ 
+    }
+
+    private static boolean isWithinRadius(User currentUser, User offerOwner, double radius) {
+        // Calcul de la distance entre l'utilisateur actuel et le propriétaire de l'offre
+        double distance = currentUser.calculateDistanceTo(offerOwner);
+    
+        // Vérifiez si la distance est inférieure ou égale au rayon spécifié
+        return distance <= radius;
     }
     
     
