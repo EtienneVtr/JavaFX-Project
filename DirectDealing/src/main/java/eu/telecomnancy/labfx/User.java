@@ -8,6 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 
 
 public class User {
@@ -212,7 +216,60 @@ public class User {
         this.note = note;
     }
     
+    public double calculateDistanceTo(User otherUser) {
+        double[] thisLocation = getCoordinates(this.localisation);
+        double[] otherLocation = getCoordinates(otherUser.getLocalisation());
+    
+        double distance = haversine(thisLocation[0], thisLocation[1], otherLocation[0], otherLocation[1]);
+        System.out.println("Calcul de la distance entre " + this.localisation + " (" + thisLocation[0] + ", " + thisLocation[1] + ") et " + otherUser.getLocalisation() + " (" + otherLocation[0] + ", " + otherLocation[1] + ") : " + distance + " km");
+        //print user city and other user city
+        return distance;
+    }
     
 
+    // Méthode pour obtenir les coordonnées (latitude, longitude) d'une localisation
+    private double[] getCoordinates(String cityName) {
+        String line;
+        String csvFile = "src/main/resources/eu/telecomnancy/labfx/cities.csv"; // Chemin vers votre fichier CSV
     
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            while ((line = br.readLine()) != null) {
+                String[] cityData = line.split(",");
+    
+                if (cityData[0].equals("id")) {
+                    continue; // Ignorer l'en-tête
+                }
+    
+                // Vérifier si le nom de la ville correspond (en tenant compte des guillemets)
+                String cityInCsv = cityData[4].replace("\"", ""); // Retirer les guillemets
+                if (cityInCsv.equalsIgnoreCase(cityName)) {
+                    double latitude = Double.parseDouble(cityData[6]);
+                    double longitude = Double.parseDouble(cityData[7]);
+                    return new double[]{latitude, longitude};
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la lecture du fichier CSV : " + e.getMessage());
+            e.printStackTrace();
+        }
+        return new double[]{0.0, 0.0}; // Retourner une valeur par défaut en cas d'échec
+    }
+    
+    
+
+    // Méthode Haversine pour calculer la distance entre deux points GPS
+    private double haversine(double lat1, double lon1, double lat2, double lon2) {
+        final int EARTH_RADIUS = 6371; // Rayon de la Terre en kilomètres
+
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        lat1 = Math.toRadians(lat1);
+        lat2 = Math.toRadians(lat2);
+
+        double a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        return EARTH_RADIUS * c;
+    }
 }
+
+    

@@ -5,6 +5,8 @@ module eu.telecomnancy.labfx {
     requires com.calendarfx.view;
 
 
+    requires org.slf4j;
+
     opens eu.telecomnancy.labfx to javafx.fxml;
     exports eu.telecomnancy.labfx;
 }
