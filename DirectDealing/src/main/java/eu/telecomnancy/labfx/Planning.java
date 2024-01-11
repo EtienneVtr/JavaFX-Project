@@ -8,11 +8,12 @@ import java.sql.SQLException;
 
 public class Planning {
     private User user;
-    private ArrayList<CombinedOffer> my_offer; // les offres que j'ai publié et qui sont resrvées
-    private ArrayList<CombinedOffer> my_demand; // les offres que d'autres ont publié et que j'ai réservé
+    private ArrayList<CombinedOffer> my_offer; // Les offres que j'ai publiées et qui sont réservées
+    private ArrayList<CombinedOffer> my_demand; // Les offres que d'autres ont publiées et que j'ai réservées
 
-    public Planning() {
-        this.user = Main.getCurrentUser();
+
+    public Planning(User user) {
+        this.user = user;
         this.my_offer = new ArrayList<>();
         this.my_demand = new ArrayList<>();
         update();
@@ -22,13 +23,13 @@ public class Planning {
         String sql_equipment = "SELECT owner_mail, name, description, estPris FROM equipement WHERE owner_mail = ? OR estPris = ?";
 
         try (Connection conn = DataBase.getConnection();
-        PreparedStatement pstmt = conn.prepareStatement(sql_equipment)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql_equipment)) {
             pstmt.setString(1, user.getMail());
             pstmt.setString(2, user.getMail());
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                if(rs.getString("estPris") == null){
+                if (rs.getString("estPris") == null) {
                     continue;
                 }
 
@@ -36,11 +37,13 @@ public class Planning {
                 String name = rs.getString("name");
                 String description = rs.getString("description");
                 EquipmentOffer equipment = new EquipmentOffer(ownerMail, name, description);
-                
-                if(rs.getString("estPris") != null && ownerMail.equals(user.getMail())){ // si l'offre est prise et que je suis le propriétaire alors je l'ajoute à mes offres
+
+                if (rs.getString("estPris") != null && ownerMail.equals(user.getMail())) {
+                    // Si l'offre est prise et que je suis le propriétaire, je l'ajoute à mes offres
                     my_offer.add(new CombinedOffer(equipment));
-                }else if (rs.getString("estPris").equals(user.getMail())){ // si l'offre est prise et que je suis le client alors je l'ajoute à mes demandes
-                    my_demand.add(new CombinedOffer(equipment));                    
+                } else if (rs.getString("estPris").equals(user.getMail())) {
+                    // Si l'offre est prise et que je suis le client, je l'ajoute à mes demandes
+                    my_demand.add(new CombinedOffer(equipment));
                 }
             }
         } catch (SQLException e) {
@@ -50,13 +53,13 @@ public class Planning {
         String sql_service = "SELECT supplier_mail, title, description, estPris FROM service_offers WHERE supplier_mail = ? OR estPris = ?";
 
         try (Connection conn = DataBase.getConnection();
-        PreparedStatement pstmt = conn.prepareStatement(sql_service)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql_service)) {
             pstmt.setString(1, user.getMail());
             pstmt.setString(2, user.getMail());
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                if(rs.getString("estPris") == null){
+                if (rs.getString("estPris") == null) {
                     continue;
                 }
 
@@ -64,11 +67,13 @@ public class Planning {
                 String title = rs.getString("title");
                 String description = rs.getString("description");
                 ServiceOffer service = new ServiceOffer(supplierMail, title, description);
-                
-                if(rs.getString("estPris") != null && supplierMail.equals(user.getMail())){ // si l'offre est prise et que je suis le propriétaire alors je l'ajoute à mes offres
+
+                if (rs.getString("estPris") != null && supplierMail.equals(user.getMail())) {
+                    // Si l'offre est prise et que je suis le propriétaire, je l'ajoute à mes offres
                     my_offer.add(new CombinedOffer(service));
-                }else if (rs.getString("estPris").equals(user.getMail())){ // si l'offre est prise et que je suis le client alors je l'ajoute à mes demandes
-                    my_demand.add(new CombinedOffer(service));                    
+                } else if (rs.getString("estPris").equals(user.getMail())) {
+                    // Si l'offre est prise et que je suis le client, je l'ajoute à mes demandes
+                    my_demand.add(new CombinedOffer(service));
                 }
             }
         } catch (SQLException e) {
@@ -76,17 +81,15 @@ public class Planning {
         }
     }
 
-    public void printMyOffer() {
-        System.out.println("Mes offres :");
-        for (CombinedOffer offer : my_offer) {
-            System.out.println("    Title : " + offer.getTitle() + " | Owner : " + offer.getOwnerName() + " | Type : " + offer.getTypeString() + " | EstPris : " + offer.getEstPris());
-        }
+    public ArrayList<CombinedOffer> getMyOffer() {
+        return my_offer;
     }
 
-    public void printMyDemand() {
-        System.out.println("Mes demandes :");
-        for (CombinedOffer offer : my_demand) {
-            System.out.println("    Title : " + offer.getTitle() + " | Owner : " + offer.getOwnerName() + " | Type : " + offer.getTypeString() + " | EstPris : " + offer.getEstPris());
-        }
+    public ArrayList<CombinedOffer> getMyDemand() {
+        return my_demand;
     }
+
+
+
 }
+
