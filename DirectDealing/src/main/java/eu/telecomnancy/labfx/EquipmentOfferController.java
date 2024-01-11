@@ -110,7 +110,16 @@ public class EquipmentOfferController {
     }
 
     @FXML public void handleContact(){
-        System.out.println("Contact !");
+        System.out.println("Lancement d'une conversation avec le propriétaire de l'offre");
+    
+        // Obtenir le pseudo du fournisseur
+        String supplierPseudo = currentOffer.getOwner().getPseudo();
+    
+        // Passer le pseudo du fournisseur au SkeletonController
+        skeleton_controller.setSupplierForMessaging(supplierPseudo);
+    
+        // Charger la page de messagerie
+        skeleton_controller.loadMessageriePage();
     }
 
     @FXML public void cancel(){

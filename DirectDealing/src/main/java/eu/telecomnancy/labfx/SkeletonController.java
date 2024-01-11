@@ -11,28 +11,27 @@ import java.io.IOException;
 public class SkeletonController {
 
     public MainController main_controller;
+    private User currentUser;
+    private String supplierForMessaging;
 
     public void setMainController(MainController main_controller) {
         this.main_controller = main_controller;
     }
+    public void setSupplierForMessaging(String pseudo) {
+        this.supplierForMessaging = pseudo;
+    }
 
-    @FXML
+    @FXML private SplitPane skeletonContent;
 
-    private SplitPane skeletonContent;
-
-    @FXML
-    private VBox menuContent;
+    @FXML private VBox menuContent;
 
     @FXML private ProfileController profil_controller;
 
-    @FXML
-    private VBox profileContent;
+    @FXML private VBox profileContent;
 
-    @FXML
-    private VBox mainContent;
+    @FXML private VBox mainContent;
 
 
-    private User currentUser;
 
 
     public void initialize(){
@@ -294,18 +293,21 @@ public class SkeletonController {
     }
 
     // Fonction qui permet de charger la page de la messagerie
-    public void loadMessageriePage(){
+    public void loadMessageriePage() {
         try {
             System.out.println("Chargement de la page messagerie");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Messagerie.fxml"));
             Parent messagerie = loader.load();
-
+    
             MessagerieController messagerie_controller = loader.getController();
             messagerie_controller.setSkeletonController(this);
-
-            // Ajouter la page d'inscription à la scène
+    
+            // Passer le pseudo du fournisseur à MessagerieController
+            messagerie_controller.setInitialContact(supplierForMessaging);
+            messagerie_controller.initializeListContact();
+            supplierForMessaging = null; // Réinitialiser la variable après utilisation
+    
             mainContent.getChildren().setAll(messagerie);
-            
         } catch (IOException e) {
             e.printStackTrace();
         }

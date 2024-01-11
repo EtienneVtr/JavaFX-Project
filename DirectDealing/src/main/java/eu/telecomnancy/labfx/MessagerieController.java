@@ -37,6 +37,8 @@ public class MessagerieController {
     private ArrayList<Conversation> allConversations;
     private ObservableList<String> listOfContacts;
     private ArrayList<Message> listOfCurrentMessages;
+    private String initialContact;
+
 
 
     @FXML private ListView<String> listContact;
@@ -51,8 +53,16 @@ public class MessagerieController {
         this.skeleton_controller = skeleton_controller;
     }
 
+    public void setInitialContact(String contactPseudo) {
+        this.initialContact = contactPseudo;
+    }
+
     public void initialize() {
         currentUser = Main.getCurrentUser();
+        
+    }
+
+    public void initializeListContact() {
         loadConversations();
         listContact.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -62,6 +72,20 @@ public class MessagerieController {
                 }
             }
         });
+
+        if (initialContact != null && !initialContact.isEmpty()) {
+            // Créer une conversation avec le contact initial
+            createConversationWith(initialContact);
+            listContact.getSelectionModel().select(initialContact);
+            setCurrentConversation(initialContact);
+            initialContact = null; // Réinitialiser après utilisation
+        }
+        else {
+            // Sélectionner le premier contact par défaut
+            listContact.getSelectionModel().selectFirst();
+            setCurrentConversation(listContact.getSelectionModel().getSelectedItem());
+        }
+    
     }
 
     //Accès à la dataBase
