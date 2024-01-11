@@ -79,6 +79,14 @@ public class EquipmentOffer {
         createNewOffer();
     }
 
+    public LocalDate getStart(){
+        return start_availability;
+    }
+
+    public LocalDate getEnd(){
+        return end_availability;
+    }
+
 
     public void createNewOffer() {
               System.out.println("Début de la recherche des offres.création");
@@ -285,67 +293,95 @@ public class EquipmentOffer {
         }
     }
 
-    public boolean reserveOffer(EquipmentOffer offer, String currentUserEmail, LocalDate begin, LocalDate end){
+    public boolean reserveOffer(EquipmentOffer offer, String currentUserEmail, LocalDate begin, LocalDate end) {
         Connection conn = null;
         try {
             conn = DataBase.getConnection();
             conn.setAutoCommit(false); // Démarrer une transaction
-    
+
             // Vérifier si l'offre est déjà réservée
-            String sql = "SELECT estPris FROM equipement WHERE id = ?";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setInt(1, offer.getId());
-                ResultSet rs = pstmt.executeQuery();
+            String sqlCheck = "SELECT estPris FROM equipement WHERE id = ?";
+            try (PreparedStatement pstmtCheck = conn.prepareStatement(sqlCheck)) {
+                pstmtCheck.setInt(1, offer.getId());
+                ResultSet rs = pstmtCheck.executeQuery();
                 if (rs.next() && rs.getString("estPris") != null) {
                     System.out.println("Cette offre a déjà été réservée");
-                    conn.rollback();
                     return false;
                 }
             }
-    
+
             // Mettre à jour les florains
             if (!updateFlorains(conn, currentUserEmail, offer.getMail(), offer.getPrice())) {
                 conn.rollback();
                 return false;
             }
 
+            // Traitement de la réservation
+            String sqlUpdate = "UPDATE equipement SET estPris = ?, book_begin = ?, book_end = ? WHERE id = ?";
+            try (PreparedStatement pstmtUpdate = conn.prepareStatement(sqlUpdate)) {
+                pstmtUpdate.setString(1, currentUserEmail);
+                pstmtUpdate.setString(2, begin.toString());
+                pstmtUpdate.setString(3, end.toString());
+                pstmtUpdate.setInt(4, offer.getId());
+                pstmtUpdate.executeUpdate();
+            }
 
-            String ownerMail ;
-            int id;
-            String name;
-            String description;
-            LocalDate startAvailability;
-            LocalDate endAvailability;
-            int price;
-
-
-
-            // on commence par récupérer les infos de l'offre en java 
-            String sql2 = "SELECT * FROM equipement WHERE id = ?";
-            try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-                pstmt.setInt(1, offer.getId());
-                ResultSet rs = pstmt.executeQuery();
-                if (rs.next()) {
-                    String ownerMail = rs.getString("owner_mail");
-                    int id = rs.getInt("id");
-                    String name = rs.getString("name");
-                    String description = rs.getString("description");
-                    int quantity = rs.getInt("quantity");
-                    LocalDate startAvailability = rs.getDate("start_availability").toLocalDate();
-                    LocalDate endAvailability = rs.getDate("end_availability").toLocalDate();
-                    int price = rs.getInt("price");
-
+            // Insertion de nouvelles offres si nécessaire
+            if (!begin.equals(offer.getStart()) || !end.equals(offer.getEnd())) {
+                String sqlInsert = "INSERT INTO equipement (owner_mail, name, description, quantity, start_availability, end_availability, price, estPris, book_begin, book_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                if (!begin.equals(offer.getStart())) {
+                    try (PreparedStatement pstmtInsert = conn.prepareStatement(sqlInsert)) {
+                        pstmtInsert.setString(1, offer.getMail());
+                        pstmtInsert.setString(2, offer.getName());
+                        pstmtInsert.setString(3, offer.getDescription());
+                        pstmtInsert.setInt(4, offer.getQuantity());
+                        pstmtInsert.setString(5, offer.getStart().toString());
+                        pstmtInsert.setString(6, begin.minusDays(1).toString());
+                        pstmtInsert.setInt(7, offer.getPrice());
+                        pstmtInsert.setString(8, null);
+                        pstmtInsert.setString(9, null);
+                        pstmtInsert.setString(10, null);
+                        pstmtInsert.executeUpdate();
+                    }
+                }
+                if (!end.equals(offer.getEnd())) {
+                    try (PreparedStatement pstmtInsert = conn.prepareStatement(sqlInsert)) {
+                        pstmtInsert.setString(1, offer.getMail());
+                        pstmtInsert.setString(2, offer.getName());
+                        pstmtInsert.setString(3, offer.getDescription());
+                        pstmtInsert.setInt(4, offer.getQuantity());
+                        pstmtInsert.setString(5, end.plusDays(1).toString());
+                        pstmtInsert.setString(6, offer.getEnd().toString());
+                        pstmtInsert.setInt(7, offer.getPrice());
+                        pstmtInsert.setString(8, null);
+                        pstmtInsert.setString(9, null);
+                        pstmtInsert.setString(10, null);
+                        pstmtInsert.executeUpdate();
+                    }
                 }
             }
 
-            // si la réservation couvre toute la plage et
-
-
-
-
-
-    
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public boolean updateFlorains(Connection conn, String buyerEmail, String sellerEmail, int price) throws SQLException {
