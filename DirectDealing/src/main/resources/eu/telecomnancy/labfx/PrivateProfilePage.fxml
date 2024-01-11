@@ -8,93 +8,180 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="785.0" prefWidth="602.0" spacing="6.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.PrivateProfileController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="785.0" prefWidth="731.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.PrivateProfileController">
     <children>
-        <!-- Section Photo de Profil -->
-        <HBox prefHeight="70.0" prefWidth="402.0">
+        
+        <HBox alignment="CENTER" prefHeight="70.0" prefWidth="402.0">
          <children>
-            <VBox alignment="BOTTOM_LEFT" prefHeight="70.0" prefWidth="368.0">
-               <children>
-                  <Label text="Label" />
-               </children>
-            </VBox>
-            <VBox alignment="BOTTOM_RIGHT" prefHeight="200.0" prefWidth="100.0">
-               <children>
-                  <ImageView fx:id="photoProfil" fitHeight="53.0" fitWidth="77.0" onMouseClicked="#onPhotoProfilClicked" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </VBox>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Modification de votre profil" textAlignment="CENTER">
+               <font>
+                  <Font size="28.0" />
+               </font>
+            </Text>
          </children></HBox>
         <Separator />
-        <HBox prefHeight="30.0" prefWidth="600.0">
-            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
-                <Label text="pseudo" />
-                <TextField fx:id="pseudo" text="Pseudo" />
-            </VBox>
-        </HBox>
-        <!-- Section Prénom -->
-        <HBox prefHeight="30.0" prefWidth="600.0">
-            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
-                <Label text="prénom" />
-                <TextField fx:id="prenom" text="Prénom" />
-            </VBox>
-        </HBox>
-        <!-- Section Nom -->
-        <HBox prefHeight="30.0" prefWidth="600.0">
-            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
-                <Label text="nom" />
-                <TextField fx:id="nom" text="Nom" />
-            </VBox>
-        </HBox>
-        <!-- Section Téléphone -->
-        <HBox prefHeight="30.0" prefWidth="600.0">
-            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
-                <Label text="numéro de téléphone" />
-                <TextField fx:id="phone" text="phone" />
-            </VBox>
-        </HBox>
-        <!-- Section Localisation -->
-        <HBox prefHeight="30.0" prefWidth="600.0">
-            <VBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="422.0">
-                <Label text="localisation" />
-                <TextField fx:id="localisation" text="localisation" />
-            </VBox>
-        </HBox>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <VBox alignment="TOP_RIGHT" prefHeight="205.0" prefWidth="226.0" spacing="24.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Pseudo:">
+                           <font>
+                              <Font name="Ubuntu" size="18.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nom:">
+                           <font>
+                              <Font name="Ubuntu" size="18.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Prénom:">
+                           <font>
+                              <Font name="Ubuntu" size="18.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Numéro de téléphone:">
+                           <font>
+                              <Font name="Ubuntu" size="18.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Ville:">
+                           <font>
+                              <Font name="Ubuntu" size="18.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="205.0" prefWidth="284.0" spacing="10.0">
+                     <children>
+                        <TextField fx:id="pseudo" alignment="CENTER" promptText="Nouveau pseudo">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="nom" alignment="CENTER" promptText="Nouveau nom">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="prenom" alignment="CENTER" promptText="Nouveau prénom">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="phone" alignment="CENTER" promptText="Nouveau numéro">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="localisation" alignment="CENTER" promptText="Nouvelle ville">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <ImageView fx:id="photoProfil" fitHeight="100.0" fitWidth="100.0" onMouseClicked="#onPhotoProfilClicked" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </VBox>
         <!-- Section Bouton Appliquer -->
-        <HBox alignment="CENTER_LEFT" prefHeight="43.0" prefWidth="402.0">
-            <Button fx:id="appliquer" mnemonicParsing="false" onAction="#handleSaveButtonAction" text="*" />
-            <Label text="Appliquer les changements" />
+        <HBox alignment="CENTER" prefHeight="43.0" prefWidth="402.0">
+            <Button fx:id="appliquer" mnemonicParsing="false" onAction="#handleSaveButtonAction" text="Valider les modifcations">
+            <font>
+               <Font size="18.0" />
+            </font>
+         </Button>
         </HBox>
         <Separator />
         <!-- Section Passer en Sommeil -->
-        <HBox prefHeight="30.0" prefWidth="600.0">
-            <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="600.0">
-                <Button fx:id="toggleStateButton" mnemonicParsing="false" onAction="#onToggleStateAction" text="*" />
-                <Label text="Passer en sommeil" />
-            </HBox>
+        <HBox alignment="TOP_CENTER" prefHeight="30.0" prefWidth="600.0" spacing="10.0">
+             <Button fx:id="toggleStateButton" mnemonicParsing="false" onAction="#onToggleStateAction" text="*" />
+             <Label text="Passer le compte en mode sommeil">
+            <font>
+               <Font size="18.0" />
+            </font>
+         </Label>
         </HBox>
       <Separator />
-        <!-- Section Email -->
-        <HBox prefHeight="30.0" prefWidth="600.0">
-             <Label fx:id="mail" text="mail" />
-        </HBox>
-      <HBox prefHeight="34.0" prefWidth="402.0">
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
          <children>
-            <Label fx:id="dateInscription" text="date d'inscription" />
+              <!-- Section Email -->
+              <HBox alignment="CENTER" prefHeight="30.0" prefWidth="600.0" spacing="20.0">
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Adresse Mail:">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Text>
+                   <Label fx:id="mail" text="mail">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+              </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="29.0" prefHeight="30.0" prefWidth="600.0" spacing="20.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Date d'inscription:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <Label fx:id="dateInscription" text="date d'inscription">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="179.0" prefHeight="30.0" prefWidth="600.0" spacing="20.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre de Florain:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <Label fx:id="nbFlorain" text="nombre de florain">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="179.0" prefHeight="30.0" prefWidth="600.0" spacing="20.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Note:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <Label fx:id="note" text="note">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
          </children>
-      </HBox>
-      <HBox prefHeight="34.0" prefWidth="402.0">
-         <children>
-            <Label fx:id="nbFlorain" text="nombre de florain" />
-         </children>
-      </HBox>
-      <HBox prefHeight="34.0" prefWidth="402.0">
-         <children>
-            <Label fx:id="note" text="note" />
-         </children>
-      </HBox>
+      </VBox>
     </children>
     <padding>
-        <Insets left="100.0" right="100.0" />
+        <Insets bottom="10.0" left="100.0" right="100.0" top="10.0" />
     </padding>
 </VBox>
