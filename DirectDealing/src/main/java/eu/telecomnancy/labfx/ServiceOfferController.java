@@ -66,6 +66,7 @@ public class ServiceOfferController {
             currentUser.setNbFlorain(currentUser.getNbFlorain() - service_offer.getPrice());
             skeleton_controller.updateProfile();
   
+            skeleton_controller.loadListServiceOfferPage();
    
         } else {
             System.out.println("La réservation de l'offre a échoué");
