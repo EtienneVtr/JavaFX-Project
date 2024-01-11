@@ -3,6 +3,7 @@ package eu.telecomnancy.labfx;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Button;
 
 import java.time.LocalDate;
 
@@ -21,6 +22,9 @@ public class EquipmentOfferController {
     @FXML private Label dates;
     @FXML private Label price;
 
+    @FXML private Button book;
+    @FXML private Button contact;
+
     @FXML private DatePicker booking_begin;
     @FXML private DatePicker booking_end;
 
@@ -30,6 +34,7 @@ public class EquipmentOfferController {
 
     public void setCurrentOffer(EquipmentOffer offer) {
         this.currentOffer = offer;
+        currentUser = Main.getCurrentUser();
         displayOfferInfo();
     }
 
@@ -41,6 +46,13 @@ public class EquipmentOfferController {
         String endDateString = currentOffer.getEndAvaibility() != null ? currentOffer.getEndAvaibility().toString() : "Pas de date renseigné";
         dates.setText("Dates : " + startDateString + " / " + endDateString);    
         price.setText("Coût en florains : " + currentOffer.getPrice());
+
+        if (currentOffer.getOwner().getMail().equals(currentUser.getMail())){
+            book.setVisible(false);
+            booking_begin.setVisible(false);
+            booking_end.setVisible(false);
+            contact.setVisible(false);
+        }
     }
 
     @FXML public void handleBook(){

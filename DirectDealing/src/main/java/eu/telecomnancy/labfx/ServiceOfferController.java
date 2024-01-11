@@ -23,12 +23,14 @@ public class ServiceOfferController {
 
     @FXML private Button book;
     @FXML private Button cancel;
+    @FXML private Button contact;
 
     @FXML private DatePicker booking_begin;
     @FXML private DatePicker booking_end;
 
     public void setCurrentOffer(ServiceOffer offer) {
         this.service_offer = offer;
+        currentUser = Main.getCurrentUser();
         displayOfferInfo();
     }
 
@@ -40,6 +42,14 @@ public class ServiceOfferController {
         String time = service_offer.getTime() != null ? service_offer.getTime().toString() : "Pas d'heure renseigné";
         date.setText("Date : " + startDateString + " to " + endDateString + " at " + time);
         price.setText("Coût en florains : " + service_offer.getPrice());
+
+        if (service_offer.getSupplierMail().equals(currentUser.getMail())){
+            book.setVisible(false);
+            booking_begin.setVisible(false);
+            booking_end.setVisible(false);
+            contact.setVisible(false);
+        }
+
     }
 
     @FXML public void handleBook() {
