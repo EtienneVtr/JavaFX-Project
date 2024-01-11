@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 
 
@@ -230,16 +232,15 @@ public class User {
     // Méthode pour obtenir les coordonnées (latitude, longitude) d'une localisation
     private double[] getCoordinates(String cityName) {
         String line;
-        String csvFile = "src/main/resources/eu/telecomnancy/labfx/cities.csv"; // Chemin vers votre fichier CSV
+        InputStream inputStream;
+        inputStream = getClass().getResourceAsStream("/eu/telecomnancy/labfx/cities.csv");
     
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             while ((line = br.readLine()) != null) {
                 String[] cityData = line.split(",");
-    
                 if (cityData[0].equals("id")) {
                     continue; // Ignorer l'en-tête
                 }
-    
                 // Vérifier si le nom de la ville correspond (en tenant compte des guillemets)
                 String cityInCsv = cityData[4].replace("\"", ""); // Retirer les guillemets
                 if (cityInCsv.equalsIgnoreCase(cityName)) {
@@ -252,7 +253,7 @@ public class User {
             System.err.println("Erreur lors de la lecture du fichier CSV : " + e.getMessage());
             e.printStackTrace();
         }
-        return new double[]{0.0, 0.0}; // Retourner une valeur par défaut en cas d'échec
+    return new double[]{0.0, 0.0}; // Retourner une valeur par défaut en cas d'échec
     }
     
     

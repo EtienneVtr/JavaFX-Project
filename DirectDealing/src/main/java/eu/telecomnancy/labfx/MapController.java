@@ -8,8 +8,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +20,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.InputStream;
 
 
 public class MapController {
@@ -112,16 +116,16 @@ public class MapController {
 
     private double[] getCoordinates(String cityName) {
         String line;
-        String csvFile = "src/main/resources/eu/telecomnancy/labfx/cities.csv"; // Chemin vers votre fichier CSV
-    
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        InputStream inputStream;
+        inputStream = getClass().getResourceAsStream("/eu/telecomnancy/labfx/cities.csv");
+        
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             while ((line = br.readLine()) != null) {
                 String[] cityData = line.split(",");
-    
                 if (cityData[0].equals("id")) {
                     continue; // Ignorer l'en-tête
                 }
-    
                 // Vérifier si le nom de la ville correspond (en tenant compte des guillemets)
                 String cityInCsv = cityData[4].replace("\"", ""); // Retirer les guillemets
                 if (cityInCsv.equalsIgnoreCase(cityName)) {
@@ -136,5 +140,4 @@ public class MapController {
         }
         return new double[]{0.0, 0.0}; // Retourner une valeur par défaut en cas d'échec
     }
-    
 }
