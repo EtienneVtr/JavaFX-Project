@@ -30,7 +30,7 @@
          <children>
             <VBox prefHeight="212.0" prefWidth="870.0" style="-fx-border-color: black;">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Les dernières annonces près de chez vous:" wrappingWidth="512.78857421875">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Les dernières annonces près de chez vous: (100km)" wrappingWidth="512.78857421875">
                      <font>
                         <Font name="Ubuntu" size="18.0" />
                      </font>

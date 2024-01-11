@@ -18,6 +18,9 @@ public class HomeController {
 
     @FXML TableView<CombinedOffer> latest_offers;
 
+    private User currentUser;
+
+
     @FXML public void initialize(){
         // Création des colonnes
         TableColumn<CombinedOffer, String> typeColumn = new TableColumn<>("Type");
@@ -26,7 +29,7 @@ public class HomeController {
         TableColumn<CombinedOffer, String> priceColumn = new TableColumn<>("Price");
         TableColumn<CombinedOffer, String> datePublicationColumn = new TableColumn<>("Date Publication");
         TableColumn<CombinedOffer, String> descriptionColumn = new TableColumn<>("Description");
-
+        currentUser = Main.getCurrentUser();
         // Définir comment chaque colonne va obtenir ses valeurs
         typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTypeString()));
         userNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwnerName()));
@@ -46,19 +49,31 @@ public class HomeController {
         // Ajoute les données au TableView
         ArrayList<EquipmentOffer> all_equipment = Main.getAllEquipment();
         ArrayList<ServiceOffer> all_service = Main.getAllService();
-
+    
         ArrayList<CombinedOffer> all_offers = new ArrayList<>();
-        // on ajoute les offres en les triant par leur date de publication
+    
+        // Seuil de distance pour filtrer les offres
+        double distanceThreshold = 100.0; // 100 km
+    
+        // Ajouter les offres d'équipement après les avoir filtrées
         if(all_equipment != null){
             for(EquipmentOffer equipment : all_equipment){
-                all_offers.add(new CombinedOffer(equipment));
+                if (currentUser.calculateDistanceTo(equipment.getOwner()) <= distanceThreshold) {
+                    all_offers.add(new CombinedOffer(equipment));
+                }
             }
         }
+    
+        // Ajouter les offres de service après les avoir filtrées
         if(all_service != null){
             for(ServiceOffer service : all_service){
-                all_offers.add(new CombinedOffer(service));
+                if (currentUser.calculateDistanceTo(service.getSupplier()) <= distanceThreshold) {
+                    all_offers.add(new CombinedOffer(service));
+                }
             }
         }
+    
+        // Trier et afficher les offres
         all_offers.sort((o1, o2) -> o2.getDate_publication().compareTo(o1.getDate_publication()));
         if(all_offers != null){
             latest_offers.setItems(FXCollections.observableArrayList(all_offers));
