@@ -74,6 +74,7 @@
                   </Text>
                </children>
             </HBox>
+            <Label fx:id="State" text="Label" />
             <Button mnemonicParsing="false" onAction="#handleDeconnexion" text="Deconnexion" />
          </children>
          <VBox.margin>
