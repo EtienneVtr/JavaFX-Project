@@ -16,6 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -415,15 +417,28 @@ public class MessagerieController {
                 super.updateItem(message, empty);
                 if (empty || message == null) {
                     setText(null);
+                    setGraphic(null);
                 } else {
                     String senderPseudo = getUserPseudoById(message.getSenderId());
                     String status = message.isRead() ? "Lu" : "Remis";
-                    String messageDisplay = senderPseudo + ": " + message.getMessageText() + " (" + status + ")";
-                    setText(messageDisplay);
+                    String messageText = message.getMessageText();
+
+                    Label pseudoLabel = new Label(senderPseudo + " :");
+                    pseudoLabel.setFont(new Font("Arial", 14)); // Vous pouvez ajuster la police et la taille selon vos besoins
+
+                    Label messageLabel = new Label(messageText + " (" + status + ")");
+                    messageLabel.setWrapText(true);
+                    messageLabel.setMaxWidth(lv.getWidth() - 20);
+
+                    VBox vbox = new VBox(pseudoLabel, messageLabel);
+                    vbox.setSpacing(5); // Espace entre le pseudo et le message
+
+                    setGraphic(vbox);
                 }
             }
         });
     }
+
 
 
 
