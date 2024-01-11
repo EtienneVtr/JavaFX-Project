@@ -74,25 +74,27 @@ public class PlanningController {
         evenement.changeEndDate(dateFin);
         evenement.changeEndTime(heureFin);
         evenement.setLocation(offer.getDescription());
+        if (dateDebut != null) {
 
-        if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
-            if (offer.getEstPris().equals(null)) {
-                serviceNoneOfferedCalendar.addEntry(evenement);
-            } else {
-                if (offer.getOwnerName().equal(currentUser.getName())) {
-                    serviceOfferedCalendar.addEntry(evenement);
+            if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
+                if (offer.getEstPris() == null) { // Changed to '== null'
+                    serviceNoneOfferedCalendar.addEntry(evenement);
                 } else {
-                    serviceDemandedCalendar.addEntry(evenement);
+                    if (offer.getOwnerName() != null && offer.getOwnerName().equals(currentUser.getMail())) {
+                        serviceOfferedCalendar.addEntry(evenement);
+                    } else {
+                        serviceDemandedCalendar.addEntry(evenement);
+                    }
                 }
-            }
-        } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
-            if (offer.getEstPris().equals(null)) {
-                equipmentNoneOfferedCalendar.addEntry(evenement);
-            } else {
-                if (offer.getOwnerName().equal(currentUser.getName())) {
-                    equipmentOfferedCalendar.addEntry(evenement);
+            } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
+                if (offer.getEstPris() == null) { // Changed to '== null'
+                    equipmentNoneOfferedCalendar.addEntry(evenement);
                 } else {
-                    equipmentDemandedCalendar.addEntry(evenement);
+                    if (offer.getOwnerName() != null && offer.getOwnerName().equals(currentUser.getMail())) { // Added null check
+                        equipmentOfferedCalendar.addEntry(evenement);
+                    } else {
+                        equipmentDemandedCalendar.addEntry(evenement);
+                    }
                 }
             }
         }
