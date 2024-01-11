@@ -80,6 +80,11 @@ public class MessagerieController {
             setCurrentConversation(initialContact);
             initialContact = null; // Réinitialiser après utilisation
         }
+        else {
+            // Sélectionner le premier contact par défaut
+            listContact.getSelectionModel().selectFirst();
+            setCurrentConversation(listContact.getSelectionModel().getSelectedItem());
+        }
     
     }
 
