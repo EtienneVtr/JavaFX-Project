@@ -28,6 +28,11 @@ public class ConsultServiceController {
     @FXML private DatePicker end;
     @FXML private Slider radius;
     @FXML private TableView<ServiceOffer> results;
+    @FXML private TextField priceMin;
+    @FXML private TextField priceMax;
+    @FXML private TextField timeMinInput;
+    @FXML private TextField timeMaxInput;
+
 
     @FXML public void initialize() {
         currentUser = Main.getCurrentUser();
@@ -80,13 +85,31 @@ public class ConsultServiceController {
         String keywordText = keywords.getText();
         LocalDate startDate = begin.getValue();
         LocalDate endDate = end.getValue();
-
+        Integer minPrice = null;
+        Integer maxPrice = null;
+        String timeMin = timeMinInput.getText();
+        String timeMax = timeMaxInput.getText();
+    
+        try {
+            if (!priceMin.getText().isEmpty()) {
+                minPrice = Integer.parseInt(priceMin.getText());
+            }
+            if (!priceMax.getText().isEmpty()) {
+                maxPrice = Integer.parseInt(priceMax.getText());
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid price");
+        }
+    
+        // Vérifiez que les formats d'heure sont valides ou gérez les exceptions comme vous le souhaitez
+    
         // Appeler une méthode pour effectuer la recherche dans la base de données
-        List<ServiceOffer> searchResults = ServiceOffer.searchOffers(currentUser, keywordText, startDate, endDate);
+        List<ServiceOffer> searchResults = ServiceOffer.searchOffers(currentUser, keywordText, startDate, endDate, minPrice, maxPrice, timeMin, timeMax);
 
         // Mettre à jour le TableView avec les résultats
         results.setItems(FXCollections.observableArrayList(searchResults));
-        }
+    }
+    
         
 
     @FXML public void handleReset() {

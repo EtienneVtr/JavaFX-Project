@@ -26,6 +26,8 @@ public class ConsultEquipmentController {
     @FXML private DatePicker begin;
     @FXML private DatePicker end;
     @FXML private Slider radius;
+    @FXML private TextField priceMin;
+    @FXML private TextField priceMax;
     @FXML private TableView<EquipmentOffer> results;
 
     @FXML public void initialize() {
@@ -75,8 +77,21 @@ public class ConsultEquipmentController {
         String keywordText = keywords.getText();
         LocalDate startDate = begin.getValue();
         LocalDate endDate = end.getValue();
+        Integer minPrice = null;
+        Integer maxPrice = null;
 
-        List<EquipmentOffer> searchResults = EquipmentOffer.searchOffers(currentUser, keywordText, startDate, endDate);
+        try {
+            if (!priceMin.getText().isEmpty()) {
+                minPrice = Integer.parseInt(priceMin.getText());
+            }
+            if (!priceMax.getText().isEmpty()) {
+                maxPrice = Integer.parseInt(priceMax.getText());
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid price");
+        }
+
+        List<EquipmentOffer> searchResults = EquipmentOffer.searchOffers(currentUser, keywordText, startDate, endDate, minPrice, maxPrice);
 
         // Mettre à jour le TableView avec les résultats
         results.getItems().setAll(searchResults);
