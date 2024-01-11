@@ -10,6 +10,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 // Description: Classe représentant une offre de service. Elle contient un titre, une description, une date et une heure.
 //              Elle peut être récurrente, auquel cas on lui ajoute un tableau de jours de la semaine où le service doit être réalisé.$
 
@@ -35,10 +36,12 @@ public class ServiceOffer {
     public ServiceOffer(String supplier_mail) {
         this.supplier_mail = supplier_mail;
         this.supplier = new User(supplier_mail);
+        System.out.println("Constructeur avec un loaddb 1");
         loadServiceFromDB();
     }
 
     public ServiceOffer(String supplierMail, String title, String description, LocalDate start, LocalDate end, LocalTime time, int price) {
+        System.out.println("Constructeur avec un loaddb 2 ");
         this.supplier_mail = supplierMail;
         this.supplier = new User(supplierMail);
         this.title = title;
@@ -50,26 +53,8 @@ public class ServiceOffer {
         createNewOffer();
     }
 
-
-    public ServiceOffer(String supplier_mail, String title, String description){
-        this.supplier_mail = supplier_mail;
-        this.supplier = new User(supplier_mail);
-        this.title = title;
-        this.description = description;
-        loadServiceFromDB();
-    }
-
-    public ServiceOffer(String supplier_mail, String title, String description, String start, String estPris){
-        this.supplier_mail = supplier_mail;
-        this.supplier = new User(supplier_mail);
-        this.title = title;
-        this.description = description;
-        this.start = LocalDate.parse(start);
-        this.estPris = estPris;
-        loadServiceFromDBHome();
-    }
-
-    public ServiceOffer(String supplier_mail, String title, String description, LocalDate start, LocalDate end, LocalTime time, int price, String estPris){
+       public ServiceOffer(String supplier_mail, String title, String description, LocalDate start, LocalDate end, LocalTime time, int price, String estPris){
+                System.out.println("Constructeur sans un loaddb 5 ");
         this.supplier_mail = supplier_mail;
         this.supplier = new User(supplier_mail);
         this.title = title;
@@ -80,7 +65,31 @@ public class ServiceOffer {
         this.price = price;
     }
 
+
+    public ServiceOffer(String supplier_mail, String title, String description){
+                System.out.println("Constructeur avec un loaddb 3");
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        this.title = title;
+        this.description = description;
+        loadServiceFromDB();
+    }
+
+    public ServiceOffer(String supplier_mail, String title, String description, String start, String estPris){
+        System.out.println("Constructeur avec un loaddb 4");
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        this.title = title;
+        this.description = description;
+        this.start = LocalDate.parse(start);
+        this.estPris = estPris;
+        loadServiceFromDBHome();
+    }
+
+ 
+
     public ServiceOffer(User supplier, String title, String description, LocalDate start, LocalDate end, LocalTime time, boolean isRecurrent, String daysOfService, int price) {
+        System.out.println("Constructeur avec un loaddb 6");
         this.supplier = supplier;
         this.supplier_mail = supplier.getMail();
         this.title = title;
@@ -434,7 +443,9 @@ public class ServiceOffer {
                         serviceStart,
                         serviceEnd,
                         time,
-                        rs.getInt("price")
+                        rs.getInt("price"),
+                        rs.getString("estPris")
+
 
                     );
                     offers.add(offer);
