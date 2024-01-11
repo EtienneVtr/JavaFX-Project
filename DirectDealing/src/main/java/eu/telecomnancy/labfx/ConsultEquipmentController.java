@@ -34,25 +34,28 @@ public class ConsultEquipmentController {
         TableColumn<EquipmentOffer, String> userNameColumn = new TableColumn<>("User Name");
         TableColumn<EquipmentOffer, String> titleColumn = new TableColumn<>("Title");
         TableColumn<EquipmentOffer, String> priceColumn = new TableColumn<>("Price");
-        TableColumn<EquipmentOffer, String> dateColumn = new TableColumn<>("Date");
+        TableColumn<EquipmentOffer, String> dateStartColumn = new TableColumn<>("Start");
+        TableColumn<EquipmentOffer, String> dateEndColumn = new TableColumn<>("End");
         TableColumn<EquipmentOffer, String> descriptionColumn = new TableColumn<>("Description");
 
         // Définir comment chaque colonne va obtenir ses valeurs
         userNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner().getPrenom()));
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPrice())));
-        dateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStartAvailabilityStr()));
+        dateStartColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStartAvailabilityStr()));
+        dateEndColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEndAvailabilityStr()));
         descriptionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
 
         // Ajoute les colonnes au TableView
         results.getColumns().add(userNameColumn);
         results.getColumns().add(titleColumn);
         results.getColumns().add(priceColumn);
-        results.getColumns().add(dateColumn);
+        results.getColumns().add(dateStartColumn);
+        results.getColumns().add(dateEndColumn);
         results.getColumns().add(descriptionColumn);
 
         // Ajoute les données au TableView
-        ArrayList<EquipmentOffer> all_equipment = Main.getAllEquipment();
+        ArrayList<EquipmentOffer> all_equipment = Main.getAllEquipmentHome();
         if(all_equipment != null){
             results.setItems(FXCollections.observableArrayList(all_equipment));
         }

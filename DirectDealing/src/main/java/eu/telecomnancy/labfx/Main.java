@@ -89,6 +89,35 @@ public class Main extends Application {
         }
     }
 
+    public static ArrayList<EquipmentOffer> getAllEquipmentHome() {
+        String sql = "SELECT owner_mail, name, description, start_availability, estPris FROM equipement";
+
+        try (Connection conn = DataBase.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            ResultSet rs = pstmt.executeQuery();
+            ArrayList<EquipmentOffer> all_equipment = new ArrayList<>();
+
+            while (rs.next()) {
+                if(rs.getString("estPris") != null){
+                    continue;
+                }
+                String owner_mail = rs.getString("owner_mail");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                String start_availability = rs.getString("start_availability");
+
+                EquipmentOffer equipment = new EquipmentOffer(owner_mail, name, description, start_availability, null);
+                all_equipment.add(equipment);
+            }
+            
+            return all_equipment;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
     public static void main(String[] args) {
         DataBase.initializeDatabase();
         Application.launch(args);

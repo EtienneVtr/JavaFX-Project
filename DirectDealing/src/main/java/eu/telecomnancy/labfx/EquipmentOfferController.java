@@ -2,6 +2,9 @@ package eu.telecomnancy.labfx;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.DatePicker;
+
+import java.time.LocalDate;
 
 public class EquipmentOfferController {
     private SkeletonController skeleton_controller;
@@ -17,6 +20,9 @@ public class EquipmentOfferController {
     @FXML private Label quantity;
     @FXML private Label dates;
     @FXML private Label price;
+
+    @FXML private DatePicker booking_begin;
+    @FXML private DatePicker booking_end;
 
     private EquipmentOffer currentOffer;
     private User currentUser;
@@ -54,9 +60,42 @@ public class EquipmentOfferController {
             return;
         }
 
+        LocalDate begin = booking_begin.getValue();
+        LocalDate end = booking_end.getValue();
+
+        if(begin == null || end == null){
+            System.out.println("Veuillez renseigner une date de début et de fin");
+            return;
+        }else if(begin.isAfter(end)){
+            System.out.println("La date de début doit être avant la date de fin");
+            return;
+        }else if(begin.isBefore(currentOffer.getStartAvailability()) || end.isAfter(currentOffer.getEndAvaibility())){
+            System.out.println("La date de début et de fin doivent être comprises dans la période de disponibilité de l'offre");
+            return;
+        }
+
+
+
         // Tenter de réserver l'offre
-        if (currentOffer.reserveOffer(currentOffer, currentUserEmail)) {
+        if (currentOffer.reserveOffer(currentOffer, currentUserEmail, begin, end)) {
             System.out.println("Réservation réussie");
+
+            // Création de deux nouvelles offres avant et après la période de réservation
+            // si le premier jour de réservation est le même que le début de l'offre de base, on en crée qu'une après
+            // inverse pour le dernier jour de réservation
+            if(begin.equals(currentOffer.getStartAvailability()) && end.equals(currentOffer.getEndAvaibility())){
+                System.out.println("Offre bien créée");
+            }else if(begin.equals(currentOffer.getStartAvailability())){
+                EquipmentOffer newOffer = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), end.plusDays(1), currentOffer.getEndAvaibility(), currentOffer.getPrice());
+                System.out.println("Offre bien créée");
+            }else if(end.equals(currentOffer.getEndAvaibility())){
+                EquipmentOffer newOffer = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), currentOffer.getStartAvailability(), begin.minusDays(1), currentOffer.getPrice());
+                System.out.println("Offre bien créée");
+            }else{
+                EquipmentOffer newOffer1 = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), currentOffer.getStartAvailability(), begin.minusDays(1), currentOffer.getPrice());
+                EquipmentOffer newOffer2 = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), end.plusDays(1), currentOffer.getEndAvaibility(), currentOffer.getPrice());
+                System.out.println("Offres bien créées");
+            }
 
             currentOffer.setEstPris(currentUserEmail);
             System.out.println("L'offre est maintenant réservée par " + currentOffer.getEstPris() + "estpris: " + currentOffer.getEstPris());

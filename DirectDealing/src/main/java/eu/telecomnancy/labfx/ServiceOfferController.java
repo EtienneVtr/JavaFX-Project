@@ -3,6 +3,8 @@ package eu.telecomnancy.labfx;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.DatePicker;
+import java.time.LocalDate;
 
 public class ServiceOfferController {
 
@@ -22,6 +24,9 @@ public class ServiceOfferController {
 
     @FXML private Button book;
     @FXML private Button cancel;
+
+    @FXML private DatePicker booking_begin;
+    @FXML private DatePicker booking_end;
 
     public void setCurrentOffer(ServiceOffer offer) {
         this.service_offer = offer;
@@ -56,8 +61,11 @@ public class ServiceOfferController {
             return;
         }
 
+        LocalDate begin = booking_begin.getValue();
+        LocalDate end = booking_end.getValue();
+
         // Tenter de réserver l'offre
-        if (service_offer.reserveOffer(service_offer, currentUserEmail)) {
+        if (service_offer.reserveOffer(service_offer, currentUserEmail, begin, end)) {
             System.out.println("Offre réservée avec succès");
 
             service_offer.setEstPris(currentUserEmail);

@@ -57,7 +57,7 @@ public class CreateServiceController {
 
             boolean isRecurrent = yes.isSelected();
             
-            if (titleField.isEmpty() || descriptionField.isEmpty() || priceStr.isEmpty()) {
+            if (titleField.isEmpty() || descriptionField.isEmpty() || priceStr.isEmpty() || date.getValue() == null) {
                 System.out.println("Veuillez remplir tous les champs requis.");
                 return;
             }

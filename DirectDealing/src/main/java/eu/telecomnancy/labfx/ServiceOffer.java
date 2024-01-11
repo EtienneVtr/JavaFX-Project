@@ -26,6 +26,8 @@ public class ServiceOffer {
     private int price;
     private String estPris;
     private String date_publication;
+    private LocalDate book_begin;
+    private LocalDate book_end;
 
     // Constructeur
     public ServiceOffer(String supplier_mail) {
@@ -140,6 +142,18 @@ public class ServiceOffer {
                 this.price = rs.getInt("price");
                 this.date_publication = rs.getString("date_publication");
                 this.estPris = rs.getString("estPris");
+                String bookingBeginString = rs.getString("book_begin");
+                if (bookingBeginString != null && !bookingBeginString.isEmpty()) {
+                    this.book_begin = LocalDate.parse(bookingBeginString);
+                    } else {
+                    this.book_begin = null;
+                    }
+                String bookingEndString = rs.getString("book_end");
+                if (bookingEndString != null && !bookingEndString.isEmpty()) {
+                    this.book_end = LocalDate.parse(bookingEndString);
+                    } else {
+                    this.book_end = null;
+                    }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -169,7 +183,7 @@ public class ServiceOffer {
     }
     
 
-    public boolean reserveOffer(ServiceOffer offer, String currentUserEmail) {
+    public boolean reserveOffer(ServiceOffer offer, String currentUserEmail, LocalDate begin, LocalDate end) {
         Connection conn = null;
         try {
             conn = DataBase.getConnection();
@@ -201,6 +215,17 @@ public class ServiceOffer {
                 pstmt.executeUpdate();
             }
     
+            // Ajouter les dates de réservation
+            sql = "UPDATE service_offers SET book_begin = ?, book_end = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, begin.toString());
+                pstmt.setString(2, end.toString());
+                pstmt.setInt(3, offer.getId());
+                pstmt.executeUpdate();
+            }
+            this.book_begin = begin;
+            this.book_end = end;
+
             conn.commit(); // Valider la transaction
             return true;
         } catch (SQLException e) {
@@ -398,6 +423,16 @@ public class ServiceOffer {
     //get date_publication
     public String getDate_publication(){
         return date_publication;
+    }
+
+    //get book_begin
+    public LocalDate getBook_begin(){
+        return book_begin;
+    }
+
+    //get book_end
+    public LocalDate getBook_end(){
+        return book_end;
     }
 
 }
