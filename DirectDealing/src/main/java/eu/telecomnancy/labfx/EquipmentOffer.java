@@ -267,27 +267,59 @@ public class EquipmentOffer {
         return true;
     }
 
-
-    public static List<EquipmentOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end) {
+    public static List<EquipmentOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end, Integer minPrice, Integer maxPrice) {
         System.out.println("Début de la recherche des offres.");
         List<EquipmentOffer> offers = new ArrayList<>();
-        String sql = "SELECT owner_mail, id, name, description, quantity, start_availability, end_availability, price FROM equipement WHERE " +
-                     "estPris IS NULL AND " +
-                     "name LIKE ? AND " +
-                     "(? IS NULL OR start_availability >= ?) AND " +
-                     "(? IS NULL OR end_availability <= ?)";
+        String sql = "SELECT owner_mail, id, name, description, quantity, start_availability, end_availability, price FROM equipement WHERE estPris IS NULL";
+    
+        if (!keywords.isEmpty()) {
+            sql += " AND name LIKE ?";
+        }
+        if (begin != null || end != null) {
+            sql += " AND (start_availability IS NULL OR";
+            if (begin != null) {
+                sql += " start_availability >= ?";
+            }
+            if (end != null) {
+                if (begin != null) {
+                    sql += " AND";
+                }
+                sql += " end_availability <= ?";
+            }
+            sql += ")";
+        }
+        if (minPrice != null) {
+            sql += " AND price >= ?";
+        }
+        if (maxPrice != null) {
+            sql += " AND price <= ?";
+        }
+    
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
     
-            pstmt.setString(1, "%" + keywords + "%");
-            pstmt.setString(2, begin != null ? begin.toString() : null);
-            pstmt.setString(3, end != null ? end.toString() : null);
+            int paramIndex = 1;
+            if (!keywords.isEmpty()) {
+                pstmt.setString(paramIndex++, "%" + keywords + "%");
+            }
+            if (begin != null) {
+                pstmt.setString(paramIndex++, begin.toString());
+            }
+            if (end != null) {
+                pstmt.setString(paramIndex++, end.toString());
+            }
+            if (minPrice != null) {
+                pstmt.setInt(paramIndex++, minPrice);
+            }
+            if (maxPrice != null) {
+                pstmt.setInt(paramIndex++, maxPrice);
+            }
     
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     LocalDate startAvailability = rs.getString("start_availability") != null ? LocalDate.parse(rs.getString("start_availability")) : null;
                     LocalDate endAvailability = rs.getString("end_availability") != null ? LocalDate.parse(rs.getString("end_availability")) : null;
-                    
+    
                     EquipmentOffer offer = new EquipmentOffer(
                         rs.getString("name"),
                         rs.getString("description"),
@@ -303,16 +335,12 @@ public class EquipmentOffer {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             System.out.println("Fin de la recherche des offres.");
-        }
-        //print all offers
-        for(EquipmentOffer offer : offers){
-            System.out.println("Offre trouvée: " + offer.getName() + " " + offer.getDescription() + " " + offer.getMail() + " " + offer.getQuantity() + " " + offer.getStartAvailability() + " " + offer.getEndAvaibility() + " " + offer.getPrice());
         }
         return offers;
     }
+    
     
     
     

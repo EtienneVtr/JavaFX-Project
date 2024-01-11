@@ -11,6 +11,8 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.ConsultEquipmentController">
    <children>
       <TextField fx:id="keywords" layoutX="46.0" layoutY="27.0" prefHeight="24.0" prefWidth="508.0" promptText="Mots-clé de la recherche" />
+      <TextField fx:id="priceMin" layoutX="46.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix min"/>
+      <TextField fx:id="priceMax" layoutX="454.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix max"/> 
       <DatePicker fx:id="begin" layoutX="46.0" layoutY="70.0" prefHeight="24.0" prefWidth="144.0" promptText="Date de début" />
       <Slider fx:id="radius" blockIncrement="5.0" layoutX="364.0" layoutY="79.0" max="150.0" prefHeight="38.0" prefWidth="172.0" showTickLabels="true" showTickMarks="true" value="15.0" />
       <DatePicker fx:id="end" layoutX="204.0" layoutY="70.0" prefHeight="24.0" prefWidth="144.0" promptText="Date de fin" />

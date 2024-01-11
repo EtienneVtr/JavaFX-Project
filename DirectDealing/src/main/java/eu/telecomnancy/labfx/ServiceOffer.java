@@ -244,27 +244,74 @@ public class ServiceOffer {
     
         return true;
     }
-    
-    public static List<ServiceOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end) {
+    public static List<ServiceOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end, Integer minPrice, Integer maxPrice, String timeMin, String timeMax) {
         System.out.println("Recherche d'offres de service");
         List<ServiceOffer> offers = new ArrayList<>();
-        String sql = "SELECT id, supplier_mail, title, description, date, time, price, estPris FROM service_offers WHERE " +
-                     "estPris IS NULL AND " +
-                     "title LIKE ? AND " +
-                     "(? IS NULL OR date >= ?) AND " +
-                     "(? IS NULL OR date <= ?)";
+    
+        // Construction de la requête SQL avec les filtres nécessaires
+        String sql = "SELECT id, supplier_mail, title, description, date, time, price, estPris FROM service_offers WHERE estPris IS NULL";
+    
+        if (!keywords.isEmpty()) {
+            sql += " AND title LIKE ?";
+        }
+        if (begin != null || end != null) {
+            sql += " AND (date IS NULL OR";
+            if (begin != null) {
+                sql += " date >= ?";
+            }
+            if (end != null) {
+                if (begin != null) {
+                    sql += " AND";
+                }
+                sql += " date <= ?";
+            }
+            sql += ")";
+        }
+        if (minPrice != null) {
+            sql += " AND price >= ?";
+        }
+        if (maxPrice != null) {
+            sql += " AND price <= ?";
+        }
+        if (!timeMin.isEmpty()) {
+            sql += " AND time >= ?";
+        }
+        if (!timeMax.isEmpty()) {
+            sql += " AND time <= ?";
+        }
     
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
     
-            pstmt.setString(1, "%" + keywords + "%");
-            pstmt.setString(2, begin != null ? begin.toString() : null);
-            pstmt.setString(3, end != null ? end.toString() : null);
+            int paramIndex = 1;
+    
+            if (!keywords.isEmpty()) {
+                pstmt.setString(paramIndex++, "%" + keywords + "%");
+            }
+            if (begin != null) {
+                pstmt.setString(paramIndex++, begin.toString());
+            }
+            if (end != null) {
+                pstmt.setString(paramIndex++, end.toString());
+            }
+            if (minPrice != null) {
+                pstmt.setInt(paramIndex++, minPrice);
+            }
+            if (maxPrice != null) {
+                pstmt.setInt(paramIndex++, maxPrice);
+            }
+            if (!timeMin.isEmpty()) {
+                pstmt.setString(paramIndex++, timeMin);
+            }
+            if (!timeMax.isEmpty()) {
+                pstmt.setString(paramIndex++, timeMax);
+            }
     
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     LocalDate serviceDate = rs.getString("date") != null ? LocalDate.parse(rs.getString("date")) : null;
                     LocalTime time = rs.getString("time") != null ? LocalTime.parse(rs.getString("time")) : null;
+    
                     ServiceOffer offer = new ServiceOffer(
                         rs.getString("supplier_mail"),
                         rs.getString("title"),
@@ -279,12 +326,11 @@ public class ServiceOffer {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        for (ServiceOffer offer : offers) {
-            System.out.println("id: " + offer.getId() + " title: " + offer.getTitle() + " description: " + offer.getDescription() + " date: " + offer.getDate() + " time: " + offer.getTime() + " isRecurrent: " + offer.getIsRecurrent() + " repetitionDay: " + offer.getDaysOfService() + " price: " + offer.getPrice() + " nb recurrence: " + offer.getRecurrency() + " supplier mail: " + offer.getSupplierMail() + " est pris: " + offer.getEstPris());
-        }
         return offers;
-
     }
+    
+    
+    
     
 
     public String getSupplierMail(){
