@@ -19,7 +19,6 @@ public class CombinedOffer {
     private int quantity;
 
     // Champs spécifiques à ServiceOffer
-    private LocalDate date;
     private LocalTime time;
     private boolean isRecurrent;
     private String daysOfService;
@@ -120,8 +119,16 @@ public class CombinedOffer {
         return start;
     }
 
+    public String getStartString() {
+        return start.toString();
+    }
+
     public LocalDate getEnd() {
         return end;
+    }
+
+    public String getEndString() {
+        return end.toString();
     }
 
     public LocalTime getTime() {

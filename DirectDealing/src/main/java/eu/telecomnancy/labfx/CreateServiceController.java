@@ -1,15 +1,9 @@
 package eu.telecomnancy.labfx;
 
-import javafx.concurrent.Service;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Button;
 import java.time.LocalDate;
-
-import java.time.format.DateTimeFormatter;
 import java.time.LocalTime;
 
 

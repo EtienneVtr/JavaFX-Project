@@ -7,7 +7,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableView;
 
 import java.time.LocalDate;
@@ -45,6 +44,7 @@ public class ConsultServiceController {
         TableColumn<ServiceOffer, String> endColumn = new TableColumn<>("End");
         TableColumn<ServiceOffer, String> timeColumn = new TableColumn<>("Time");
         TableColumn<ServiceOffer, String> descriptionColumn = new TableColumn<>("Description");
+        TableColumn<ServiceOffer, String> cityColumn = new TableColumn<>("City");
 
         // Définir comment chaque colonne va obtenir ses valeurs
         userNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSupplier().getPrenom()));
@@ -54,6 +54,7 @@ public class ConsultServiceController {
         endColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEndStr()));
         timeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTimeStr()));
         descriptionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
+        cityColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSupplier().getLocalisation()));
 
         // Ajoute les colonnes au TableView
         results.getColumns().add(userNameColumn);
@@ -63,6 +64,7 @@ public class ConsultServiceController {
         results.getColumns().add(endColumn);
         results.getColumns().add(timeColumn);
         results.getColumns().add(descriptionColumn);
+        results.getColumns().add(cityColumn);
 
         // Ajoute les données au TableView
         ArrayList<ServiceOffer> all_service = Main.getAllServiceHome();
