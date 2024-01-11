@@ -65,11 +65,34 @@ public class ServiceOfferController {
         LocalDate begin = booking_begin.getValue();
         LocalDate end = booking_end.getValue();
 
+        if(begin == null || end == null){
+            System.out.println("Veuillez renseigner une date de début et de fin");
+            return;
+        }else if(begin.isAfter(end)){
+            System.out.println("La date de début doit être avant la date de fin");
+            return;
+        }else if(begin.isBefore(service_offer.getStart()) || end.isAfter(service_offer.getStart())){
+            System.out.println("La date de début et de fin doivent être comprises dans la période de disponibilité de l'offre");
+            return;
+        }
+
+
         // Tenter de réserver l'offre
         if (service_offer.reserveOffer(service_offer, currentUserEmail, begin, end)) {
             System.out.println("Offre réservée avec succès");
 
-            service_offer.setEstPris(currentUserEmail);
+            // Création de deux nouvelles offres avant et après la période de réservation
+            // si le premier jour de réservation est le même que le début de l'offre de base, on en crée qu'une après
+            // inverse pour le dernier jour de réservation
+            /* if(begin.equals(service_offer.getStart()) && end.equals(service_offer.getEnd())){
+                System.out.println("Offre bien créée");
+            }else if(begin.equals(service_offer.getStart())){
+                System.out.println("Offre bien créée");
+                ServiceOffer newOffer = new ServiceOffer(service_offer.getTitle(), service_offer.getDescription(), service_offer.getSupplierMail(), service_offer.getPrice(), end.plusDays(1), service_offer.getEnd(), service_offer.getRecurrency(), service_offer.getDaysOfService(), service_offer.getTime());
+
+
+
+            service_offer.setEstPris(currentUserEmail); */
             //set nb florain user
             currentUser = Main.getCurrentUser();
             currentUser.setNbFlorain(currentUser.getNbFlorain() - service_offer.getPrice());
