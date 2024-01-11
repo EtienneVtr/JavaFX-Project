@@ -60,10 +60,20 @@
       </HBox>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
          <children>
-            <Label text="Nb Notification">
-               <font>
-                  <Font name="Ubuntu" size="20.0" />
-               </font></Label>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Label fx:id="unreadMessagesLabel" text="Nb Message non lu">
+                     <font>
+                        <Font name="Ubuntu" size="18.0" />
+                     </font>
+                  </Label>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Messages non lu">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+               </children>
+            </HBox>
             <Button mnemonicParsing="false" onAction="#handleDeconnexion" text="Deconnexion" />
          </children>
          <VBox.margin>

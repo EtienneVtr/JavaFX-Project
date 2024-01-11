@@ -93,8 +93,10 @@ public class DataBase {
                                  "message_id INTEGER PRIMARY KEY," +
                                  "conversation_id INTEGER NOT NULL," +
                                  "sender_id INTEGER NOT NULL," +
+                                 "receiver_id INTEGER NOT NULL," +
                                  "message_text TEXT NOT NULL," +
                                  "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP," +
+                                 "is_read BOOLEAN DEFAULT FALSE," + 
                                  "FOREIGN KEY (conversation_id) REFERENCES conversations(conversation_id));";
             stmt.execute(sqlMessages);
 
@@ -104,6 +106,27 @@ public class DataBase {
             e.printStackTrace();
             // Gérer l'exception
         }
+    }
+
+    public static int countUnreadMessages(int userId) {
+        String sql = "SELECT COUNT(*) FROM messages WHERE receiver_id = ? AND is_read = FALSE";
+        int count = 0;
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors du comptage des messages non lus: " + e.getMessage());
+        }
+
+        return count;
     }
 
 }
