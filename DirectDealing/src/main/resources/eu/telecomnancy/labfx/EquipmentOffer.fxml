@@ -12,9 +12,9 @@
       <Label fx:id="quantity" layoutX="272.0" layoutY="107.0" text="Quantité" />
       <Label fx:id="dates" layoutX="226.0" layoutY="145.0" text="Dates de début / de fin" textAlignment="CENTER" />
       <Label fx:id="price" layoutX="249.0" layoutY="181.0" text="Coût en florains" textAlignment="CENTER" />
-      <Button fx:id="book" layoutX="76.0" layoutY="307.0" mnemonicParsing="false" onAction="#handleBook" text="Réserver l'offre" />
-      <Button layoutX="211.0" layoutY="307.0" mnemonicParsing="false" text="Contacter le propriétaire" onAction="#handleContact" />
-      <Button fx:id="ButtonCancel" layoutX="406.0" layoutY="307.0" mnemonicParsing="false" onAction="#cancel" text="Liste des offres" />
+      <Button fx:id="book" layoutX="97.0" layoutY="307.0" mnemonicParsing="false" onAction="#handleBook" text="Réserver l'offre" />
+      <Button fx:id="contact" layoutX="388.0" layoutY="307.0" mnemonicParsing="false" onAction="#handleContact" text="Contacter le propriétaire" />
+      <Button fx:id="ButtonCancel" layoutX="242.0" layoutY="307.0" mnemonicParsing="false" onAction="#cancel" text="Liste des offres" />
       <DatePicker fx:id="booking_begin" layoutX="35.0" layoutY="223.0" prefHeight="24.0" prefWidth="241.0" promptText="Date de début de réservation" />
       <DatePicker fx:id="booking_end" layoutX="326.0" layoutY="223.0" prefHeight="24.0" prefWidth="241.0" promptText="Date de fin de réservation" />
    </children>
