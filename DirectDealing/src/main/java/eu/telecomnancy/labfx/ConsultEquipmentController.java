@@ -79,7 +79,8 @@ public class ConsultEquipmentController {
         LocalDate endDate = end.getValue();
         Integer minPrice = null;
         Integer maxPrice = null;
-
+        double selectedRadius = radius.getValue();
+    
         try {
             if (!priceMin.getText().isEmpty()) {
                 minPrice = Integer.parseInt(priceMin.getText());
@@ -90,13 +91,12 @@ public class ConsultEquipmentController {
         } catch (NumberFormatException e) {
             System.out.println("Invalid price");
         }
-
-        List<EquipmentOffer> searchResults = EquipmentOffer.searchOffers(currentUser, keywordText, startDate, endDate, minPrice, maxPrice);
-
+    
+        List<EquipmentOffer> searchResults = EquipmentOffer.searchOffers(currentUser, keywordText, startDate, endDate, minPrice, maxPrice, selectedRadius);
+    
         // Mettre à jour le TableView avec les résultats
         results.getItems().setAll(searchResults);
     }
-
         
 
     @FXML public void handleReset() {

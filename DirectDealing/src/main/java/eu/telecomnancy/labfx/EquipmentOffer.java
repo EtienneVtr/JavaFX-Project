@@ -1,13 +1,16 @@
 package eu.telecomnancy.labfx;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // Description: Classe représentant une offre de matériel. Elle contient un nom, une description, une quantité, 
 //              une date de début et de fin de disponibilité et un prix.
@@ -267,27 +270,31 @@ public class EquipmentOffer {
         return true;
     }
 
-    public static List<EquipmentOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end, Integer minPrice, Integer maxPrice) {
-        System.out.println("Début de la recherche des offres.");
+    public static List<EquipmentOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end, Integer minPrice, Integer maxPrice, double radius) {
+        System.out.println("Début de la recherche des offres avec un rayon de " + radius + " km");
+    
         List<EquipmentOffer> offers = new ArrayList<>();
         String sql = "SELECT owner_mail, id, name, description, quantity, start_availability, end_availability, price FROM equipement WHERE estPris IS NULL";
     
+        // Construction de la requête SQL avec les filtres
         if (!keywords.isEmpty()) {
             sql += " AND name LIKE ?";
         }
+        // Logique pour les dates
         if (begin != null || end != null) {
-            sql += " AND (start_availability IS NULL OR";
+            sql += " AND (";
             if (begin != null) {
-                sql += " start_availability >= ?";
+                sql += "(end_availability IS NULL OR end_availability >= ?)";
+            }
+            if (begin != null && end != null) {
+                sql += " AND";
             }
             if (end != null) {
-                if (begin != null) {
-                    sql += " AND";
-                }
-                sql += " end_availability <= ?";
+                sql += "(start_availability IS NULL OR start_availability <= ?)";
             }
             sql += ")";
         }
+        // Logique pour le prix
         if (minPrice != null) {
             sql += " AND price >= ?";
         }
@@ -303,10 +310,10 @@ public class EquipmentOffer {
                 pstmt.setString(paramIndex++, "%" + keywords + "%");
             }
             if (begin != null) {
-                pstmt.setString(paramIndex++, begin.toString());
+                pstmt.setDate(paramIndex++, Date.valueOf(begin));
             }
             if (end != null) {
-                pstmt.setString(paramIndex++, end.toString());
+                pstmt.setDate(paramIndex++, Date.valueOf(end));
             }
             if (minPrice != null) {
                 pstmt.setInt(paramIndex++, minPrice);
@@ -330,16 +337,28 @@ public class EquipmentOffer {
                         rs.getInt("price")
                     );
                     offers.add(offer);
-                    System.out.println("Offre trouvée: " + offer.getName() + " " + offer.getDescription() + " " + offer.getMail() + " " + offer.getQuantity() + " " + offer.getStartAvailability() + " " + offer.getEndAvaibility() + " " + offer.getPrice());
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            System.out.println("Fin de la recherche des offres.");
         }
-        return offers;
+    
+        // Filtrer les offres par rayon
+        return offers.stream()
+            .filter(offer -> isWithinRadius(currentUser, offer.getOwner(), radius))
+            .collect(Collectors.toList());
     }
+    
+    
+
+    private static boolean isWithinRadius(User currentUser, User offerOwner, double radius) {
+        // Calcul de la distance entre l'utilisateur actuel et le propriétaire de l'offre
+        double distance = currentUser.calculateDistanceTo(offerOwner);
+    
+        // Vérifiez si la distance est inférieure ou égale au rayon spécifié
+        return distance <= radius;
+    }
+    
     
     
     
