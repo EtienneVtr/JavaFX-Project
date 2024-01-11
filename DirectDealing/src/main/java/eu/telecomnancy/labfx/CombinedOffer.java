@@ -49,20 +49,20 @@ public class CombinedOffer {
 
     // Constructeur pour ServiceOffer
     public CombinedOffer(ServiceOffer serviceOffer) {
-        this.id = serviceOffer.getId();
-        this.owner = serviceOffer.getSupplier();
-        this.title = serviceOffer.getTitle();
+        this.id          = serviceOffer.getId();
+        this.owner       = serviceOffer.getSupplier();
+        this.title       = serviceOffer.getTitle();
         this.description = serviceOffer.getDescription();
-        this.price = serviceOffer.getPrice();
-        this.estPris = serviceOffer.getEstPris();
-        this.start = serviceOffer.getStart();
-        this.end = serviceOffer.getEnd();
-        this.time = serviceOffer.getTime();
+        this.price       = serviceOffer.getPrice();
+        this.estPris     = serviceOffer.getEstPris();
+        this.start       = serviceOffer.getStart();
+        this.end         = serviceOffer.getEnd();
+        this.time        = serviceOffer.getTime();
         this.isRecurrent = serviceOffer.getIsRecurrent();
-        this.daysOfService = serviceOffer.getDaysOfService();
+        this.daysOfService       = serviceOffer.getDaysOfService();
         this.nbRecurrencingWeeks = serviceOffer.getRecurrency();
         this.type = OfferType.SERVICE_OFFER;
-        this.date_publication = serviceOffer.getDate_publication();
+        this.date_publication    = serviceOffer.getDate_publication();
     }
 
     // Getters et setters pour les champs communs et spécifiques

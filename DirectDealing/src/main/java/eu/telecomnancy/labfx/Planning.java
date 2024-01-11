@@ -19,7 +19,7 @@ public class Planning {
         update();
     }
 
-    private void update() {
+    private void update(){
         String sql_equipment = "SELECT owner_mail, name, description, estPris FROM equipement WHERE owner_mail = ? OR estPris = ?";
 
         try (Connection conn = DataBase.getConnection();
@@ -29,24 +29,26 @@ public class Planning {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                if (rs.getString("estPris") == null) {
-                    continue;
-                }
 
                 String ownerMail = rs.getString("owner_mail");
                 String name = rs.getString("name");
                 String description = rs.getString("description");
                 EquipmentOffer equipment = new EquipmentOffer(ownerMail, name, description);
 
-                if (rs.getString("estPris") != null && ownerMail.equals(user.getMail())) {
+                if (rs.getString("estPris") == null) {
+                    my_demand.add(new CombinedOffer(equipment));
+                }
+
+                else if (rs.getString("estPris") != null && ownerMail.equals(user.getMail())) {
                     // Si l'offre est prise et que je suis le propriétaire, je l'ajoute à mes offres
                     my_offer.add(new CombinedOffer(equipment));
                 } else if (rs.getString("estPris").equals(user.getMail())) {
                     // Si l'offre est prise et que je suis le client, je l'ajoute à mes demandes
                     my_demand.add(new CombinedOffer(equipment));
                 }
+                
             }
-        } catch (SQLException e) {
+        } catch (SQLException e){
             System.out.println(e.getMessage());
         }
 
@@ -59,16 +61,17 @@ public class Planning {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                if (rs.getString("estPris") == null) {
-                    continue;
-                }
-
                 String supplierMail = rs.getString("supplier_mail");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
                 ServiceOffer service = new ServiceOffer(supplierMail, title, description);
 
-                if (rs.getString("estPris") != null && supplierMail.equals(user.getMail())) {
+                if (rs.getString("estPris") == null) {
+                    my_demand.add(new CombinedOffer(service));
+                }
+
+
+                else if (rs.getString("estPris") != null && supplierMail.equals(user.getMail())) {
                     // Si l'offre est prise et que je suis le propriétaire, je l'ajoute à mes offres
                     my_offer.add(new CombinedOffer(service));
                 } else if (rs.getString("estPris").equals(user.getMail())) {

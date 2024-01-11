@@ -308,48 +308,44 @@ public class EquipmentOffer {
                 conn.rollback();
                 return false;
             }
-    
-            // Réserver l'offre
-            sql = "UPDATE equipement SET estPris = ? WHERE id = ?";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, currentUserEmail);
-                pstmt.setInt(2, offer.getId());
-                pstmt.executeUpdate();
+
+
+            String ownerMail ;
+            int id;
+            String name;
+            String description;
+            LocalDate startAvailability;
+            LocalDate endAvailability;
+            int price;
+
+
+
+            // on commence par récupérer les infos de l'offre en java 
+            String sql2 = "SELECT * FROM equipement WHERE id = ?";
+            try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+                pstmt.setInt(1, offer.getId());
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    String ownerMail = rs.getString("owner_mail");
+                    int id = rs.getInt("id");
+                    String name = rs.getString("name");
+                    String description = rs.getString("description");
+                    int quantity = rs.getInt("quantity");
+                    LocalDate startAvailability = rs.getDate("start_availability").toLocalDate();
+                    LocalDate endAvailability = rs.getDate("end_availability").toLocalDate();
+                    int price = rs.getInt("price");
+
+                }
             }
 
-            // Mettre à jour les dates de réservation
-            sql = "UPDATE equipement SET book_begin = ?, book_end = ? WHERE id = ?";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, begin.toString());
-                pstmt.setString(2, end.toString());
-                pstmt.setInt(3, offer.getId());
-                pstmt.executeUpdate();
-            }
-            this.book_begin = begin;
-            this.book_end = end;
+            // si la réservation couvre toute la plage et
+
+
+
+
+
     
-            conn.commit(); // Valider la transaction
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Erreur lors de la réservation de l'offre");
-            if (conn != null) {
-                try {
-                    conn.rollback(); // Annuler la transaction en cas d'erreur
-                } catch (SQLException se) {
-                    se.printStackTrace();
-                }
-            }
-            return false;
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true); // Restaurer le mode de commit automatique
-                } catch (SQLException se) {
-                    se.printStackTrace();
-                }
-            }
-        }
     }
 
     public boolean updateFlorains(Connection conn, String buyerEmail, String sellerEmail, int price) throws SQLException {

@@ -9,6 +9,9 @@ import com.calendarfx.model.Entry;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.calendarfx.view.CalendarView;
+import com.calendarfx.view.DateControl;
+
 public class PlanningController {
 
     @FXML
@@ -32,13 +35,14 @@ public class PlanningController {
     public void initialize() {
         currentUser = Main.getCurrentUser();
         planning = new Planning(currentUser);
+        planningCalendar.setEntryFactory(param -> null);
 
-        serviceOfferedCalendar = new Calendar("Services Offered");
-        equipmentOfferedCalendar = new Calendar("Equipments Offered");
-        serviceNoneOfferedCalendar = new Calendar("Services None Offered");
-        equipmentNoneOfferedCalendar = new Calendar("Equipments None Offered");
-        serviceDemandedCalendar = new Calendar("Services Demanded");
-        equipmentDemandedCalendar = new Calendar("Equipments Demanded");
+        serviceOfferedCalendar = new Calendar("Services Proposés accepté");
+        equipmentOfferedCalendar = new Calendar("Equipments Proposés");
+        serviceNoneOfferedCalendar = new Calendar("Services proposé non accepté");
+        equipmentNoneOfferedCalendar = new Calendar("Equipments proposé non accepté");
+        serviceDemandedCalendar = new Calendar("Services demandé");
+        equipmentDemandedCalendar = new Calendar("Equipments demandé");
 
         // set des styles des calendriers
         serviceOfferedCalendar.setStyle(Calendar.Style.STYLE1);
