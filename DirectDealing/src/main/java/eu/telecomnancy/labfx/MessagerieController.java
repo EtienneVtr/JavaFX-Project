@@ -2,6 +2,10 @@ package eu.telecomnancy.labfx;
 
 import eu.telecomnancy.labfx.messagerie.Conversation;
 import eu.telecomnancy.labfx.messagerie.Message;
+import java.util.Map;
+import java.util.HashMap;
+
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -20,7 +24,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.sql.Timestamp;
-
+import java.util.Comparator;
 
 
 
@@ -187,10 +191,12 @@ public class MessagerieController {
             while (rs.next()) {
                 int messageId = rs.getInt("message_id");
                 int senderId = rs.getInt("sender_id");
+                int receiver_id = rs.getInt("receiver_id");
                 String messageText = rs.getString("message_text");
                 Timestamp timestamp = rs.getTimestamp("timestamp");
+                boolean isRead = rs.getBoolean("is_read");
     
-                messages.add(new Message(messageId, conversationId, senderId, messageText, timestamp));
+                messages.add(new Message(messageId, conversationId, senderId, receiver_id, messageText, timestamp, isRead));
             }
         } catch (SQLException e) {
             System.out.println("Error retrieving messages: " + e.getMessage());
@@ -202,22 +208,80 @@ public class MessagerieController {
     
     
     // Fonction qui permet d'ajouter un message à la base de donnée
-    private void addMessageToDatabase(int conversationId, int senderId, String messageText) {
-        String sql = "INSERT INTO messages (conversation_id, sender_id, message_text, timestamp) VALUES (?, ?, ?, ?)";
+    private void addMessageToDatabase(int conversationId, int senderId, int receiver_id, String messageText) {
+        String sql = "INSERT INTO messages (conversation_id, sender_id, receiver_id, message_text, timestamp) VALUES (?, ?, ?, ?, ?)";
     
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
     
             pstmt.setInt(1, conversationId);
             pstmt.setInt(2, senderId);
-            pstmt.setString(3, messageText);
-            pstmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+            pstmt.setInt(3, receiver_id);
+            pstmt.setString(4, messageText);
+            pstmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
             pstmt.executeUpdate();
     
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
+
+    // Fonction qui permet de marquer tous les messages d'une conversation comme lus pour l'utilisateur actuel
+    private void markMessagesAsRead(int conversationId) {
+        String sql = "UPDATE messages SET is_read = TRUE WHERE conversation_id = ? AND sender_id != ? AND is_read = FALSE";
+
+        try (Connection conn = DataBase.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, conversationId);
+            pstmt.setInt(2, currentUser.getId());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Error updating message read status: " + e.getMessage());
+        }
+    }
+
+
+    private boolean hasUnreadMessages(int conversationId, int userId) {
+        String sql = "SELECT COUNT(*) FROM messages WHERE conversation_id = ? AND receiver_id = ? AND is_read = FALSE";
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setInt(1, conversationId);
+            pstmt.setInt(2, userId);
+    
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;  // Retourne vrai si des messages non lus existent
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking for unread messages: " + e.getMessage());
+        }
+        return false;
+    }
+
+    private int countUnreadMessages(int conversationId, int userId) {
+        String sql = "SELECT COUNT(*) FROM messages WHERE conversation_id = ? AND receiver_id = ? AND is_read = FALSE";
+        
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setInt(1, conversationId);
+            pstmt.setInt(2, userId);
+        
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error counting unread messages: " + e.getMessage());
+        }
+        return 0;
+    }
+    
+
     
     
     
@@ -225,21 +289,43 @@ public class MessagerieController {
 
     // Fonction qui permet de récupérer la listes des conversations de l'utilisateur courant et de les afficher dans la liste des contacts
     private void loadConversations() {
-        ArrayList<String> allContacts = new ArrayList<>();
-        allConversations = getAllConversations(currentUser.getId());
-        for (Conversation conversation : allConversations) {
-            // Récupérer le pseudo de l'autre participant de la conversation
-            int otherParticipantId = (conversation.getParticipant1Id() == currentUser.getId()) ? 
-                                    conversation.getParticipant2Id() : 
-                                    conversation.getParticipant1Id();
-            String otherParticipantPseudo = getUserPseudoById(otherParticipantId);
+    // Utiliser une Map pour conserver le nombre de messages non lus pour chaque conversation
+    Map<String, Integer> unreadMessageCountMap = new HashMap<>();
+    
+    allConversations = getAllConversations(currentUser.getId());
+    allConversations.sort(Comparator.comparingInt(Conversation::getConversationId).reversed()); // Trier par ID de conversation
 
-            // Ajouter seulement le pseudo de l'autre participant à la liste des contacts
-            allContacts.add(otherParticipantPseudo);
-        }
-        listOfContacts = FXCollections.observableArrayList(allContacts);
-        listContact.setItems(listOfContacts);
+    for (Conversation conversation : allConversations) {
+        int otherParticipantId = (conversation.getParticipant1Id() == currentUser.getId()) ? 
+                                conversation.getParticipant2Id() : 
+                                conversation.getParticipant1Id();
+        String otherParticipantPseudo = getUserPseudoById(otherParticipantId);
+
+        // Compter les messages non lus
+        int unreadMessages = countUnreadMessages(conversation.getConversationId(), currentUser.getId());
+        unreadMessageCountMap.put(otherParticipantPseudo, unreadMessages);
     }
+
+    listOfContacts = FXCollections.observableArrayList(unreadMessageCountMap.keySet());
+    listContact.setItems(listOfContacts);
+
+    // Utiliser un CellFactory personnalisé
+    listContact.setCellFactory(lv -> new ListCell<String>() {
+        @Override
+        protected void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setText(null);
+                setStyle("");
+            } else {
+                int unreadMessages = unreadMessageCountMap.getOrDefault(item, 0);
+                String displayText = item + (unreadMessages > 0 ? " (" + unreadMessages +  " Non lu)" : "");
+                setText(displayText);
+                setStyle(unreadMessages > 0 ? "-fx-background-color: lightcoral;" : "");
+            }
+        }
+    });
+}
 
 
     // Fonction qui permet de créer une conversation entre l'utilisateur courant et un autre utilisateur
@@ -272,18 +358,27 @@ public class MessagerieController {
 
     // Fonction qui permet de charger les messages de la conversation sélectionnée
     private void loadMessages(int conversationId) {
+        markMessagesAsRead(conversationId); // Marquer les messages comme lus
+        skeleton_controller.updateProfile();
         ArrayList<Message> messages = getCurrentMessages(conversationId);
         ObservableList<Message> observableMessages = FXCollections.observableArrayList(messages);
         messageList.setItems(observableMessages);
     
         setupMessageCellFactory(); // Configurer le CellFactory personnalisé pour les messages
+        // Scroller jusqu'au dernier message
+        if (!observableMessages.isEmpty()) {
+            messageList.scrollTo(observableMessages.size() - 1);
+        }
     }
     
     // Fonction qui permet d'envoyer un message
     private void sendMessage(String messageText) {
         int conversationId = currentConversation.getConversationId();
         int senderId = currentUser.getId(); // Assurez-vous que currentUser contient l'ID de l'utilisateur actuel
-        addMessageToDatabase(conversationId, senderId, messageText);
+        int receiverId = (senderId == currentConversation.getParticipant1Id()) ? 
+                         currentConversation.getParticipant2Id() : 
+                         currentConversation.getParticipant1Id();
+        addMessageToDatabase(conversationId, senderId, receiverId, messageText);
     
         loadMessages(conversationId); // Recharger les messages pour la conversation actuelle
     }
@@ -297,16 +392,20 @@ public class MessagerieController {
                 if (empty || message == null) {
                     setText(null);
                 } else {
-                    // Récupérer le pseudo de l'expéditeur
                     String senderPseudo = getUserPseudoById(message.getSenderId());
-                    String messageDisplay = senderPseudo + ": " + message.getMessageText();
+                    String status = message.isRead() ? "Lu" : "Remis";
+                    String messageDisplay = senderPseudo + ": " + message.getMessageText() + " (" + status + ")";
                     setText(messageDisplay);
                 }
             }
         });
     }
 
-    
+
+
+
+
+    //Gestion des boutons:
     @FXML
     public void handleSend() {
         String messageText = responseField.getText();

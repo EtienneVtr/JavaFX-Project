@@ -16,12 +16,10 @@ public class ProfileController {
     private static User currentUser;
     
     @FXML private Label labelPseudo;
-
     @FXML private Label labelSoldeFlorain;
-
     @FXML private VBox vbox;
-  
     @FXML private ImageView photoProfil;
+    @FXML private Label unreadMessagesLabel;
 
 
     public void initialize(){
@@ -62,6 +60,11 @@ public class ProfileController {
         this.skeleton_controller = skeleton_controller;
     }
 
+    public void updateUnreadMessagesCount() {
+        int unreadCount = DataBase.countUnreadMessages(Main.getCurrentUser().getId());
+        unreadMessagesLabel.setText(String.valueOf(unreadCount));
+    }
+
 
     @FXML public void handleDeconnexion(){
         System.out.println("Deconnexion de la session");
@@ -94,6 +97,7 @@ public class ProfileController {
         }
     
         photoProfil.setImage(profileImage);
+        updateUnreadMessagesCount();
     }
     
 
