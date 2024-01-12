@@ -77,6 +77,7 @@ public class ServiceOfferController {
         // Vérifier que l'utilisateur actuel n'est pas le fournisseur de l'offre
         if (currentUserEmail.equals(service_offer.getSupplierMail())) {
             System.out.println("Vous ne pouvez pas réserver votre propre offre");
+            skeleton_controller.flash("Vous ne pouvez pas réserver votre propre offre", "red");
             return;
         }
     
@@ -91,12 +92,15 @@ public class ServiceOfferController {
 
         if(begin == null || end == null){
             System.out.println("Veuillez renseigner une date de début et de fin");
+            skeleton_controller.flash("Veuillez renseigner une date de début et de fin", "red");
             return;
         }else if(begin.isAfter(end)){
             System.out.println("La date de début doit être avant la date de fin");
+            skeleton_controller.flash("La date de début doit être avant la date de fin", "red");
             return;
         }else if(begin.isBefore(service_offer.getStart()) || end.isAfter(service_offer.getEnd())){
             System.out.println("La date de début et de fin doivent être comprises dans la période de disponibilité de l'offre");
+            skeleton_controller.flash("La date de début et de fin doivent être comprises dans la période de disponibilité de l'offre", "red");
             return;
         }
 
@@ -104,6 +108,7 @@ public class ServiceOfferController {
         // Tenter de réserver l'offre
         if (service_offer.reserveOffer(service_offer, currentUserEmail, begin, end)) {
             System.out.println("Offre réservée avec succès");
+            skeleton_controller.flash("Offre réservée avec succès", "green");
 
             // Création de deux nouvelles offres avant et après la période de réservation
             // si le premier jour de réservation est le même que le début de l'offre de base, on en crée qu'une après

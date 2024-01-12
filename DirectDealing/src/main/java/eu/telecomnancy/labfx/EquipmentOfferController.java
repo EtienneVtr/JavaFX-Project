@@ -79,6 +79,7 @@ public class EquipmentOfferController {
         // Vérifier que l'utilisateur actuel n'est pas le fournisseur de l'offre
         if (currentUserEmail.equals(currentOffer.getMail())) {
             System.out.println("Vous ne pouvez pas réserver votre propre offre");
+            skeleton_controller.flash("Vous ne pouvez pas réserver votre propre offre", "red");
             return;
         }
         // Vérifier qu'un utilisateur n'a pas déjà réservé l'offre
@@ -92,11 +93,14 @@ public class EquipmentOfferController {
 
         if(begin == null || end == null){
             System.out.println("Veuillez renseigner une date de début et de fin");
+            skeleton_controller.flash("Veuillez renseigner une date de début et de fin", "red");
             return;
         }else if(begin.isAfter(end)){
+            skeleton_controller.flash("La date de début doit être avant la date de fin", "red");
             System.out.println("La date de début doit être avant la date de fin");
             return;
         }else if(begin.isBefore(currentOffer.getStartAvailability()) || end.isAfter(currentOffer.getEndAvailability())){
+            skeleton_controller.flash("La date de début et de fin doivent être comprises dans la période de disponibilité de l'offre", "red");
             System.out.println("La date de début et de fin doivent être comprises dans la période de disponibilité de l'offre");
             return;
         }
@@ -106,6 +110,7 @@ public class EquipmentOfferController {
         // Tenter de réserver l'offre
         if (currentOffer.reserveOffer(currentUserEmail, begin, end)) {
             System.out.println("Réservation réussie");
+            skeleton_controller.flash("Réservation réussie", "green");
 
             // Création de deux nouvelles offres avant et après la période de réservation
             // si le premier jour de réservation est le même que le début de l'offre de base, on en crée qu'une après
