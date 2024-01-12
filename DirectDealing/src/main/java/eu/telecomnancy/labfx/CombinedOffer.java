@@ -14,6 +14,7 @@ public class CombinedOffer {
     private String date_publication;
     private LocalDate start;
     private LocalDate end;
+    private double distanceToCurrentUser;
 
     // Champs spécifiques à EquipmentOffer
     private int quantity;
@@ -63,6 +64,7 @@ public class CombinedOffer {
         this.type = OfferType.SERVICE_OFFER;
         this.date_publication = serviceOffer.getDate_publication();
     }
+
 
     // Getters et setters pour les champs communs et spécifiques
 

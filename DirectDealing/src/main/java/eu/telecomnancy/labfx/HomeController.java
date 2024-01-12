@@ -90,8 +90,9 @@ public class HomeController {
 
         // Trier par distance
         all_offers.sort((o1, o2) -> {
-            double distance1 = currentUser.calculateDistanceTo(o1.getOwner());
-            double distance2 = currentUser.calculateDistanceTo(o2.getOwner());
+            double distance1 = currentUser.getDistanceTo(o1.getOwner());
+            double distance2 = currentUser.getDistanceTo(o2.getOwner());
+                 
             return Double.compare(distance1, distance2);
         });
         if(all_offers != null){

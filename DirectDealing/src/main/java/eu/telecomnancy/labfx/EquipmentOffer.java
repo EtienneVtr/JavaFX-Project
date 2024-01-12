@@ -452,8 +452,8 @@ public class EquipmentOffer {
     
 
     private static boolean isWithinRadius(User currentUser, User offerOwner, double radius) {
-        // Calcul de la distance entre l'utilisateur actuel et le propriétaire de l'offre
-        double distance = currentUser.calculateDistanceTo(offerOwner);
+        // Récupérer la distance de la base de données
+        double distance = currentUser.getDistanceTo(offerOwner);
     
         // Vérifiez si la distance est inférieure ou égale au rayon spécifié
         return distance <= radius;

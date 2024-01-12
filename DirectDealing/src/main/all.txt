@@ -1,19 +1,207 @@
 Le dossier ./java/eu/telecomnancy/labfx/ contient les fichiers suivants:
 
+CombinedOffer.java
+ConsultEquipmentController.java
+ConsultServiceController.java
+CreateEquipmentController.java
+CreateServiceController.java
 DataBase.java
 EquipmentController.java
 EquipmentOffer.java
+EquipmentOfferController.java
+HomeController.java
 InscriptionController.java
-MainController.java
 Main.java
+MainController.java
+MapController.java
+MenuController.java
+MessagerieController.java
+Planning.java
+PlanningController.java
+PrivateProfileController.java
+ProfileController.java
+PublicProfileController.java
 ServiceController.java
 ServiceOffer.java
+ServiceOfferController.java
 SkeletonController.java
 User.java
+messagerie
 
 
 Le contenu des fichiers est le suivant:
 
+package eu.telecomnancy.labfx;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+public class CombinedOffer {
+    // Champs communs
+    private int id;
+    private User owner;
+    private String title;
+    private String description;
+    private int price;
+    private String estPris;
+    private String date_publication;
+    private LocalDate start;
+    private LocalDate end;
+    private double distanceToCurrentUser;
+
+    // Champs spécifiques à EquipmentOffer
+    private int quantity;
+
+    // Champs spécifiques à ServiceOffer
+    private LocalTime time;
+    private boolean isRecurrent;
+    private String daysOfService;
+    private int nbRecurrencingWeeks;
+
+    // Type de l'offre pour différencier EquipmentOffer de ServiceOffer
+    private OfferType type;
+
+    public enum OfferType {
+        EQUIPMENT_OFFER, SERVICE_OFFER
+    }
+
+    // Constructeur pour EquipmentOffer
+    public CombinedOffer(EquipmentOffer equipmentOffer) {
+        this.id = equipmentOffer.getId();
+        this.owner = equipmentOffer.getOwner();
+        this.title = equipmentOffer.getName();
+        this.description = equipmentOffer.getDescription();
+        this.price = equipmentOffer.getPrice();
+        this.estPris = equipmentOffer.getEstPris();
+        this.quantity = equipmentOffer.getQuantity();
+        this.start = equipmentOffer.getStartAvailability();
+        this.end = equipmentOffer.getEndAvaibility();
+        this.type = OfferType.EQUIPMENT_OFFER;
+        this.date_publication = equipmentOffer.getDate_publication();
+    }
+
+    // Constructeur pour ServiceOffer
+    public CombinedOffer(ServiceOffer serviceOffer) {
+        this.id = serviceOffer.getId();
+        this.owner = serviceOffer.getSupplier();
+        this.title = serviceOffer.getTitle();
+        this.description = serviceOffer.getDescription();
+        this.price = serviceOffer.getPrice();
+        this.estPris = serviceOffer.getEstPris();
+        this.start = serviceOffer.getStart();
+        this.end = serviceOffer.getEnd();
+        this.time = serviceOffer.getTime();
+        this.isRecurrent = serviceOffer.getIsRecurrent();
+        this.daysOfService = serviceOffer.getDaysOfService();
+        this.nbRecurrencingWeeks = serviceOffer.getRecurrency();
+        this.type = OfferType.SERVICE_OFFER;
+        this.date_publication = serviceOffer.getDate_publication();
+    }
+
+
+    // Getters et setters pour les champs communs et spécifiques
+
+    public OfferType getType() {
+        return type;
+    }
+
+    public String getTypeString() {
+        if (this.type == OfferType.EQUIPMENT_OFFER) {
+            return "Equipment";
+        } else {
+            return "Service";
+        }
+    }
+
+    // Autres getters et setters...
+    public int getId() {
+        return id;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public String getOwnerName() {
+        return owner.getNom();
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public String getEstPris() {
+        return estPris;
+    }
+
+    public int getQuantity() {
+        if (this.type == OfferType.EQUIPMENT_OFFER) {
+            return quantity;
+        } else {
+            throw new UnsupportedOperationException("getQuantity is not supported for ServiceOffer");
+        }
+    }
+
+    public LocalDate getStart() {
+        return start;
+    }
+
+    public String getStartString() {
+        return start.toString();
+    }
+
+    public LocalDate getEnd() {
+        return end;
+    }
+
+    public String getEndString() {
+        return end.toString();
+    }
+
+    public LocalTime getTime() {
+        if (this.type == OfferType.SERVICE_OFFER) {
+            return time;
+        } else {
+            throw new UnsupportedOperationException("getTime is not supported for EquipmentOffer");
+        }
+    }
+
+    public boolean getIsRecurrent() {
+        if (this.type == OfferType.SERVICE_OFFER) {
+            return isRecurrent;
+        } else {
+            throw new UnsupportedOperationException("getIsRecurrent is not supported for EquipmentOffer");
+        }
+    }
+
+    public String getDaysOfService() {
+        if (this.type == OfferType.SERVICE_OFFER) {
+            return daysOfService;
+        } else {
+            throw new UnsupportedOperationException("getDaysOfService is not supported for EquipmentOffer");
+        }
+    }
+
+    public int getNbRecurrencingWeeks() {
+        if (this.type == OfferType.SERVICE_OFFER) {
+            return nbRecurrencingWeeks;
+        } else {
+            throw new UnsupportedOperationException("getNbRecurrencingWeeks is not supported for EquipmentOffer");
+        }
+    }
+
+    public String getDate_publication() {
+        return date_publication;
+    }
+}
 package eu.telecomnancy.labfx;
 
 import java.io.File;
@@ -21,6 +209,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.time.LocalDate;
 
 public class DataBase {
 
@@ -40,74 +231,632 @@ public class DataBase {
     // Méthode pour initialiser la base de données
     public static void initializeDatabase() {
         try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
-            // Vérifiez si la table "profil" existe et créez-la si nécessaire
-            String sql = "CREATE TABLE IF NOT EXISTS profil (" +
-                         "id INTEGER PRIMARY KEY, " +
-                         "prenom TEXT NOT NULL, " +
-                         "nom TEXT NOT NULL, " +
-                         "pseudo TEXT UNIQUE NOT NULL, " +
-                         "mail TEXT UNIQUE NOT NULL, " +
-                         "phone TEXT, " +
-                         "password TEXT NOT NULL, " +
-                         "photo_profil TEXT, " +
-                         "localisation TEXT NOT NULL, " +
-                         "date_inscription TEXT, " +
-                         "status_compte TEXT CHECK(status_compte IN ('particulier', 'professionnel')), " +
-                         "etat_compte TEXT CHECK(etat_compte IN ('sommeil', 'actif')), " +
-                         "nb_florain INTEGER, " +
-                         "historique_florain TEXT, " +
-                         "note REAL)";
-            stmt.execute(sql);
+            // Création de la table "profil" si elle n'existe pas
+            String sqlProfil = "CREATE TABLE IF NOT EXISTS profil (" +
+                             "id INTEGER PRIMARY KEY, " +
+                             "prenom TEXT NOT NULL, " +
+                             "nom TEXT NOT NULL, " +
+                             "pseudo TEXT UNIQUE NOT NULL, " +
+                             "mail TEXT UNIQUE NOT NULL, " +
+                             "phone TEXT, " +
+                             "password TEXT NOT NULL, " +
+                             "photo_profil TEXT, " +
+                             "localisation TEXT NOT NULL, " +
+                             "date_inscription TEXT, " +
+                             "status_compte TEXT CHECK(status_compte IN ('particulier', 'professionnel')), " +
+                             "etat_compte TEXT CHECK(etat_compte IN ('sommeil', 'actif')), " +
+                             "nb_florain INTEGER, " +
+                             "historique_florain TEXT, " +
+                             "note REAL)";
+            stmt.execute(sqlProfil);
+
+            // Ajout de admin dans la table "profil" si elle n'existe pas
+            String emailToCheck = "admin"; // L'e-mail que tu veux vérifier
+            // Préparer une requête SQL pour vérifier si l'e-mail existe déjà
+            String sqlCheck = "SELECT COUNT(*) FROM profil WHERE mail = ?";
+            try (PreparedStatement checkStmt = conn.prepareStatement(sqlCheck)) {
+                checkStmt.setString(1, emailToCheck);
+
+                // Exécuter la requête et obtenir le résultat
+                ResultSet resultSet = checkStmt.executeQuery();
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+
+                    // Vérifier si l'e-mail existe déjà
+                    if (count == 0) {
+                        // L'e-mail n'existe pas, exécuter la requête d'insertion
+                        String sqlAdmin = "INSERT INTO profil (prenom, nom, pseudo, mail, phone, password, localisation, date_inscription, status_compte, etat_compte, nb_florain, historique_florain, note) " +
+                                        "VALUES ('admin', 'admin', 'admin', 'admin', '0000000000', 'admin', 'Paris', ?, NULL, 'actif', 10000, NULL, 5)";
+                        try (PreparedStatement insertStmt = conn.prepareStatement(sqlAdmin)) {
+                            insertStmt.setString(1, LocalDate.now().toString()); // Remplacer par la date actuelle
+                            insertStmt.execute();
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            // Création de la table "equipement" si elle n'existe pas
+            String sqlEquipement = "CREATE TABLE IF NOT EXISTS equipement (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                            "owner_mail TEXT NOT NULL, " +
+                            "name TEXT NOT NULL, " +
+                            "description TEXT, " +
+                            "quantity INTEGER NOT NULL, " +
+                            "start_availability TEXT, " +
+                            "end_availability TEXT, " +
+                            "price INTEGER NOT NULL, " +
+                            "estPris TEXT, " +
+                            "book_begin TEXT, " +
+                            "book_end TEXT, " +
+                            "date_publication TEXT, " +
+                            "FOREIGN KEY (owner_mail) REFERENCES profil (mail), " +
+                            "FOREIGN KEY (estPris) REFERENCES profil (mail))";
+            stmt.execute(sqlEquipement);
+
+
+            // Création de la table "service_offers" si elle n'existe pas
+            String sqlServiceOffers = "CREATE TABLE IF NOT EXISTS service_offers (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                            "supplier_mail TEXT NOT NULL, " +
+                            "title TEXT NOT NULL, " +
+                            "description TEXT, " +
+                            "start TEXT, " +
+                            "end TEXT, " +
+                            "time TEXT, " +
+                            "is_recurrent BOOLEAN, " +
+                            "days_of_service TEXT, " +
+                            "price INTEGER, " +
+                            "estPris TEXT, " +
+                            "book_begin TEXT, " +
+                            "book_end TEXT, " +
+                            "date_publication TEXT, " +
+                            "FOREIGN KEY (supplier_mail) REFERENCES profil (mail), " +
+                            "FOREIGN KEY (estPris) REFERENCES profil (mail))";
+            stmt.execute(sqlServiceOffers);
+            
+            
+
+            // Création de la table "Conversations" si elle n'existe pas
+            String sqlConversations = "CREATE TABLE IF NOT EXISTS conversations (" +
+                                      "conversation_id INTEGER PRIMARY KEY," +
+                                      "participant1_id INTEGER NOT NULL," +
+                                      "participant2_id INTEGER NOT NULL);";
+            stmt.execute(sqlConversations);
+
+            // Création de la table "Messages" si elle n'existe pas
+            String sqlMessages = "CREATE TABLE IF NOT EXISTS messages (" +
+                                 "message_id INTEGER PRIMARY KEY," +
+                                 "conversation_id INTEGER NOT NULL," +
+                                 "sender_id INTEGER NOT NULL," +
+                                 "receiver_id INTEGER NOT NULL," +
+                                 "message_text TEXT NOT NULL," +
+                                 "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP," +
+                                 "is_read BOOLEAN DEFAULT FALSE," + 
+                                 "FOREIGN KEY (conversation_id) REFERENCES conversations(conversation_id));";
+            stmt.execute(sqlMessages);
+
+
+
         } catch (SQLException e) {
             e.printStackTrace();
             // Gérer l'exception
         }
     }
+
+    public static int countUnreadMessages(int userId) {
+        String sql = "SELECT COUNT(*) FROM messages WHERE receiver_id = ? AND is_read = FALSE";
+        int count = 0;
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors du comptage des messages non lus: " + e.getMessage());
+        }
+
+        return count;
+    }
+
 }
 package eu.telecomnancy.labfx;
 
-import javafx.fxml.FXML;
-
-public class EquipmentController {
-    @FXML public void handleCreateOffer() {
-        System.out.println("Create offer");
-    }
-
-    @FXML public void handleConsultOffer() {
-        System.out.println("Consult offer");
-    }
-}
-package eu.telecomnancy.labfx;
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 // Description: Classe représentant une offre de matériel. Elle contient un nom, une description, une quantité, 
 //              une date de début et de fin de disponibilité et un prix.
 public class EquipmentOffer {
     private User owner;
+    private int id;
     private String name;
     private String description;
     private int quantity;
     private LocalDate start_availability;
     private LocalDate end_availability;
     private int price;
+    private String owner_mail;
+    private String estPris;
+    private String date_publication;
+    private LocalDate book_begin;
+    private LocalDate book_end;
 
+    public EquipmentOffer(String owner_mail) {
+        this.owner_mail = owner_mail;
+        this.owner = new User(owner_mail);
+        loadEquipmentFromDB();
+    }
+
+    public EquipmentOffer(String owner_mail, String name, String description){
+        this.owner_mail = owner_mail;
+        this.owner = new User(owner_mail);
+        this.name = name;
+        this.description = description;
+        loadEquipmentFromDB();
+    }
+
+    public EquipmentOffer(String owner_mail, String name, String description, String start, String estPris){
+        this.owner_mail = owner_mail;
+        this.owner = new User(owner_mail);
+        this.name = name;
+        this.description = description;
+        this.start_availability = LocalDate.parse(start);
+        this.estPris = estPris;
+        loadEquipmentFromDBHome();
+    }
+
+    public EquipmentOffer(String name, String description, String owner_mail, int quantity, LocalDate startAvailability, LocalDate endAvailability, int price) {
+        this.owner_mail = owner_mail;
+        this.owner = new User(owner_mail);
+        this.name = name;
+        this.description = description;
+        this.quantity = quantity;
+        this.start_availability = startAvailability;
+        this.end_availability = endAvailability;
+        this.price = price;
+    }
+    
+
+    
     public EquipmentOffer(User owner, String name, String description, int quantity, LocalDate start_availability, LocalDate end_availability, int price) {
         this.owner = owner;
+        this.owner_mail = owner.getMail();
         this.name = name;
         this.description = description;
         this.quantity = quantity;
         this.start_availability = start_availability;
         this.end_availability = end_availability;
         this.price = price;
+        this.estPris = null;
+        createNewOffer();
     }
 
+
+    public void createNewOffer() {
+              System.out.println("Début de la recherche des offres.création");
+        String sql = "INSERT INTO equipement (owner_mail, name, description, quantity, start_availability, end_availability, price, date_publication) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+    
+            pstmt.setString(1, this.owner.getMail());
+            pstmt.setString(2, this.name);
+            pstmt.setString(3, this.description);
+            pstmt.setInt(4, this.quantity);
+            pstmt.setString(5, (this.start_availability != null) ? this.start_availability.toString() : null);
+            pstmt.setString(6, (this.end_availability != null) ? this.end_availability.toString() : null);
+            pstmt.setInt(7, this.price);
+            pstmt.setString(8, LocalDate.now().toString());
+            
+            int affectedRows = pstmt.executeUpdate();
+    
+            // Vérifier si l'insertion a réussi et récupérer l'ID généré
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        this.id = generatedKeys.getInt(1);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println("Fin de la recherche des offres création.");
+        }
+    }
+
+    public void loadEquipmentById(int offerId) {
+        String sql = "SELECT * FROM equipement WHERE id = ?";
+
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, offerId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                this.name = rs.getString("name");
+                this.id = rs.getInt("id");
+                this.description = rs.getString("description");
+                this.quantity = rs.getInt("quantity");
+                String start_availabilityString = rs.getString("start_availability");
+                if (start_availabilityString != null && !start_availabilityString.isEmpty()) {
+                    this.start_availability = LocalDate.parse(start_availabilityString);
+                    } else {
+                    this.start_availability = null;
+                    }
+                String end_availabilityString = rs.getString("end_availability");
+                if (end_availabilityString != null && !end_availabilityString.isEmpty()) {
+                    this.end_availability = LocalDate.parse(end_availabilityString);
+                    } else {
+                    this.end_availability = null;
+                    }
+                this.price = rs.getInt("price");
+                this.date_publication = rs.getString("date_publication");
+                this.estPris = rs.getString("estPris");
+                String book_beginString = rs.getString("book_begin");
+                if (book_beginString != null && !book_beginString.isEmpty()) {
+                    this.book_begin = LocalDate.parse(book_beginString);
+                    } else {
+                    this.book_begin = null;
+                    }
+                String book_endString = rs.getString("book_end");
+                if (book_endString != null && !book_endString.isEmpty()) {
+                    this.book_end = LocalDate.parse(book_endString);
+                    } else {
+                    this.book_end = null;
+                    }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    private void loadEquipmentFromDB() {
+        String sql = "SELECT * FROM equipement WHERE owner_mail = ? AND name = ? AND description = ?";
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setString(1, this.owner.getMail());
+            pstmt.setString(2, this.name);
+            pstmt.setString(3, this.description);
+            ResultSet rs = pstmt.executeQuery();
+    
+            if (rs.next()) {
+                this.name = rs.getString("name");
+                this.id = rs.getInt("id");
+                this.description = rs.getString("description");
+                this.quantity = rs.getInt("quantity");
+                String start_availabilityString = rs.getString("start_availability");
+                if (start_availabilityString != null && !start_availabilityString.isEmpty()) {
+                    this.start_availability = LocalDate.parse(start_availabilityString);
+                    } else {
+                    this.start_availability = null;
+                    }
+                String end_availabilityString = rs.getString("end_availability");
+                if (end_availabilityString != null && !end_availabilityString.isEmpty()) {
+                    this.end_availability = LocalDate.parse(end_availabilityString);
+                    } else {
+                    this.end_availability = null;
+                    }
+                this.price = rs.getInt("price");
+                this.date_publication = rs.getString("date_publication");
+                this.estPris = rs.getString("estPris");
+                String book_beginString = rs.getString("book_begin");
+                if (book_beginString != null && !book_beginString.isEmpty()) {
+                    this.book_begin = LocalDate.parse(book_beginString);
+                    } else {
+                    this.book_begin = null;
+                    }
+                String book_endString = rs.getString("book_end");
+                if (book_endString != null && !book_endString.isEmpty()) {
+                    this.book_end = LocalDate.parse(book_endString);
+                    } else {
+                    this.book_end = null;
+                    }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadEquipmentFromDBHome() {
+        String sql = "SELECT * FROM equipement WHERE owner_mail = ? AND name = ? AND description = ? AND start_availability = ? AND estPris IS NULL";
+
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setString(1, this.owner.getMail());
+            pstmt.setString(2, this.name);
+            pstmt.setString(3, this.description);
+            pstmt.setString(4, this.start_availability.toString());
+            ResultSet rs = pstmt.executeQuery();
+    
+            if (rs.next()) {
+                this.name = rs.getString("name");
+                this.id = rs.getInt("id");
+                this.description = rs.getString("description");
+                this.quantity = rs.getInt("quantity");
+                String start_availabilityString = rs.getString("start_availability");
+                if (start_availabilityString != null && !start_availabilityString.isEmpty()) {
+                    this.start_availability = LocalDate.parse(start_availabilityString);
+                    } else {
+                    this.start_availability = null;
+                    }
+                String end_availabilityString = rs.getString("end_availability");
+                if (end_availabilityString != null && !end_availabilityString.isEmpty()) {
+                    this.end_availability = LocalDate.parse(end_availabilityString);
+                    } else {
+                    this.end_availability = null;
+                    }
+                this.price = rs.getInt("price");
+                this.date_publication = rs.getString("date_publication");
+                this.estPris = rs.getString("estPris");
+                String book_beginString = rs.getString("book_begin");
+                if (book_beginString != null && !book_beginString.isEmpty()) {
+                    this.book_begin = LocalDate.parse(book_beginString);
+                    } else {
+                    this.book_begin = null;
+                    }
+                String book_endString = rs.getString("book_end");
+                if (book_endString != null && !book_endString.isEmpty()) {
+                    this.book_end = LocalDate.parse(book_endString);
+                    } else {
+                    this.book_end = null;
+                    }
+                
+                // Afffichage du résultat :
+                System.out.println("Offre trouvée: " + this.name + " " + this.description + " " + this.owner_mail + " " + this.quantity + " " + this.start_availability + " " + this.end_availability + " " + this.price);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void update() {
+        String sql = "UPDATE equipement SET owner_mail = ?, name = ?, description = ?, quantity = ?, start_availability = ?, end_availability = ?, price = ? WHERE id = ?";
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                
+            pstmt.setString(1, this.owner.getMail());
+            pstmt.setString(2, this.name);
+            pstmt.setString(3, this.description);
+            pstmt.setInt(4, this.quantity);
+            pstmt.setString(5, (this.start_availability != null) ? this.start_availability.toString() : null);
+            pstmt.setString(6, (this.end_availability != null) ? this.end_availability.toString() : null);
+            pstmt.setInt(7, this.price);
+            pstmt.setInt(8, this.id);
+    
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean reserveOffer(EquipmentOffer offer, String currentUserEmail, LocalDate begin, LocalDate end){
+        Connection conn = null;
+        try {
+            conn = DataBase.getConnection();
+            conn.setAutoCommit(false); // Démarrer une transaction
+    
+            // Vérifier si l'offre est déjà réservée
+            String sql = "SELECT estPris FROM equipement WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, offer.getId());
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next() && rs.getString("estPris") != null) {
+                    System.out.println("Cette offre a déjà été réservée");
+                    conn.rollback();
+                    return false;
+                }
+            }
+    
+            // Mettre à jour les florains
+            if (!updateFlorains(conn, currentUserEmail, offer.getMail(), offer.getPrice())) {
+                conn.rollback();
+                return false;
+            }
+    
+            // Réserver l'offre
+            sql = "UPDATE equipement SET estPris = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, currentUserEmail);
+                pstmt.setInt(2, offer.getId());
+                pstmt.executeUpdate();
+            }
+
+            // Mettre à jour les dates de réservation
+            sql = "UPDATE equipement SET book_begin = ?, book_end = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, begin.toString());
+                pstmt.setString(2, end.toString());
+                pstmt.setInt(3, offer.getId());
+                pstmt.executeUpdate();
+            }
+            this.book_begin = begin;
+            this.book_end = end;
+    
+            conn.commit(); // Valider la transaction
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Erreur lors de la réservation de l'offre");
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Annuler la transaction en cas d'erreur
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true); // Restaurer le mode de commit automatique
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public boolean updateFlorains(Connection conn, String buyerEmail, String sellerEmail, int price) throws SQLException {
+        // Déduire les florains du compte de l'acheteur
+        String sql = "UPDATE profil SET nb_florain = nb_florain - ? WHERE mail = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, price);
+            pstmt.setString(2, buyerEmail);
+            pstmt.executeUpdate();
+        }
+    
+        // Ajouter les florains au compte du vendeur
+        sql = "UPDATE profil SET nb_florain = nb_florain + ? WHERE mail = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, price);
+            pstmt.setString(2, sellerEmail);
+            pstmt.executeUpdate();
+        }
+    
+        return true;
+    }
+
+    public static List<EquipmentOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end, Integer minPrice, Integer maxPrice, double radius) {
+        System.out.println("Début de la recherche des offres avec un rayon de " + radius + " km et les mots clés " + keywords + " et les dates " + begin + " " + end + " et les prix " + minPrice + " " + maxPrice);
+    
+        List<EquipmentOffer> offers = new ArrayList<>();
+        String sql = "SELECT owner_mail, id, name, description, quantity, start_availability, end_availability, price FROM equipement WHERE estPris IS NULL";
+
+        if (!keywords.isEmpty()) {
+            sql += " AND name LIKE ?";
+        }
+
+        if (begin != null && end != null) {
+            // Les offres doivent être disponibles pour toute la période demandée
+            sql += " AND (start_availability <= ? AND end_availability >= ?)";
+        
+        } else if (begin != null) {
+            // Les offres doivent commencer au plus tard à la date de début
+            sql += " AND (start_availability <= ?)";
+        } else if (end != null) {
+            // Les offres doivent se terminer au plus tôt à la date de fin
+            sql += " AND (end_availability >= ?)";
+        }
+
+        // Logique pour le prix
+        if (minPrice != null) {
+            sql += " AND price >= '?' ";
+        }
+        if (maxPrice != null) {
+            sql += " AND price <= ?";
+        }
+
+        
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            int paramIndex = 1;
+            if (!keywords.isEmpty()) {
+                pstmt.setString(paramIndex++, "%" + keywords + "%");
+            }
+            if (begin != null) {
+                pstmt.setString(paramIndex++, begin.toString());
+            }
+            if (end != null) {
+                pstmt.setString(paramIndex++, end.toString());
+            }
+            if (minPrice != null) {
+                pstmt.setInt(paramIndex++, minPrice);
+            }
+            if (maxPrice != null) {
+                pstmt.setInt(paramIndex++, maxPrice);
+            }
+
+    
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    LocalDate startAvailability = rs.getString("start_availability") != null ? LocalDate.parse(rs.getString("start_availability")) : null;
+                    LocalDate endAvailability = rs.getString("end_availability") != null ? LocalDate.parse(rs.getString("end_availability")) : null;
+    
+                    EquipmentOffer offer = new EquipmentOffer(
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getString("owner_mail"),
+                        rs.getInt("quantity"),
+                        startAvailability,
+                        endAvailability,
+                        rs.getInt("price")
+                    );
+                    offers.add(offer);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    
+        // Filtrer les offres par rayon
+        return offers.stream()
+            .filter(offer -> isWithinRadius(currentUser, offer.getOwner(), radius))
+            .collect(Collectors.toList());
+    }
+    
+    
+    
+
+    private static boolean isWithinRadius(User currentUser, User offerOwner, double radius) {
+        // Calcul de la distance entre l'utilisateur actuel et le propriétaire de l'offre
+        double distance = currentUser.calculateDistanceTo(offerOwner);
+    
+        // Vérifiez si la distance est inférieure ou égale au rayon spécifié
+        return distance <= radius;
+    }
+    
+    
+    
+    
+    
+
+    public String getMail(){
+        return owner_mail;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public int getId() {
+        return id;
+    }
+    
     public String getName() {
         return name;
     }
 
+
     public String getDescription() {
         return description;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setDescription(String description) {
@@ -127,7 +876,11 @@ public class EquipmentOffer {
     }
 
     public String getStartAvailabilityStr(){
-        return start_availability.toString();
+        if(start_availability == null){
+            return "À définir";
+        }else{
+            return start_availability.toString();
+        }
     }
 
     public void setStartAvailability(LocalDate begin){
@@ -139,7 +892,11 @@ public class EquipmentOffer {
     }
 
     public String getEndAvailabilityStr(){
-        return end_availability.toString();
+        if(end_availability == null){
+            return "À définir";
+        }else{
+            return end_availability.toString();
+        }
     }
 
     public void setEndAvailability(LocalDate end){
@@ -153,151 +910,157 @@ public class EquipmentOffer {
     public void setPrice(int price){
         this.price = price;
     }
+
+    public String getEstPris(){
+        return estPris;
+    }
+
+    //set estPris
+    public void setEstPris(String estPris) {
+        this.estPris = estPris;
+    }
+
+    //get date_publication
+    public String getDate_publication(){
+        return date_publication;
+    }
+
+    //get début réservation
+    public LocalDate getBook_begin(){
+        return book_begin;
+    }
+
+    //get fin réservation
+    public LocalDate getBook_end(){
+        return book_end;
+    }
 }
 package eu.telecomnancy.labfx;
 
 import javafx.fxml.FXML;
-/* import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene; */
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
-//import javafx.stage.Stage;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 
+import java.util.ArrayList;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-//import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
+public class HomeController {
+    
+    private SkeletonController skeleton_controller;
 
-
-
-//import javafx.application.Platform;
-
-public class InscriptionController {
-
-    private MainController mainController;
-
-    @FXML private TextField prenom;
-    @FXML private TextField nom;
-    @FXML private TextField pseudo;
-    @FXML private TextField mail;
-    @FXML private TextField password;
-    @FXML private TextField password2;
-    @FXML private TextField localisation;
-    @FXML private TextField telephone;
-    @FXML private ImageView imageView;
-
-    private String imagePath;
-
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
+    public void setSkeletonController(SkeletonController skeleton_controller){
+        this.skeleton_controller = skeleton_controller;
     }
 
-    @FXML
-    public void handleInscription() throws IOException {
-        String prenomValue = prenom.getText();
-        String nomValue = nom.getText();
-        String pseudoValue = pseudo.getText();
-        String mailValue = mail.getText();
-        String passwordValue = password.getText();
-        String password2Value = password2.getText();
-        String localisationValue = localisation.getText();
-        String phoneValue = telephone.getText();
-    
-        // Vérifiez si les champs obligatoires sont remplis
-        if (prenomValue.isEmpty() || nomValue.isEmpty() || pseudoValue.isEmpty() || 
-            mailValue.isEmpty() || passwordValue.isEmpty() || localisationValue.isEmpty()) {
-            System.out.println("Tous les champs obligatoires doivent être remplis");
-            return;
-        }
-    
-        if (!passwordValue.equals(password2Value)) {
-            System.out.println("Les mots de passe ne correspondent pas");
-            return;
-        }
+    @FXML TableView<CombinedOffer> latest_offers;
+    @FXML TableView<CombinedOffer> nearest_offers;
+
+    private User currentUser;
+
+
+    @FXML public void initialize(){
+        currentUser = Main.getCurrentUser();
+
+        // Création des colonnes
+        TableColumn<CombinedOffer, String> typeColumn = new TableColumn<>("Type");
+        TableColumn<CombinedOffer, String> userNameColumn = new TableColumn<>("User Name");
+        TableColumn<CombinedOffer, String> titleColumn = new TableColumn<>("Title");
+        TableColumn<CombinedOffer, String> priceColumn = new TableColumn<>("Price");
+        TableColumn<CombinedOffer, String> datePublicationColumn = new TableColumn<>("Date Publication");
+        TableColumn<CombinedOffer, String> descriptionColumn = new TableColumn<>("Description");
+        TableColumn<CombinedOffer, String> cityColumn = new TableColumn<>("City");
         
-        try (Connection conn = DataBase.getConnection()) {
-            if (userExists(conn, pseudoValue, mailValue)) {
-                System.out.println("Un utilisateur avec ce pseudo ou ce mail existe déjà");
-                return;
+        // Définir comment chaque colonne va obtenir ses valeurs
+        typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTypeString()));
+        userNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwnerName()));
+        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
+        priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPrice())));
+        datePublicationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate_publication()));
+        descriptionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
+        cityColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner().getLocalisation()));
+
+        // Ajoute les colonnes au TableView latest_offers
+        latest_offers.getColumns().add(typeColumn);
+        latest_offers.getColumns().add(userNameColumn);
+        latest_offers.getColumns().add(titleColumn);
+        latest_offers.getColumns().add(priceColumn);
+        latest_offers.getColumns().add(datePublicationColumn);
+        latest_offers.getColumns().add(descriptionColumn);
+        latest_offers.getColumns().add(cityColumn);
+
+        // Ajoute les colonnes au TableView nearest_offers
+        nearest_offers.getColumns().add(typeColumn);
+        nearest_offers.getColumns().add(userNameColumn);
+        nearest_offers.getColumns().add(titleColumn);
+        nearest_offers.getColumns().add(priceColumn);
+        nearest_offers.getColumns().add(datePublicationColumn);
+        nearest_offers.getColumns().add(descriptionColumn);
+        nearest_offers.getColumns().add(cityColumn);
+
+        // Ajoute les données au TableView
+        ArrayList<EquipmentOffer> all_equipment = Main.getAllEquipment();
+        ArrayList<ServiceOffer> all_service = Main.getAllService();
+    
+        ArrayList<CombinedOffer> all_offers = new ArrayList<>();
+    
+        // Ajouter les offres d'équipement après les avoir filtrées
+        if(all_equipment != null){
+            for(EquipmentOffer equipment : all_equipment){
+                if(equipment.getOwner().getEtatCompte().equals("actif")){all_offers.add(new CombinedOffer(equipment));}
             }
+        }
     
-            String sql = "INSERT INTO profil (prenom, nom, pseudo, mail, password, phone, localisation, date_inscription, nb_florain, photo_profil) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 100, ?)";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, prenomValue);
-                pstmt.setString(2, nomValue);
-                pstmt.setString(3, pseudoValue);
-                pstmt.setString(4, mailValue);
-                pstmt.setString(5, passwordValue);
-                pstmt.setString(6, phoneValue.isEmpty() ? null : phoneValue); // Téléphone non obligatoire
-                pstmt.setString(7, localisationValue);
-                pstmt.setString(8, LocalDate.now().toString());
-                pstmt.setString(9, imagePath); // Photo de profil non obligatoire
-    
-                pstmt.executeUpdate();
-                System.out.println("Utilisateur créé");
-                // Reste du code pour la redirection
+        // Ajouter les offres de service après les avoir filtrées
+        if(all_service != null){
+            for(ServiceOffer service : all_service){
+                if(service.getSupplier().getEtatCompte().equals("actif")){all_offers.add(new CombinedOffer(service));}
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Gestion des erreurs SQL
         }
     
-    
-        // Redirection vers WelcomePage.fxml
-        mainController.loadWelcomePage();
-    }
-    
-    
-
-    @FXML
-    private void chooseImage() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choisir une Image");
-        fileChooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
-        );
-    
-        File selectedFile = fileChooser.showOpenDialog(null);
-        if (selectedFile != null) {
-            Image image = new Image(selectedFile.toURI().toString());
-            imageView.setImage(image);
-    
-            // Stocker le chemin d'accès de l'image
-            imagePath = selectedFile.getAbsolutePath();
+        // Trier et afficher les offres
+        // Trier par date de publication
+        all_offers.sort((o1, o2) -> o2.getDate_publication().compareTo(o1.getDate_publication()));
+        if(all_offers != null){
+            latest_offers.setItems(FXCollections.observableArrayList(all_offers));
         }
+
+        // Trier par distance
+        all_offers.sort((o1, o2) -> {
+            double distance1 = currentUser.calculateDistanceTo(o1.getOwner());
+            double distance2 = currentUser.calculateDistanceTo(o2.getOwner());
+                 
+            return Double.compare(distance1, distance2);
+        });
+        if(all_offers != null){
+            nearest_offers.setItems(FXCollections.observableArrayList(all_offers));
+        }
+
+        latest_offers.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && !latest_offers.getSelectionModel().isEmpty()) {
+                CombinedOffer selected_item = latest_offers.getSelectionModel().getSelectedItem();
+                handleDoubleClickOnEquipment(selected_item);
+            }
+        });
     }
 
-
-    private boolean userExists(Connection conn, String pseudo, String mail) throws SQLException {
-    String sql = "SELECT * FROM profil WHERE pseudo = ? OR mail = ?";
-    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-        pstmt.setString(1, pseudo);
-        pstmt.setString(2, mail);
-        ResultSet rs = pstmt.executeQuery();
-        return rs.next(); // Retourne vrai si un enregistrement existe
+    private void handleDoubleClickOnEquipment(CombinedOffer item) {
+        // Ici, tu peux effectuer une action avec l'objet ServiceOffer sélectionné
+        if(item.getTypeString().equals("Equipment")){
+            EquipmentOffer equipment = new EquipmentOffer(item.getOwner().getMail(), item.getTitle(), item.getDescription(), item.getStartString(), item.getEstPris());
+            skeleton_controller.loadEquipmentOfferPage(equipment);
+        }else{
+            ServiceOffer service = new ServiceOffer(item.getOwner().getMail(), item.getTitle(), item.getDescription(), item.getStartString(), item.getEstPris());
+            skeleton_controller.loadServiceOfferPage(service);
         }
     }
 
-
-    // Bouton qui charge la page de bienvenue
-    @FXML
-    public void handleRetour() throws IOException {
-        mainController.loadWelcomePage();
+    @FXML public void handleDeconnexion(){
+        System.out.println("Deconnexion de la session");
+        skeleton_controller.main_controller.loadWelcomePage();
     }
-
+    
 }
-
-
-
-
 package eu.telecomnancy.labfx;
 
 import java.io.IOException;
@@ -306,10 +1069,25 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
 
 public class Main extends Application {
 
     private static Stage primaryStage;
+    private static User currentUser;
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static void setCurrentUser(User currentUser) {
+        Main.currentUser = currentUser;
+    }
 
     public static Stage getPrimaryStage() {
         return primaryStage;
@@ -319,10 +1097,123 @@ public class Main extends Application {
         primaryStage = stage;
     }
 
+    public static ArrayList<ServiceOffer> getAllService() {
+        String sql = "SELECT supplier_mail, title, description, estPris FROM service_offers";
+
+        try (Connection conn = DataBase.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            ResultSet rs = pstmt.executeQuery();
+            ArrayList<ServiceOffer> all_service = new ArrayList<>();
+
+            while (rs.next()) {
+                if(rs.getString("estPris") != null){
+                    continue;
+                }
+                String supplierMail = rs.getString("supplier_mail");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+
+                ServiceOffer service = new ServiceOffer(supplierMail, title, description);
+                all_service.add(service);
+            }
+
+            return all_service;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public static ArrayList<ServiceOffer> getAllServiceHome() {
+        String sql = "SELECT supplier_mail, title, description, start, estPris FROM service_offers";
+
+        try (Connection conn = DataBase.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            ResultSet rs = pstmt.executeQuery();
+            ArrayList<ServiceOffer> all_service = new ArrayList<>();
+
+            while (rs.next()) {
+                if(rs.getString("estPris") != null){
+                    continue;
+                }
+                String supplierMail = rs.getString("supplier_mail");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                String start = rs.getString("start");
+
+                ServiceOffer service = new ServiceOffer(supplierMail, title, description, start, null);
+                all_service.add(service);
+            }
+
+            return all_service;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public static ArrayList<EquipmentOffer> getAllEquipment() {
+        String sql = "SELECT owner_mail, name, description, estPris FROM equipement";
+
+        try (Connection conn = DataBase.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            ResultSet rs = pstmt.executeQuery();
+            ArrayList<EquipmentOffer> all_equipment = new ArrayList<>();
+
+            while (rs.next()) {
+                if(rs.getString("estPris") != null){
+                    continue;
+                }
+                String owner_mail = rs.getString("owner_mail");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+
+                EquipmentOffer equipment = new EquipmentOffer(owner_mail, name, description);
+                all_equipment.add(equipment);
+            }
+            
+            return all_equipment;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public static ArrayList<EquipmentOffer> getAllEquipmentHome() {
+        String sql = "SELECT owner_mail, name, description, start_availability, estPris FROM equipement";
+
+        try (Connection conn = DataBase.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            ResultSet rs = pstmt.executeQuery();
+            ArrayList<EquipmentOffer> all_equipment = new ArrayList<>();
+
+            while (rs.next()) {
+                if(rs.getString("estPris") != null){
+                    continue;
+                }
+                String owner_mail = rs.getString("owner_mail");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                String start_availability = rs.getString("start_availability");
+
+                EquipmentOffer equipment = new EquipmentOffer(owner_mail, name, description, start_availability, null);
+                all_equipment.add(equipment);
+            }
+            
+            return all_equipment;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
     public static void main(String[] args) {
         DataBase.initializeDatabase();
         Application.launch(args);
-
     }
 
     @Override
@@ -343,11 +1234,8 @@ package eu.telecomnancy.labfx;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import eu.telecomnancy.labfx.DataBase;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -357,8 +1245,18 @@ import java.io.IOException;
 
 public class MainController {
 
+    
+
     @FXML private TextField emailField;
-    @FXML private TextField passwordField;
+    @FXML private PasswordField passwordField;
+    @FXML private SkeletonController skeleton_controller;
+
+    private static User currentUser;
+
+    public void initialize(){
+        System.out.println("Initialisation de la session");
+        currentUser = Main.getCurrentUser();
+    }
 
     // Fonction qui permet de charger la page de bienvenue
     public void loadWelcomePage() {
@@ -394,12 +1292,32 @@ public class MainController {
 
 
     // Fonction qui charge le squellete de la page d'accueil
-    public void loadSkeletPage() {
-        //A compléter
+    public void loadSkeleton() {
+        
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/SkeletonPage.fxml"));
+            Parent skeletonPage = loader.load();
+            SkeletonController skeleton_controller = loader.getController();
+            skeleton_controller.setMainController(this);
+            Main.getPrimaryStage().getScene().setRoot(skeletonPage);
+            setSkeletonController(skeleton_controller);
+
+            skeleton_controller.loadMenuPage();
+            skeleton_controller.loadProfilePage();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadHomePage() {
-        //A compléter
+        loadSkeleton();
+        skeleton_controller.loadHomePage();
+    }
+
+    public void loadServicePage(){
+        loadSkeleton();
+        skeleton_controller.loadServicePage();
     }
 
 
@@ -415,88 +1333,568 @@ public class MainController {
         loadWelcomePage();
     }
 
+
+
     // Bouton qui tente la connexion
     @FXML
     private void handleConnexion() {
-    String email = emailField.getText();
-    String password = passwordField.getText();
+        String email = emailField.getText();
+        String password = passwordField.getText();
+        try (Connection conn = DataBase.getConnection()) {
+            String sql = "SELECT * FROM profil WHERE mail = ? AND password = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, email);
+                pstmt.setString(2, password);
+                ResultSet rs = pstmt.executeQuery();
 
-    try (Connection conn = DataBase.getConnection()) {
-        String sql = "SELECT * FROM profil WHERE mail = ? AND password = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, email);
-            pstmt.setString(2, password);
-            ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    // Utilisateur trouvé, rediriger vers Dashboard.fxml
+                    System.out.println("Utilisateur trouvé, Connexion réussie");
 
-            if (rs.next()) {
-                // Utilisateur trouvé, rediriger vers Dashboard.fxml
-                System.out.println("Utilisateur trouvé, Connexion réussie");
-                // Charger la page d'accueil
-                loadHomePage();
-                // Creation d'un objet User
-                User user = new User(email);
-
-                System.out.println("Prenom: " + user.getPrenom() + " Nom: " + user.getNom() + " Pseudo: " + user.getPseudo() + " Mail: " + user.getMail() + " Phone: " + user.getPhone() + " Photo de profil: " + user.getPhotoProfil() + " Localisation: " + user.getLocalisation() + " Date d'inscription: " + user.getDateInscription() + " Status du compte: " + user.getStatusCompte() + " Etat du compte: " + user.getEtatCompte() + " Nombre de florain: " + user.getNbFlorain() + " Historique florain: " + user.getHistoriqueFlorain() + " Note: " + user.getNote());
-            } else {
-                System.out.println("Identifiants incorrects");
-                // Afficher un message d'erreur
+                    // Creation d'un objet User
+                    User user = new User(email);
+                    currentUser = user;
+                    Main.setCurrentUser(currentUser);
+                    System.out.println("Prenom: " + user.getPrenom() + " Nom: " + user.getNom() + " Pseudo: " + user.getPseudo() + " Mail: " + user.getMail() + " Phone: " + user.getPhone() + " Photo de profil: " + user.getPhotoProfil() + " Localisation: " + user.getLocalisation() + " Date d'inscription: " + user.getDateInscription() + " Status du compte: " + user.getStatusCompte() + " Etat du compte: " + user.getEtatCompte() + " Nombre de florain: " + user.getNbFlorain() + " Historique florain: " + user.getHistoriqueFlorain() + " Note: " + user.getNote());
+                    // Charger la page d'accueil
+                    loadHomePage();
+                } else {
+                    System.out.println("Identifiants incorrects");
+                    // Afficher un message d'erreur
+                }
             }
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-        // Gestion des erreurs SQL
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Gestion des erreurs SQL
         }
     }
+
+    //Fonction qui permet de définir le skeleton controller
+    public void setSkeletonController(SkeletonController skeleton_controller) {
+        this.skeleton_controller = skeleton_controller;
+    }
+
+
+    
 }
+
 package eu.telecomnancy.labfx;
 
+import eu.telecomnancy.labfx.messagerie.Conversation;
+import eu.telecomnancy.labfx.messagerie.Message;
+import java.util.Map;
+import java.util.HashMap;
+
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 
-public class ServiceController {
-    @FXML public void handleCreateOffer() {
-        System.out.println("Create offer");
-    }
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.sql.Timestamp;
+import java.util.Comparator;
 
-    @FXML public void handleConsultOffer() {
-        System.out.println("Consult offer");
-    }
-}
+
 package eu.telecomnancy.labfx;
 
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 // Description: Classe représentant une offre de service. Elle contient un titre, une description, une date et une heure.
-//              Elle peut être récurrente, auquel cas on lui ajoute un tableau de jours de la semaine où le service doit être réalisé.
+//              Elle peut être récurrente, auquel cas on lui ajoute un tableau de jours de la semaine où le service doit être réalisé.$
+
 public class ServiceOffer {
+    private int id;
     private User supplier;
     private String title;
     private String description;
-    private LocalDate date;
+    private LocalDate start;
+    private LocalDate end;
     private LocalTime time;
-    private boolean is_recurrent;
-    private int[] days_of_service; // ici on ajoutera les jours où le service doit être réalisés lors d'une récurrence.
-                                   // On notera 1 = lundi, 2 = mardi, etc.
-    private int nb_recurrencing_weeks;
+    private boolean isRecurrent;
+    private String daysOfService; // Stocké comme une chaîne, par exemple "1,3,5"
+    private int nbRecurrencingWeeks;
+    private String supplier_mail;
+    private int price;
+    private String estPris;
+    private String date_publication;
+    private LocalDate book_begin;
+    private LocalDate book_end;
 
-    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time){
-        this.supplier = supplier;
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.time = time;
-        this.is_recurrent = false;
+    // Constructeur
+    public ServiceOffer(String supplier_mail) {
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        System.out.println("Constructeur avec un loaddb 1");
+        loadServiceFromDB();
     }
 
-    public ServiceOffer(User supplier, String title, String description, LocalDate date, LocalTime time, int[] days_of_service, int nb_recurrencing_weeks){
-        this.supplier = supplier;
+    public ServiceOffer(String supplierMail, String title, String description, LocalDate start, LocalDate end, LocalTime time, int price) {
+        System.out.println("Constructeur avec un loaddb 2 ");
+        this.supplier_mail = supplierMail;
+        this.supplier = new User(supplierMail);
         this.title = title;
         this.description = description;
-        this.date = date;
+        this.start = start;
+        this.end = end;
         this.time = time;
-        this.is_recurrent = true;
-        this.days_of_service = days_of_service;
-        this.nb_recurrencing_weeks = nb_recurrencing_weeks;
+        this.price = price;
+        createNewOffer();
+    }
+
+       public ServiceOffer(String supplier_mail, String title, String description, LocalDate start, LocalDate end, LocalTime time, int price, String estPris){
+                System.out.println("Constructeur sans un loaddb 5 ");
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        this.title = title;
+        this.description = description;
+        this.start = start;
+        this.end = end;
+        this.time = time;
+        this.price = price;
+    }
+
+
+    public ServiceOffer(String supplier_mail, String title, String description){
+                System.out.println("Constructeur avec un loaddb 3");
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        this.title = title;
+        this.description = description;
+        loadServiceFromDB();
+    }
+
+    public ServiceOffer(String supplier_mail, String title, String description, String start, String estPris){
+        System.out.println("Constructeur avec un loaddb 4");
+        this.supplier_mail = supplier_mail;
+        this.supplier = new User(supplier_mail);
+        this.title = title;
+        this.description = description;
+        this.start = LocalDate.parse(start);
+        this.estPris = estPris;
+        loadServiceFromDBHome();
+    }
+
+ 
+
+    public ServiceOffer(User supplier, String title, String description, LocalDate start, LocalDate end, LocalTime time, boolean isRecurrent, String daysOfService, int price) {
+        System.out.println("Constructeur avec un loaddb 6");
+        this.supplier = supplier;
+        this.supplier_mail = supplier.getMail();
+        this.title = title;
+        this.description = description;
+        this.start = start;
+        this.end = end;
+        this.time = time;
+        this.isRecurrent = isRecurrent;
+        this.daysOfService = daysOfService;
+        this.price = price;
+        this.estPris = null;
+        if (isRecurrent) {
+            String[] days = daysOfService.split(",");
+            this.nbRecurrencingWeeks = days.length;
+        } else {
+            this.nbRecurrencingWeeks = 0;
+        }
+        createNewOffer();
+    }
+
+
+
+
+    public void createNewOffer(){
+        String sql = "INSERT INTO service_offers (supplier_mail, title, description, start, end, time, is_recurrent, days_of_service, price, date_publication) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+    
+            pstmt.setString(1, this.supplier.getMail());
+            pstmt.setString(2, this.title);
+            pstmt.setString(3, this.description);
+            pstmt.setString(4, (this.start != null) ? this.start.toString() : null);
+            pstmt.setString(5, (this.end != null) ? this.end.toString() : null);
+            pstmt.setString(6, (this.time != null) ? this.time.toString() : null);
+            pstmt.setBoolean(7, this.isRecurrent);
+            pstmt.setString(8, this.daysOfService);
+            pstmt.setInt(9, this.price);
+            pstmt.setString(10, LocalDate.now().toString());
+    
+            int affectedRows = pstmt.executeUpdate();
+    
+            // Vérifier si l'insertion a réussi et récupérer l'ID généré
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        this.id = generatedKeys.getInt(1);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void loadServiceFromDB() {
+        String sql = "SELECT * FROM service_offers WHERE supplier_mail = ? AND title = ? AND description = ?";
+
+        try (Connection conn = DataBase.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, supplier_mail);
+            pstmt.setString(2, title); // Assure-toi que la variable 'title' est définie et contient le titre à vérifier
+            pstmt.setString(3, description); // Assure-toi que la variable 'description' est définie et contient la description à vérifier
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                this.id = rs.getInt("id");
+                this.title = rs.getString("title");
+                this.description = rs.getString("description");
+                String startDateString = rs.getString("start");
+                if (startDateString != null && !startDateString.isEmpty()) {
+                    this.start = LocalDate.parse(startDateString);
+                    } else {
+                    this.start = null;
+                    }
+                String endDateString = rs.getString("end");
+                if (endDateString != null && !endDateString.isEmpty()) {
+                    this.end = LocalDate.parse(endDateString);
+                    } else {
+                    this.end = null;
+                    }
+                String timeString = rs.getString("time");
+                if (timeString != null && !timeString.isEmpty()) {
+                    this.time = LocalTime.parse(timeString);
+                    } else {
+                    this.time = null;
+                    }
+                this.isRecurrent = rs.getBoolean("is_recurrent");
+                this.daysOfService = rs.getString("days_of_service");
+                this.price = rs.getInt("price");
+                this.date_publication = rs.getString("date_publication");
+                this.estPris = rs.getString("estPris");
+                String bookingBeginString = rs.getString("book_begin");
+                if (bookingBeginString != null && !bookingBeginString.isEmpty()) {
+                    this.book_begin = LocalDate.parse(bookingBeginString);
+                    } else {
+                    this.book_begin = null;
+                    }
+                String bookingEndString = rs.getString("book_end");
+                if (bookingEndString != null && !bookingEndString.isEmpty()) {
+                    this.book_end = LocalDate.parse(bookingEndString);
+                    } else {
+                    this.book_end = null;
+                    }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadServiceFromDBHome() {
+        String sql = "SELECT * FROM service_offers WHERE supplier_mail = ? AND title = ? AND description = ? AND start = ? AND estPris IS NULL";
+
+        try (Connection conn = DataBase.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, supplier_mail);
+            pstmt.setString(2, title); // Assure-toi que la variable 'title' est définie et contient le titre à vérifier
+            pstmt.setString(3, description); // Assure-toi que la variable 'description' est définie et contient la description à vérifier
+            pstmt.setString(4, this.start.toString());
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                this.id = rs.getInt("id");
+                this.title = rs.getString("title");
+                this.description = rs.getString("description");
+                String startDateString = rs.getString("start");
+                if (startDateString != null && !startDateString.isEmpty()) {
+                    this.start = LocalDate.parse(startDateString);
+                    } else {
+                    this.start = null;
+                    }
+                String endDateString = rs.getString("end");
+                if (endDateString != null && !endDateString.isEmpty()) {
+                    this.end = LocalDate.parse(endDateString);
+                    } else {
+                    this.end = null;
+                    }
+                String timeString = rs.getString("time");
+                if (timeString != null && !timeString.isEmpty()) {
+                    this.time = LocalTime.parse(timeString);
+                    } else {
+                    this.time = null;
+                    }
+                this.isRecurrent = rs.getBoolean("is_recurrent");
+                this.daysOfService = rs.getString("days_of_service");
+                this.price = rs.getInt("price");
+                this.date_publication = rs.getString("date_publication");
+                this.estPris = rs.getString("estPris");
+                String bookingBeginString = rs.getString("book_begin");
+                if (bookingBeginString != null && !bookingBeginString.isEmpty()) {
+                    this.book_begin = LocalDate.parse(bookingBeginString);
+                    } else {
+                    this.book_begin = null;
+                    }
+                String bookingEndString = rs.getString("book_end");
+                if (bookingEndString != null && !bookingEndString.isEmpty()) {
+                    this.book_end = LocalDate.parse(bookingEndString);
+                    } else {
+                    this.book_end = null;
+                    }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update() {
+        String sql = "UPDATE service_offers SET supplier_mail = ?, title = ?, description = ?, start = ?, end = ?, time = ?, is_recurrent = ?, days_of_service = ?, price = ?, WHERE id = ?";
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setString(1, this.supplier.getMail());
+            pstmt.setString(2, this.title);
+            pstmt.setString(3, this.description);
+            pstmt.setString(4, (this.start != null) ? this.start.toString() : null);
+            pstmt.setString(5, (this.end != null) ? this.end.toString() : null);
+            pstmt.setString(6, (this.time != null) ? this.time.toString() : null);
+            pstmt.setBoolean(7, this.isRecurrent);
+            pstmt.setString(8, this.daysOfService);
+            pstmt.setInt(9, this.nbRecurrencingWeeks);
+            pstmt.setInt(10, this.id);
+    
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+
+    public boolean reserveOffer(ServiceOffer offer, String currentUserEmail, LocalDate begin, LocalDate end) {
+        Connection conn = null;
+        try {
+            conn = DataBase.getConnection();
+            conn.setAutoCommit(false); // Démarrer une transaction
+    
+            // Vérifier si l'offre est déjà réservée
+            String sql = "SELECT estPris FROM service_offers WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, offer.getId());
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next() && rs.getString("estPris") != null) {
+                    System.out.println("Cette offre a déjà été réservée");
+                    conn.rollback();
+                    return false;
+                }
+            }
+    
+            // Mettre à jour les florains
+            if (!updateFlorains(conn, currentUserEmail, offer.getSupplierMail(), offer.getPrice())) {
+                conn.rollback();
+                return false;
+            }
+    
+            // Réserver l'offre
+            sql = "UPDATE service_offers SET estPris = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, currentUserEmail);
+                pstmt.setInt(2, offer.getId());
+                pstmt.executeUpdate();
+            }
+    
+            // Ajouter les dates de réservation
+            sql = "UPDATE service_offers SET book_begin = ?, book_end = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, begin.toString());
+                pstmt.setString(2, end.toString());
+                pstmt.setInt(3, offer.getId());
+                pstmt.executeUpdate();
+            }
+            this.book_begin = begin;
+            this.book_end = end;
+
+            conn.commit(); // Valider la transaction
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Erreur lors de la réservation de l'offre");
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Annuler la transaction en cas d'erreur
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true); // Restaurer le mode de commit automatique
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public boolean updateFlorains(Connection conn, String buyerEmail, String sellerEmail, int price) throws SQLException {
+        // Déduire les florains du compte de l'acheteur
+        String sql = "UPDATE profil SET nb_florain = nb_florain - ? WHERE mail = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, price);
+            pstmt.setString(2, buyerEmail);
+            pstmt.executeUpdate();
+        }
+    
+        // Ajouter les florains au compte du vendeur
+        sql = "UPDATE profil SET nb_florain = nb_florain + ? WHERE mail = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, price);
+            pstmt.setString(2, sellerEmail);
+            pstmt.executeUpdate();
+        }
+    
+        return true;
+    }
+    public static List<ServiceOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end, Integer minPrice, Integer maxPrice, String timeMin, String timeMax, double radius) {
+        System.out.println("Début de la recherche des offres avec un rayon de " + radius + " km et les mots clés " + keywords + " et les dates " + begin + " " + end + " et les prix " + minPrice + " " + maxPrice);
+    
+        List<ServiceOffer> offers = new ArrayList<>();
+    
+        // Construction de la requête SQL avec les filtres nécessaires
+        String sql = "SELECT id, supplier_mail, title, description, start, end, time, price, estPris FROM service_offers WHERE estPris IS NULL";
+    
+        if (!keywords.isEmpty()) {
+            sql += " AND title LIKE ?";
+        }
+        if (begin != null && end != null) {
+            // Les offres doivent être disponibles pour toute la période demandée
+            sql += " AND (start <= ? AND end >= ?)";
+        
+        } else if (begin != null) {
+            // Les offres doivent commencer au plus tard à la date de début
+            sql += " AND (start <= ?)";
+        } else if (end != null) {
+            // Les offres doivent se terminer au plus tôt à la date de fin
+            sql += " AND (end >= ?)";
+        }
+        if (minPrice != null) {
+            sql += " AND price >= ?";
+        }
+        if (maxPrice != null) {
+            sql += " AND price <= ?";
+        }
+        if (!timeMin.isEmpty()) {
+            sql += " AND time >= ?";
+        }
+        if (!timeMax.isEmpty()) {
+            sql += " AND time <= ?";
+        }
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            int paramIndex = 1;
+    
+            if (!keywords.isEmpty()) {
+                pstmt.setString(paramIndex++, "%" + keywords + "%");
+            }
+            if (begin != null) {
+                pstmt.setString(paramIndex++, begin.toString());
+            }
+            if (end != null) {
+                pstmt.setString(paramIndex++, end.toString());
+            }
+            if (minPrice != null) {
+                pstmt.setInt(paramIndex++, minPrice);
+            }
+            if (maxPrice != null) {
+                pstmt.setInt(paramIndex++, maxPrice);
+            }
+            if (!timeMin.isEmpty()) {
+                pstmt.setString(paramIndex++, timeMin);
+            }
+            if (!timeMax.isEmpty()) {
+                pstmt.setString(paramIndex++, timeMax);
+            }
+    
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    LocalDate serviceStart = rs.getString("start") != null ? LocalDate.parse(rs.getString("start")) : null;
+                    LocalDate serviceEnd = rs.getString("end") != null ? LocalDate.parse(rs.getString("end")) : null;
+                    LocalTime time = rs.getString("time") != null ? LocalTime.parse(rs.getString("time")) : null;
+    
+                    ServiceOffer offer = new ServiceOffer(
+                        rs.getString("supplier_mail"),
+                        rs.getString("title"),
+                        rs.getString("description"),
+                        serviceStart,
+                        serviceEnd,
+                        time,
+                        rs.getInt("price"),
+                        rs.getString("estPris")
+
+
+                    );
+                    offers.add(offer);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        for (ServiceOffer offer : offers) {
+            System.out.println("id: " + offer.getId() + " title: " + offer.getTitle() + " description: " + offer.getDescription() + " start: " + offer.getStart() + " end: " + offer.getEnd() + " time: " + offer.getTime() + " isRecurrent: " + offer.getIsRecurrent() + " repetitionDay: " + offer.getDaysOfService() + " price: " + offer.getPrice() + " nb recurrence: " + offer.getRecurrency() + " supplier mail: " + offer.getSupplierMail() + " est pris: " + offer.getEstPris());
+        }
+// Filtrer les offres par rayon
+        return offers.stream()
+            .filter(offer -> isWithinRadius(currentUser, offer.getSupplier(), radius))
+            .collect(Collectors.toList());
+ 
+    }
+
+    private static boolean isWithinRadius(User currentUser, User offerOwner, double radius) {
+        // Calcul de la distance entre l'utilisateur actuel et le propriétaire de l'offre
+        double distance = currentUser.calculateDistanceTo(offerOwner);
+    
+        // Vérifiez si la distance est inférieure ou égale au rayon spécifié
+        return distance <= radius;
+    }
+    
+    
+    
+    
+
+    public String getSupplierMail(){
+        return supplier_mail;
+    }
+
+    public User getSupplier(){
+        return supplier;
+    }
+
+    public int getId(){
+        return id;
     }
 
     public String getTitle(){
@@ -515,16 +1913,36 @@ public class ServiceOffer {
         this.description = description;
     }
 
-    public LocalDate getDate(){
-        return date;
+    public LocalDate getStart(){
+        return start;
     }
 
-    public String getDateStr(){
-        return date.toString();
+    public String getStartStr(){
+        if(start == null){
+            return "À définir";
+        }else{
+            return start.toString();
+        }
     }
 
-    public void setDate(LocalDate date){
-        this.date = date;
+    public void setStart(LocalDate start){
+        this.start = start;
+    }
+
+    public LocalDate getEnd(){
+        return end;
+    }
+
+    public String getEndStr(){
+        if(end == null){
+            return "À définir";
+        }else{
+            return end.toString();
+        }
+    }
+
+    public void setEnd(LocalDate end){
+        this.end = end;
     }
 
     public LocalTime getTime(){
@@ -532,38 +1950,540 @@ public class ServiceOffer {
     }
 
     public String getTimeStr(){
-        return time.toString();
+        if(time == null){
+            return "À définir";
+        }else{
+            return time.toString();
+        }
     }
 
     public void setTime(LocalTime time){
         this.time = time;
     }
 
-    public boolean getIsRecurrent(){
-        return is_recurrent;
+    public void setRecurrent(boolean isRecurrent) {
+        this.isRecurrent = isRecurrent;
     }
 
-    public int[] getDaysOfService() {
-        return this.days_of_service;
+    public void setDaysOfService(String daysOfService) {
+        this.daysOfService = daysOfService;
     }
 
-    public void setDaysOfService(int[] days_of_service) {
-        this.days_of_service = days_of_service;
+
+    public boolean getIsRecurrent() {
+        return isRecurrent;
     }
 
-    public int getNbRecurrencingWeeks() {
-        return this.nb_recurrencing_weeks;
+    public String getDaysOfService() {
+        return daysOfService;
     }
 
-    public void setNbRecurrencingWeeks(int nb_recurrencing_weeks) {
-        this.nb_recurrencing_weeks = nb_recurrencing_weeks;
+    public int getRecurrency() {
+        return nbRecurrencingWeeks;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setNbRecurrencingWeeks(String daysOfService) {
+        if (this.isRecurrent) {
+            String[] days = daysOfService.split(",");
+            this.nbRecurrencingWeeks = days.length;
+        } else {
+            this.nbRecurrencingWeeks = 0;
+        }
+    }
+
+    //get estPris
+    public String getEstPris(){
+        return estPris;
+    }
+
+    //set estPris
+    public void setEstPris(String estPris) {
+        this.estPris = estPris;
+    }
+
+    //get date_publication
+    public String getDate_publication(){
+        return date_publication;
+    }
+
+    //get book_begin
+    public LocalDate getBook_begin(){
+        return book_begin;
+    }
+
+    //get book_end
+    public LocalDate getBook_end(){
+        return book_end;
+    }
+
+}
+
+package eu.telecomnancy.labfx;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.DatePicker;
+import java.time.LocalDate;
+
+public class ServiceOfferController {
+
+    private SkeletonController skeleton_controller;
+    private ServiceOffer service_offer;
+    private User currentUser;
+
+    public void setSkeletonController(SkeletonController skeleton_controller){
+        this.skeleton_controller = skeleton_controller;
+    }
+
+    @FXML private Label title;
+    @FXML private Label description;
+    @FXML private Label date;
+    @FXML private Label price;
+
+    @FXML private Button book;
+    @FXML private Button cancel;
+    @FXML private Button contact;
+
+    @FXML private DatePicker booking_begin;
+    @FXML private DatePicker booking_end;
+
+    public void setCurrentOffer(ServiceOffer offer) {
+        this.service_offer = offer;
+        currentUser = Main.getCurrentUser();
+        displayOfferInfo();
+    }
+
+    private void displayOfferInfo() {
+        title.setText("Titre : " + service_offer.getTitle());
+        description.setText("Description : " + service_offer.getDescription());
+        String startDateString = service_offer.getStart() != null ? service_offer.getStart().toString() : "Pas de date renseigné";
+        String endDateString = service_offer.getEnd() != null ? service_offer.getEnd().toString() : "Pas de date renseigné";
+        String time = service_offer.getTime() != null ? service_offer.getTime().toString() : "Pas d'heure renseigné";
+        date.setText("Date : " + startDateString + " to " + endDateString + " at " + time);
+        price.setText("Coût en florains : " + service_offer.getPrice());
+
+        if (service_offer.getSupplierMail().equals(currentUser.getMail())){
+            book.setVisible(false);
+            booking_begin.setVisible(false);
+            booking_end.setVisible(false);
+            contact.setVisible(false);
+        }
+
+    }
+
+    @FXML public void handleBook() {
+        System.out.println("Tentative de réservation de l'offre");
+        
+        // Obtenir l'email de l'utilisateur actuel
+        String currentUserEmail = Main.getCurrentUser().getMail();
+    
+        // Vérifier que l'utilisateur actuel n'est pas le fournisseur de l'offre
+        if (currentUserEmail.equals(service_offer.getSupplierMail())) {
+            System.out.println("Vous ne pouvez pas réserver votre propre offre");
+            return;
+        }
+    
+        // Vérifier qu'un utilisateur n'a pas déjà réservé l'offre
+        if (service_offer.getEstPris() != null) {
+            System.out.println("Cette offre a déjà été réservée");
+            return;
+        }
+
+        LocalDate begin = booking_begin.getValue();
+        LocalDate end = booking_end.getValue();
+
+        if(begin == null || end == null){
+            System.out.println("Veuillez renseigner une date de début et de fin");
+            return;
+        }else if(begin.isAfter(end)){
+            System.out.println("La date de début doit être avant la date de fin");
+            return;
+        }else if(begin.isBefore(service_offer.getStart()) || end.isAfter(service_offer.getStart())){
+            System.out.println("La date de début et de fin doivent être comprises dans la période de disponibilité de l'offre");
+            return;
+        }
+
+
+        // Tenter de réserver l'offre
+        if (service_offer.reserveOffer(service_offer, currentUserEmail, begin, end)) {
+            System.out.println("Offre réservée avec succès");
+
+            // Création de deux nouvelles offres avant et après la période de réservation
+            // si le premier jour de réservation est le même que le début de l'offre de base, on en crée qu'une après
+            // inverse pour le dernier jour de réservation
+            /* if(begin.equals(service_offer.getStart()) && end.equals(service_offer.getEnd())){
+                System.out.println("Offre bien créée");
+            }else if(begin.equals(service_offer.getStart())){
+                System.out.println("Offre bien créée");
+                ServiceOffer newOffer = new ServiceOffer(); */
+
+
+
+            service_offer.setEstPris(currentUserEmail);
+            //set nb florain user
+            currentUser = Main.getCurrentUser();
+            currentUser.setNbFlorain(currentUser.getNbFlorain() - service_offer.getPrice());
+            skeleton_controller.updateProfile();
+  
+            skeleton_controller.loadListServiceOfferPage();
+   
+        } else {
+            System.out.println("La réservation de l'offre a échoué");
+        }
+    }
+    
+
+    @FXML public void handleContact() {
+        System.out.println("Lancement d'une conversation avec le propriétaire de l'offre");
+    
+        // Obtenir le pseudo du fournisseur
+        String supplierPseudo = service_offer.getSupplier().getPseudo();
+    
+        // Passer le pseudo du fournisseur au SkeletonController
+        skeleton_controller.setSupplierForMessaging(supplierPseudo);
+    
+        // Charger la page de messagerie
+        skeleton_controller.loadMessageriePage();
+    }
+
+    @FXML public void cancel(){
+        System.out.println("Go back !");
+        skeleton_controller.loadListServiceOfferPage();
     }
 }
 package eu.telecomnancy.labfx;
 
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.VBox;
+import javafx.scene.Parent;
+import javafx.scene.control.SplitPane;
+import java.util.ArrayList;
+import java.io.IOException;
+
 public class SkeletonController {
+
+    public MainController main_controller;
+    private User currentUser;
+    private String supplierForMessaging;
+
+    public void setMainController(MainController main_controller) {
+        this.main_controller = main_controller;
+    }
+    public void setSupplierForMessaging(String pseudo) {
+        this.supplierForMessaging = pseudo;
+    }
+
+    @FXML private SplitPane skeletonContent;
+
+    @FXML private VBox menuContent;
+
+    @FXML private ProfileController profil_controller;
+
+    @FXML private VBox profileContent;
+
+    @FXML private VBox mainContent;
+
+
+
+
+    public void initialize(){
+        System.out.println("Initialisation de la session");
+        currentUser = Main.getCurrentUser();
+    }
+
+    public void setProfileController(ProfileController profil_controller){
+        this.profil_controller = profil_controller;
+    }
+
+    // Vous pouvez également ajouter des méthodes spécifiques pour charger le menu et le profil si nécessaire
+    public void loadMenuPage() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Menu.fxml"));
+            Parent menu_page = loader.load();
+
+            MenuController menu_controller = loader.getController();
+            menu_controller.setSkeletonController(this);
+
+            menuContent.getChildren().setAll(menu_page);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadProfilePage() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Profile.fxml"));
+            Parent profil_page = loader.load();
+
+            ProfileController profile_controller = loader.getController();
+            profile_controller.setSkeletonController(this);
+            setProfileController(profile_controller);
+            profileContent.getChildren().setAll(profil_page);
+            
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    // Fonction qui permet de charger la home page:
+    public void loadHomePage(){
+        try {
+            System.out.println("Chargement de la page Home");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/HomePage.fxml"));
+            Parent home = loader.load();
+
+            HomeController home_controller = loader.getController();
+            home_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(home);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    // Fonction qui permet de charger la page des services
+    public void loadServicePage(){
+        try {
+            System.out.println("Chargement de la page Service");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Service.fxml"));
+            Parent service = loader.load();
+
+            ServiceController service_controller = loader.getController();
+            service_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(service);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadEquipmentPage(){
+        try {
+            System.out.println("Chargement de la page matériel");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Equipment.fxml"));
+            Parent equipment = loader.load();
+
+            EquipmentController equipment_controller = loader.getController();
+            equipment_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(equipment);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page de création des équipements
+    public void loadCreateEquipmentPage(){
+        try {
+            System.out.println("Chargement de la page de création d'une offre d'équipement");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/CreateEquipment.fxml"));
+            Parent create_equipment = loader.load();
+
+            CreateEquipmentController create_equipment_controller = loader.getController();
+            create_equipment_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(create_equipment);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void loadEquipmentOfferPage(EquipmentOffer offer){
+        try {
+            System.out.println("Chargement de la page d'une offre d'équipement");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/EquipmentOffer.fxml"));
+            Parent equipment_offer = loader.load();
+
+            EquipmentOfferController equipment_offer_controller = loader.getController();
+            equipment_offer_controller.setSkeletonController(this);
+            equipment_offer_controller.setCurrentOffer(offer);
+
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(equipment_offer);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page de liste des offres d'équipement
+    public void loadListEquipmentOfferPage(){
+        try {
+            System.out.println("Chargement de la page de liste des offres d'équipement");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/ConsultEquipment.fxml"));
+            Parent list_equipment_offer = loader.load();
+
+            ConsultEquipmentController list_equipment_offer_controller = loader.getController();
+            list_equipment_offer_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(list_equipment_offer);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page de liste des offres de service
+    public void loadListServiceOfferPage(){
+        try {
+            System.out.println("Chargement de la page de liste des offres de service");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/ConsultService.fxml"));
+            Parent list_service_offer = loader.load();
+
+            ConsultServiceController list_service_offer_controller = loader.getController();
+            list_service_offer_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(list_service_offer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    // Fonction qui permet de charger la page de profile privé
+    public void loadPrivateProfile() {
+        try {
+            System.out.println("Chargement de la page de profile privé");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/PrivateProfilePage.fxml"));
+            Parent privateProfile = loader.load();
+
+            PrivateProfileController privateProfile_controller = loader.getController();
+            privateProfile_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(privateProfile);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page d'affichage d'une offre de service
+    public void loadServiceOfferPage(ServiceOffer offer){
+        try {
+            System.out.println("Chargement de la page d'une offre de service");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/ServiceOffer.fxml"));
+            Parent service_offer = loader.load();
+            ServiceOfferController service_offer_controller = loader.getController();
+            service_offer_controller.setSkeletonController(this);
+            service_offer_controller.setCurrentOffer(offer);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(service_offer);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page de création d'une offre de service
+    public void loadCreateServicePage(){
+        try {
+            System.out.println("Chargement de la page de création d'une offre de service");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/CreateService.fxml"));
+            Parent create_service = loader.load();
+
+            CreateServiceController create_service_controller = loader.getController();
+            create_service_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(create_service);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page de la carte
+    public void loadMapPage(){
+        try {
+            System.out.println("Chargement de la Map page");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Map.fxml"));
+            Parent map = loader.load();
+
+            MapController map_controller = loader.getController();
+            map_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(map);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page du planning
+    public void loadPlanningPage(){
+        try {
+            System.out.println("Chargement de la page planning");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Planning.fxml"));
+            Parent planning = loader.load();
+
+            PlanningController planning_controller = loader.getController();
+            planning_controller.setSkeletonController(this);
+
+            // Ajouter la page d'inscription à la scène
+            mainContent.getChildren().setAll(planning);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Fonction qui permet de charger la page de la messagerie
+    public void loadMessageriePage() {
+        try {
+            System.out.println("Chargement de la page messagerie");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Messagerie.fxml"));
+            Parent messagerie = loader.load();
+    
+            MessagerieController messagerie_controller = loader.getController();
+            messagerie_controller.setSkeletonController(this);
+    
+            // Passer le pseudo du fournisseur à MessagerieController
+            messagerie_controller.setInitialContact(supplierForMessaging);
+            messagerie_controller.initializeListContact();
+            supplierForMessaging = null; // Réinitialiser la variable après utilisation
+    
+            mainContent.getChildren().setAll(messagerie);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void updateProfile(){
+        profil_controller.updateProfileInfo(currentUser);
+    }
+
     
 }
+
+
 package eu.telecomnancy.labfx;
 
 import java.sql.Connection;
@@ -574,6 +2494,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 
 
 public class User {
@@ -593,6 +2519,7 @@ public class User {
     private String historiqueFlorain;
     private Double note;
 
+    
     public User(String mail) {
         this.mail = mail;
         loadUserFromDB();
@@ -616,6 +2543,7 @@ public class User {
                 this.photoProfil = rs.getString("photo_profil");
                 this.localisation = rs.getString("localisation");
                 String dateString = rs.getString("date_inscription");
+                System.out.println("datestring" + dateString);
                 if (dateString != null && !dateString.isEmpty()) {
                 this.dateInscription = LocalDate.parse(dateString);
                 } else {
@@ -660,6 +2588,13 @@ public class User {
 
 
     // Getters et Setters
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
     
     public String getPrenom() {
         return prenom;
@@ -681,7 +2616,7 @@ public class User {
         return mail;
     }
 
-    public String setMail() {
+    public String setMail(String mail) {
         return this.mail;
     }
     
@@ -738,7 +2673,11 @@ public class User {
     }
     
     public void setEtatCompte(String etatCompte) {
-        this.etatCompte = etatCompte;
+        if (etatCompte.equals("actif") || etatCompte.equals("sommeil")) {
+            this.etatCompte = etatCompte;
+        } else {
+            throw new IllegalArgumentException("L'état du compte doit être 'actif' ou 'inactif'");
+        }
     }
     
     public int getNbFlorain() {
@@ -765,204 +2704,57 @@ public class User {
         this.note = note;
     }
     
+    public double calculateDistanceTo(User otherUser) {
+        double[] thisLocation = getCoordinates(this.localisation);
+        double[] otherLocation = getCoordinates(otherUser.getLocalisation());
+    
+        double distance = haversine(thisLocation[0], thisLocation[1], otherLocation[0], otherLocation[1]);
+        System.out.println("Calcul de la distance entre " + this.localisation + " (" + thisLocation[0] + ", " + thisLocation[1] + ") et " + otherUser.getLocalisation() + " (" + otherLocation[0] + ", " + otherLocation[1] + ") : " + distance + " km");
+        //print user city and other user city
+        return distance;
+    }
     
 
+    // Méthode pour obtenir les coordonnées (latitude, longitude) d'une localisation
+    private double[] getCoordinates(String cityName) {
+        String line;
+        InputStream inputStream;
+        inputStream = getClass().getResourceAsStream("/eu/telecomnancy/labfx/cities.csv");
     
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            while ((line = br.readLine()) != null) {
+                String[] cityData = line.split(",");
+                if (cityData[0].equals("id")) {
+                    continue; // Ignorer l'en-tête
+                }
+                // Vérifier si le nom de la ville correspond (en tenant compte des guillemets)
+                String cityInCsv = cityData[4].replace("\"", ""); // Retirer les guillemets
+                if (cityInCsv.equalsIgnoreCase(cityName)) {
+                    double latitude = Double.parseDouble(cityData[6]);
+                    double longitude = Double.parseDouble(cityData[7]);
+                    return new double[]{latitude, longitude};
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la lecture du fichier CSV : " + e.getMessage());
+            e.printStackTrace();
+        }
+    return new double[]{0.0, 0.0}; // Retourner une valeur par défaut en cas d'échec
+    }
+    
+    
+
+    // Méthode Haversine pour calculer la distance entre deux points GPS
+    private double haversine(double lat1, double lon1, double lat2, double lon2) {
+        final int EARTH_RADIUS = 6371; // Rayon de la Terre en kilomètres
+
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        lat1 = Math.toRadians(lat1);
+        lat2 = Math.toRadians(lat2);
+
+        double a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        return EARTH_RADIUS * c;
+    }
 }
-Le dossier ./resources/eu/telecomnancy/labfx/ contient les fichiers suivants:
-
-Equipment.fxml
-HomePage.fxml
-images
-InscriptionPage.fxml
-Service.fxml
-SkeletonPage.fxml
-WelcomePage.fxml
-
-
-Le contenu des fichiers est le suivant:
-
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
-
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.EquipmentController">
-   <children>
-      <Button fx:id="ButtonCreate" layoutX="81.0" layoutY="71.0" mnemonicParsing="false" onAction="#handleCreateOffer" text="Créer une offre" />
-      <Button fx:id="ButtonConsult" layoutX="342.0" layoutY="71.0" mnemonicParsing="false" onAction="#handleConsultOffer" text="Consulter la liste des offres" />
-   </children>
-</AnchorPane>
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
-
-<SplitPane dividerPositions="0.29797979797979796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21">
-  <items>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="291.0">
-         <children>
-            <VBox prefHeight="398.0" prefWidth="140.0">
-               <children>
-                  <VBox fx:id="MenuContent" prefHeight="272.0" prefWidth="110.0" />
-                  <Line endX="75.29289245605469" startX="-100.0" />
-                  <VBox fx:id="ProfileContent" prefHeight="125.0" prefWidth="175.0" />
-               </children>
-            </VBox>
-         </children></AnchorPane>
-    <AnchorPane fx:id="mainContent" minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="257.0" />
-  </items>
-</SplitPane>
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="717.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.InscriptionController">
-   <center>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-                <Button fx:id="ButtonValidate" layoutX="53.0" layoutY="305.0" mnemonicParsing="false" onAction="#handleInscription" text="VALIDER" />
-                <Button fx:id="ButtonCancel" layoutX="470.0" layoutY="305.0" mnemonicParsing="false" onAction="#handleRetour" text="ANNULER" />
-                <TextField fx:id="prenom" alignment="CENTER" layoutX="269.0" layoutY="44.0" promptText="Entrez un Prénom" />
-                <TextField fx:id="nom" alignment="CENTER" layoutX="63.0" layoutY="108.0" promptText="Entrez un Nom" />
-                    <TextField fx:id="pseudo" alignment="CENTER" layoutX="80.0" layoutY="44.0" promptText="Entrez un Pseudo" />
-                     <TextField fx:id="localisation" alignment="CENTER" layoutX="80.0" layoutY="44.0" promptText="Entrez une ville" />
-                     <TextField fx:id="telephone" alignment="CENTER" layoutX="80.0" layoutY="44.0" promptText="Numéro de téléphone" />
-                    <TextField fx:id="mail" alignment="CENTER" layoutX="397.0" layoutY="82.0" promptText="Entrez un mail" />
-                    <TextField fx:id="password" alignment="CENTER" layoutX="349.0" layoutY="134.0" promptText="Entrez un mot de passe" />
-                    <TextField fx:id="password2" alignment="CENTER" layoutX="160.0" layoutY="181.0" promptText="Confirmez votre mot de passe" />
-                <Button fx:id="ButtonImage" layoutX="243.0" layoutY="228.0" mnemonicParsing="false" onAction="#chooseImage" text="Choisir une image" />
-               <ImageView fx:id="imageView" fitHeight="85.0" fitWidth="115.0" layoutX="223.0" layoutY="221.0" pickOnBounds="true" preserveRatio="true" />
-            </VBox>
-         </children>
-      </VBox>
-   </center>
-   <top>
-      <ImageView fitHeight="150.0" fitWidth="358.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-         <image>
-            <Image url="@images/logo_codingWeek.png" />
-         </image>
-      </ImageView>
-   </top>
-</BorderPane><?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
-
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.ServiceController">
-   <children>
-      <Button fx:id="ButtonCreate" layoutX="49.0" layoutY="61.0" mnemonicParsing="false" onAction="#handleCreateOffer" text="Créer une offre pour un service" />
-      <Button fx:id="ButtonConsult" layoutX="300.0" layoutY="61.0" mnemonicParsing="false" onAction="#handleConsultOffer" text="Consulter la liste des offres disponibles" />
-   </children>
-</AnchorPane>
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.SkeletonController">
-   <children>
-      <AnchorPane layoutY="1.0" minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="177.0">
-         <children>
-            <VBox prefHeight="398.0" prefWidth="160.0">
-               <children>
-                  <VBox fx:id="MenuContent" prefHeight="300.0" prefWidth="177.0" />
-                  <VBox fx:id="ProfileContent" prefHeight="130.0" prefWidth="177.0">
-                     <children>
-                        <Line endX="75.29289245605469" startX="-100.0" />
-                     </children>
-                  </VBox>
-               </children>
-            </VBox>
-         </children>
-      </AnchorPane>
-      <Line endX="176.0" startX="176.0" startY="398.9999694824219" />
-      <AnchorPane fx:id="mainContent" layoutX="175.0" layoutY="1.0" prefHeight="398.0" prefWidth="418.0" />
-   </children>
-</AnchorPane>
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="717.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.MainController">
-   <center>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenue sur">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </VBox.margin></Text>
-                  <ImageView fitHeight="150.0" fitWidth="358.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/logo_codingWeek.png" />
-                     </image></ImageView>
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </VBox>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-               <children>
-                  <VBox alignment="CENTER" prefHeight="132.0" prefWidth="548.0" spacing="10.0">
-                     <children>
-                        <TextField fx:id="emailField" prefHeight="24.0" prefWidth="330.0" promptText="Email">
-                           <VBox.margin>
-                              <Insets left="50.0" right="50.0" />
-                           </VBox.margin></TextField>
-                        <TextField fx:id="passwordField" promptText="Mot de passe">
-                           <VBox.margin>
-                              <Insets left="50.0" right="50.0" />
-                           </VBox.margin></TextField>
-                     </children>
-                     <VBox.margin>
-                        <Insets bottom="10.0" left="80.0" right="80.0" top="10.0" />
-                     </VBox.margin>
-                  </VBox>
-                  <Button fx:id="ConnexionButton" mnemonicParsing="false" onAction="#handleConnexion" text="Connexion">
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </Button>
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </VBox>
-            <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Pas encore inscrit?" />
-                  <Button mnemonicParsing="false" onAction="#handleInscription" text="Inscrivez-vous" />
-               </children>
-               <padding>
-                  <Insets bottom="20.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </HBox>
-         </children>
-      </VBox>
-   </center>
-</BorderPane>
