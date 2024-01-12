@@ -120,9 +120,6 @@ public class InscriptionController {
             return;
         }
 
-        String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
-        String PHONE_REGEX = "^\\+?\\d{1,3}?[-.\\s]?\\(?\\d{1,3}\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$";
-
         if(!Pattern.matches(EMAIL_REGEX, mailValue) || !Pattern.matches(PHONE_REGEX, phoneValue)) {
             System.out.println("Le mail ou le téléphone n'est pas valide");
             return;
