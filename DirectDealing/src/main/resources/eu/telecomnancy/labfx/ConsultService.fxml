@@ -8,19 +8,21 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.0" prefWidth="818.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.ConsultServiceController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="681.0" prefWidth="947.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.ConsultServiceController">
    <children>
-      <TextField fx:id="keywords" layoutX="115.0" layoutY="21.0" prefHeight="24.0" prefWidth="508.0" promptText="Mots-clé de la recherche" />
-      <TextField fx:id="priceMin" layoutX="46.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix min" />
-      <TextField fx:id="priceMax" layoutX="591.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix max" /> 
-      <DatePicker fx:id="begin" layoutX="115.0" layoutY="64.0" prefHeight="24.0" prefWidth="144.0" promptText="Date de début" />
-      <Slider fx:id="radius" blockIncrement="5.0" layoutX="433.0" layoutY="73.0" max="500.0" prefHeight="38.0" prefWidth="172.0" showTickLabels="true" showTickMarks="true" value="50.0" />
-      <DatePicker fx:id="end" layoutX="273.0" layoutY="64.0" prefHeight="24.0" prefWidth="144.0" promptText="Date de fin" /><TextField fx:id="timeMinInput" layoutX="200.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Heure Min (HH:MM)" />
-      <TextField fx:id="timeMaxInput" layoutX="425.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Heure Max (HH:MM)" />   
-      <Label layoutX="433.0" layoutY="56.0" text="Rayon autour de moi (km)" />
-      <Button fx:id="ButtonSearch" layoutX="329.0" layoutY="163.0" mnemonicParsing="false" onAction="#handleSearch" text="Lancer la recherche !" />
-      <TableView fx:id="results" layoutX="52.0" layoutY="202.0" prefHeight="318.0" prefWidth="714.0" />
-      <Button fx:id="ButtonReset" layoutX="210.0" layoutY="536.0" mnemonicParsing="false" onAction="#handleReset" text="Réinitialiser les résultats" />
-      <Button fx:id="ButtonCancel" layoutX="543.0" layoutY="536.0" mnemonicParsing="false" onAction="#cancel" text="Retour" />
+      <TextField fx:id="keywords" layoutX="183.0" layoutY="91.0" prefHeight="24.0" prefWidth="508.0" promptText="Mots-clé de la recherche" />
+      <TextField fx:id="priceMin" layoutX="114.0" layoutY="190.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix min" />
+      <TextField fx:id="priceMax" layoutX="659.0" layoutY="190.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix max" /> 
+      <DatePicker fx:id="begin" layoutX="183.0" layoutY="134.0" prefHeight="24.0" prefWidth="144.0" promptText="Date de début" />
+      <Slider fx:id="radius" blockIncrement="5.0" layoutX="501.0" layoutY="143.0" max="500.0" prefHeight="38.0" prefWidth="172.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+      <DatePicker fx:id="end" layoutX="341.0" layoutY="134.0" prefHeight="24.0" prefWidth="144.0" promptText="Date de fin" /><TextField fx:id="timeMinInput" layoutX="268.0" layoutY="190.0" prefHeight="24.0" prefWidth="100.0" promptText="Heure Min (HH:MM)" />
+      <TextField fx:id="timeMaxInput" layoutX="493.0" layoutY="190.0" prefHeight="24.0" prefWidth="100.0" promptText="Heure Max (HH:MM)" />   
+      <Label layoutX="501.0" layoutY="126.0" text="Rayon autour de moi (km)" />
+      <Button fx:id="ButtonSearch" layoutX="397.0" layoutY="233.0" mnemonicParsing="false" onAction="#handleSearch" text="Lancer la recherche !" />
+      <TableView fx:id="results" layoutX="48.0" layoutY="272.0" prefHeight="318.0" prefWidth="866.0" />
+      <Button fx:id="ButtonReset" layoutX="278.0" layoutY="606.0" mnemonicParsing="false" onAction="#handleReset" text="Réinitialiser les résultats" />
+      <Button fx:id="ButtonCancel" layoutX="611.0" layoutY="606.0" mnemonicParsing="false" onAction="#cancel" text="Retour" />
+      <Label fx:id="State" layoutX="377.0" layoutY="24.0" text="Vous êtes en mode sommeil !" />
+      <Button fx:id="ButtonCreate" layoutX="362.0" layoutY="40.0" mnemonicParsing="false" onAction="#handleCreateOffer" text="Créer une offre pour un service" />
    </children>
 </AnchorPane>

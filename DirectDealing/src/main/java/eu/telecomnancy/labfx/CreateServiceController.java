@@ -126,6 +126,6 @@ public class CreateServiceController {
 
     @FXML public void cancel() {
         System.out.println("cancel");
-        skeleton_controller.loadServicePage();
+        skeleton_controller.loadListServiceOfferPage();
     }
 }

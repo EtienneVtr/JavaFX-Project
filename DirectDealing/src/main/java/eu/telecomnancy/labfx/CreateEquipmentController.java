@@ -107,7 +107,7 @@ public class CreateEquipmentController {
     
 
     @FXML public void cancel() {
-        skeleton_controller.loadEquipmentPage();
+        skeleton_controller.loadListEquipmentOfferPage();
     }
 
     private Callback<DatePicker, DateCell> disablePastDates() {
