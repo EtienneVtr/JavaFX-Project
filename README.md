@@ -19,6 +19,7 @@
    - [Système d'Évaluation et de Feedback](#système-dévaluation-et-de-feedback)
 5. [Technologies Utilisées](#technologies-utilisées)
 6. [Architecture du Projet](#architecture-du-projet)
+7. [Gestion de projet](#gestion-de-projet)
 
 
 ## Projet souche Gradle/JavaFX/JUnit
@@ -159,5 +160,9 @@ L'objectif principal est de créer une plateforme intuitive et facile à utilise
 
 - **Modèle MVC** (Modèle-Vue-Contrôleur) pour une séparation claire entre la logique de l'interface utilisateur, la logique métier et la gestion des données.
 - **APIs et Services Externes**: Intégration d'APIs pour des fonctionnalités spécifiques comme le calendrier.
+
+## Gestion de Projet
+
+Dans le dossier Gestion de Projet, vous retrouverez nos convention, les fonctionnalités que nous avons observés dans le sujet et la RoadMap de la semaine.
 
 ---
