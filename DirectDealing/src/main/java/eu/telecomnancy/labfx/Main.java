@@ -20,6 +20,7 @@ import javafx.scene.text.Text;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 
 
 public class Main extends Application {
@@ -173,7 +174,7 @@ public class Main extends Application {
 
     private static boolean isClickable(Node node) {
         // Définir les critères pour un nœud cliquable, par exemple :
-        return node instanceof Button || node instanceof ImageView || node instanceof ListView;
+        return node instanceof Button || node instanceof TableView || node instanceof ListView;
     }
     
 
