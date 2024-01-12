@@ -7,7 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
-
+import javafx.scene.Cursor;
 import java.io.InputStream;
 
 public class ProfileController {
@@ -53,6 +53,11 @@ public class ProfileController {
         photoProfil.setClip(clip);
     
         updateProfileInfo(currentUser);
+
+        // Faire en sorte de changer la forme du curseur quand on passe sur l'image
+        photoProfil.setOnMouseEntered(event -> photoProfil.getScene().setCursor(Cursor.HAND));
+        photoProfil.setOnMouseExited(event -> photoProfil.getScene().setCursor(Cursor.DEFAULT));
+
     }
     
 

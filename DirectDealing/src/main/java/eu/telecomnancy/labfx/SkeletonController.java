@@ -53,6 +53,8 @@ public class SkeletonController {
             menu_controller.setSkeletonController(this);
 
             menuContent.getChildren().setAll(menu_page);
+            Main.applyCursorChangeToScene(menuContent);
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -68,6 +70,7 @@ public class SkeletonController {
             profile_controller.setSkeletonController(this);
             setProfileController(profile_controller);
             profileContent.getChildren().setAll(profil_page);
+            Main.applyCursorChangeToScene(profileContent);
             
 
         } catch (IOException e) {
@@ -89,6 +92,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(home);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,6 +112,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(service);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -125,6 +130,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(equipment);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -143,6 +149,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(create_equipment);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -162,6 +169,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(equipment_offer);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -180,6 +188,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(list_equipment_offer);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -198,6 +207,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(list_service_offer);
+            Main.applyCursorChangeToScene(mainContent);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -214,6 +224,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(privateProfile);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -232,6 +243,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(service_offer);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -250,6 +262,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(create_service);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -268,6 +281,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(map);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -286,6 +300,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(planning);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -308,6 +323,7 @@ public class SkeletonController {
             supplierForMessaging = null; // Réinitialiser la variable après utilisation
     
             mainContent.getChildren().setAll(messagerie);
+            Main.applyCursorChangeToScene(mainContent);
         } catch (IOException e) {
             e.printStackTrace();
         }

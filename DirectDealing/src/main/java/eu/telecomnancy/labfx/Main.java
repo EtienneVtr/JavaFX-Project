@@ -5,12 +5,21 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+
+
+import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.control.ListView;
 
 
 public class Main extends Application {
@@ -147,6 +156,26 @@ public class Main extends Application {
             return null;
         }
     }
+
+    // Fonction qui permet de modifier le curseur de la souris lorsqu'on passe dessus
+    public static void applyCursorChangeToScene(Parent parent) {
+        for (Node node : parent.getChildrenUnmodifiable()) {
+            if (node instanceof Parent) {
+                applyCursorChangeToScene((Parent) node);
+            }
+
+            if (isClickable(node)) {
+                node.setOnMouseEntered(event -> node.getScene().setCursor(Cursor.HAND));
+                node.setOnMouseExited(event -> node.getScene().setCursor(Cursor.DEFAULT));
+            }
+        }
+    }
+
+    private static boolean isClickable(Node node) {
+        // Définir les critères pour un nœud cliquable, par exemple :
+        return node instanceof Button || node instanceof ImageView || node instanceof ListView;
+    }
+    
 
     public static void main(String[] args) {
         DataBase.initializeDatabase();
