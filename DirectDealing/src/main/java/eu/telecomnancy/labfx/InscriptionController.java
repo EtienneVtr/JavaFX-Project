@@ -1,28 +1,24 @@
 package eu.telecomnancy.labfx;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-/* import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene; */
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
-//import javafx.stage.Stage;
-
+import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-//import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-
-
-//import javafx.application.Platform;
 
 public class InscriptionController {
 
@@ -37,8 +33,26 @@ public class InscriptionController {
     @FXML private TextField localisation;
     @FXML private TextField telephone;
     @FXML private ImageView imageView;
+    @FXML private HBox flashMessageContainer;
+    @FXML private Label flashMessageLabel;
 
     private String imagePath;
+
+    // Fonction qui permet d'afficher un message flash
+    public void flash(String message, String color) {
+        flashMessageLabel.setText(message);
+        flashMessageContainer.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 20;");
+        flashMessageContainer.setVisible(true);
+        // Temporisateur pour masquer le message flash après 5 secondes
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> closeFlashMessage()));
+        timeline.setCycleCount(1);
+        timeline.play();
+    }
+
+    @FXML
+    private void closeFlashMessage() {
+        flashMessageContainer.setVisible(false);
+    }
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
@@ -56,20 +70,41 @@ public class InscriptionController {
         String phoneValue = telephone.getText();
     
         // Vérifiez si les champs obligatoires sont remplis
-        if (prenomValue.isEmpty() || nomValue.isEmpty() || pseudoValue.isEmpty() || 
-            mailValue.isEmpty() || passwordValue.isEmpty() || localisationValue.isEmpty()) {
-            System.out.println("Tous les champs obligatoires doivent être remplis");
+        if (prenomValue.isEmpty()){
+            flash("Le champ prénom est obligatoire", "red");
+            return;
+        }
+        if (nomValue.isEmpty()){
+            flash("Le champ nom est obligatoire", "red");
+            return;
+        }
+        if (pseudoValue.isEmpty()){
+            flash("Le champ pseudo est obligatoire", "red");
+            return;
+        }
+        if (mailValue.isEmpty()){
+            flash("Le champ mail est obligatoire", "red");
+            return;
+        }
+        if (passwordValue.isEmpty()){
+            flash("Le champ mot de passe est obligatoire", "red");
+            return;
+        }
+        if (localisationValue.isEmpty()){
+            flash("Le champ localisation est obligatoire", "red");
             return;
         }
     
         if (!passwordValue.equals(password2Value)) {
             System.out.println("Les mots de passe ne correspondent pas");
+            flash("Les mots de passe ne correspondent pas", "red");
             return;
         }
         
         try (Connection conn = DataBase.getConnection()) {
             if (userExists(conn, pseudoValue, mailValue)) {
                 System.out.println("Un utilisateur avec ce pseudo ou ce mail existe déjà");
+                flash("Un utilisateur avec ce pseudo ou ce mail existe déjà", "red");
                 return;
             }
     
@@ -86,22 +121,16 @@ public class InscriptionController {
                 String test = LocalDate.now().toString();
                 System.out.println("caac" + test);
                 pstmt.setString(9, imagePath); // Photo de profil non obligatoire
-    
                 pstmt.executeUpdate();
                 User newUser = new User(mailValue);
                 //get all info of user
                 System.out.println("Utilisateur créé" + newUser.getMail() + newUser.getPseudo() + newUser.getNbFlorain() + newUser.getPhotoProfil() + newUser.getEtatCompte() + newUser.getHistoriqueFlorain() + newUser.getNote() + newUser.getPhone() + newUser.getLocalisation());
+                flash("Utilisateur créé", "green");
                 newUser.updateDistancesForNewUser(); // Mise à jour des distances pour le nouvel utilisateur
-
-                System.out.println("Utilisateur créé");
-                // Reste du code pour la redirection
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            // Gestion des erreurs SQL
         }
-    
-    
         // Redirection vers WelcomePage.fxml
         mainController.loadWelcomePage();
     }
