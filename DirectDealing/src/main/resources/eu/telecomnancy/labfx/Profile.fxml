@@ -4,6 +4,7 @@
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -30,16 +31,16 @@
                      </font></Label>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Solde:">
-                           <font>
-                              <Font name="Ubuntu" size="24.0" />
-                           </font>
-                        </Text>
                         <Label fx:id="labelSoldeFlorain" text="Solde Florain">
                            <font>
                               <Font name="Ubuntu" size="24.0" />
                            </font>
                         </Label>
+                        <ImageView fitHeight="45.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/florin_without_background.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </HBox>
                </children>
@@ -75,12 +76,7 @@
                </children>
             </HBox>
             <Label fx:id="State" text="Label" />
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
-               <children>
-                  <Button fx:id="help" mnemonicParsing="false" onAction="#contactHelp" text="Help" />
-                  <Button mnemonicParsing="false" onAction="#handleDeconnexion" text="Deconnexion" />
-               </children>
-            </HBox>
+            <Button mnemonicParsing="false" onAction="#handleDeconnexion" text="Deconnexion" />
          </children>
          <VBox.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
