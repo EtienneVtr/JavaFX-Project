@@ -81,14 +81,14 @@ public class PlanningController {
         AddEventToCalendar();
     }
 
-    public void ajouterEvenement(CombinedOffer offer) {
+    public void ajouterEvenement(LocalDate dateDebut, LocalDate dateFin, LocalTime heureDebut, LocalTime heureFin, CombinedOffer offer) {
         System.out.println("ajouterEvenement");
         Entry<String> evenement = new Entry<String>(offer.getTitle());
-        
+            
         // Définir des valeurs par défaut si nécessaire
-        dateDebut = (offer.getStart() == null) ? LocalDate.now() : dateDebut;
-        dateFin = (offer.getEnd() == null) ? dateDebut : dateFin;
-        heureDebut = (offer == null) ? LocalTime.of(0, 0) : heureDebut;
+        dateDebut = (dateDebut == null) ? LocalDate.now() : dateDebut;
+        dateFin = (dateFin == null) ? dateDebut : dateFin;
+        heureDebut = (heureDebut == null) ? LocalTime.of(0, 0) : heureDebut;
         heureFin = (heureFin == null) ? LocalTime.of(23, 59) : heureFin;
 
         // Configurer l'événement
@@ -130,10 +130,10 @@ public class PlanningController {
         System.out.println("offer.getType()" );
         if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
 
-            ajouterEvenement(offer);
-            ajouterEvenement(offer);
+            ajouterEvenement(offer.getStart(), offer.getEnd(), offer.getTime(), LocalTime.of(23, 59),  offer);
+            ajouterEvenement(offer.getStart(), offer.getEnd(), offer.getTime(), LocalTime.of(23, 59),  offer);
         } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
-            ajouterEvenement(offer);
+            ajouterEvenement(offer.getStart(), offer.getEnd(), LocalTime.of(7, 00), LocalTime.of(23, 59), offer);
         }
     }
 }
