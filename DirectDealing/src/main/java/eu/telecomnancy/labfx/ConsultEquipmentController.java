@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Slider;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
@@ -39,6 +38,8 @@ public class ConsultEquipmentController {
         TableColumn<EquipmentOffer, String> dateStartColumn = new TableColumn<>("Start");
         TableColumn<EquipmentOffer, String> dateEndColumn = new TableColumn<>("End");
         TableColumn<EquipmentOffer, String> descriptionColumn = new TableColumn<>("Description");
+        TableColumn<EquipmentOffer, String> quantityColumn = new TableColumn<>("Quantity");
+        TableColumn<EquipmentOffer, String> cityColumn = new TableColumn<>("City");
 
         // Définir comment chaque colonne va obtenir ses valeurs
         userNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner().getPrenom()));
@@ -47,6 +48,8 @@ public class ConsultEquipmentController {
         dateStartColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStartAvailabilityStr()));
         dateEndColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEndAvailabilityStr()));
         descriptionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
+        quantityColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getQuantity())));
+        cityColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner().getLocalisation()));
 
         // Ajoute les colonnes au TableView
         results.getColumns().add(userNameColumn);
@@ -55,9 +58,13 @@ public class ConsultEquipmentController {
         results.getColumns().add(dateStartColumn);
         results.getColumns().add(dateEndColumn);
         results.getColumns().add(descriptionColumn);
+        results.getColumns().add(quantityColumn);
+        results.getColumns().add(cityColumn);
 
         // Ajoute les données au TableView
         ArrayList<EquipmentOffer> all_equipment = Main.getAllEquipmentHome();
+        all_equipment.removeIf(item -> item.getOwner().getEtatCompte().equals("sommeil"));
+
         if(all_equipment != null){
             results.setItems(FXCollections.observableArrayList(all_equipment));
         }

@@ -11,28 +11,33 @@ import java.io.IOException;
 public class SkeletonController {
 
     public MainController main_controller;
+    private User currentUser;
+    private String supplierForMessaging;
+    private String message;
 
     public void setMainController(MainController main_controller) {
         this.main_controller = main_controller;
     }
+    public void setSupplierForMessaging(String pseudo) {
+        this.supplierForMessaging = pseudo;
+    }
 
-    @FXML
+    public void setSupplierForMessaging(String pseudo, String message) {
+        this.supplierForMessaging = pseudo;
+        this.message = message;
+    }
 
-    private SplitPane skeletonContent;
+    @FXML private SplitPane skeletonContent;
 
-    @FXML
-    private VBox menuContent;
+    @FXML private VBox menuContent;
 
     @FXML private ProfileController profil_controller;
 
-    @FXML
-    private VBox profileContent;
+    @FXML private VBox profileContent;
 
-    @FXML
-    private VBox mainContent;
+    @FXML private VBox mainContent;
 
 
-    private User currentUser;
 
 
     public void initialize(){
@@ -54,6 +59,8 @@ public class SkeletonController {
             menu_controller.setSkeletonController(this);
 
             menuContent.getChildren().setAll(menu_page);
+            Main.applyCursorChangeToScene(menuContent);
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,6 +76,7 @@ public class SkeletonController {
             profile_controller.setSkeletonController(this);
             setProfileController(profile_controller);
             profileContent.getChildren().setAll(profil_page);
+            Main.applyCursorChangeToScene(profileContent);
             
 
         } catch (IOException e) {
@@ -90,6 +98,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(home);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -109,6 +118,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(service);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -126,6 +136,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(equipment);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -144,6 +155,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(create_equipment);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -163,6 +175,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(equipment_offer);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -181,6 +194,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(list_equipment_offer);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -199,6 +213,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(list_service_offer);
+            Main.applyCursorChangeToScene(mainContent);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -215,6 +230,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(privateProfile);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -233,6 +249,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(service_offer);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -251,6 +268,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(create_service);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -269,6 +287,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(map);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -287,6 +306,7 @@ public class SkeletonController {
 
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(planning);
+            Main.applyCursorChangeToScene(mainContent);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -294,18 +314,24 @@ public class SkeletonController {
     }
 
     // Fonction qui permet de charger la page de la messagerie
-    public void loadMessageriePage(){
+    public void loadMessageriePage() {
         try {
             System.out.println("Chargement de la page messagerie");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Messagerie.fxml"));
             Parent messagerie = loader.load();
-
+    
             MessagerieController messagerie_controller = loader.getController();
             messagerie_controller.setSkeletonController(this);
-
-            // Ajouter la page d'inscription à la scène
+    
+            // Passer le pseudo du fournisseur à MessagerieController
+            messagerie_controller.setInitialContact(supplierForMessaging);
+            messagerie_controller.setInitialMessage(message);
+            messagerie_controller.initializeListContact();
+            supplierForMessaging = null; // Réinitialiser la variable après utilisation
+            message = null;
+    
             mainContent.getChildren().setAll(messagerie);
-            
+            Main.applyCursorChangeToScene(mainContent);
         } catch (IOException e) {
             e.printStackTrace();
         }

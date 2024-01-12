@@ -3,15 +3,23 @@ package eu.telecomnancy.labfx;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import java.io.File;
 import javafx.scene.image.Image;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import javafx.scene.control.RadioButton;
 
+import java.util.List;
 
 
 public class PrivateProfileController {
@@ -24,12 +32,17 @@ public class PrivateProfileController {
     @FXML private Label mail;
     @FXML private TextField phone;
     @FXML private TextField localisation;
-    @FXML private Button toggleStateButton;
+
+    @FXML private RadioButton ButtonActif;
+    @FXML private RadioButton ButtonSommeil;
+
     @FXML private Label dateInscription;
     @FXML private Label nbFlorain;
     @FXML private Label note;
     @FXML private ImageView photoProfil;
     @FXML private String photoProfilPath;
+
+    private ToggleGroup state_group = new ToggleGroup();
 
     public void initialize(){
         System.out.println("Initialisation du profile privé");
@@ -39,9 +52,18 @@ public class PrivateProfileController {
         nbFlorain.setText(String.valueOf(currentUser.getNbFlorain()));
         mail.setText(currentUser.getMail());
         note.setText(String.valueOf(currentUser.getNote()));
-        updateToggleButton();
 
         String cheminImageProfil = currentUser.getPhotoProfil();
+
+        ButtonActif.setToggleGroup(state_group);
+        ButtonSommeil.setToggleGroup(state_group);
+
+        ButtonActif.setSelected(true);
+
+        if(currentUser.getEtatCompte().equals("sommeil")){
+            ButtonSommeil.setSelected(true);
+        }
+
         try {
             InputStream inputStream;
             if (cheminImageProfil == null) {
@@ -70,35 +92,50 @@ public class PrivateProfileController {
 
         }
     }
-
-    private void updateToggleButton() {
-        if (currentUser != null) {
-            toggleStateButton.setText(currentUser.getEtatCompte().equals("actif") ? "Passer en inactif" : "Passer en actif");
-        }
-    }
     
     @FXML
     private void handleSaveButtonAction() {
         if (currentUser != null) {
             System.out.println("Sauvegarde des données de l'utilisateur");
+    
+            String oldLocation = currentUser.getLocalisation(); // Sauvegarde de l'ancienne localisation pour comparaison
+    
+            // Mise à jour des informations de l'utilisateur
             currentUser.setPseudo(pseudo.getText());
             currentUser.setPrenom(prenom.getText());
             currentUser.setNom(nom.getText());
             currentUser.setPhone(phone.getText());
             currentUser.setLocalisation(localisation.getText());
+    
+            currentUser.update(); // Mise à jour des données dans la base de données
+    
+            // Vérifie si la localisation a été modifiée
+            if (!oldLocation.equals(currentUser.getLocalisation())) {
+                currentUser.recalculateDistances(); // Recalcul des distances si la localisation a changé
+            }
+    
+            skeleton_controller.updateProfile(); // Mise à jour de l'interface utilisateur
+        }
+    }
+    
+
+    @FXML
+    private void changeStateToActif(){
+        if (currentUser != null) {
+            currentUser.setEtatCompte("actif");
             currentUser.update(); 
-            skeleton_controller.updateProfile();
+            System.out.println(currentUser.getEtatCompte());
+            skeleton_controller.loadProfilePage();
         }
     }
 
     @FXML
-    private void onToggleStateAction() {
-    if (currentUser != null) {
-        String nouvelEtat = currentUser.getEtatCompte().equals("actif") ? "sommeil" : "actif";
-        currentUser.setEtatCompte(nouvelEtat);
-        toggleStateButton.setText(nouvelEtat.equals("actif") ? "Passer en sommeil" : "Passer en actif");
-        currentUser.update(); 
-        System.out.println(currentUser.getEtatCompte());
+    private void changeStateToSommeil(){
+        if (currentUser != null) {
+            currentUser.setEtatCompte("sommeil");
+            currentUser.update(); 
+            System.out.println(currentUser.getEtatCompte());
+            skeleton_controller.loadProfilePage();
         }
     }
 

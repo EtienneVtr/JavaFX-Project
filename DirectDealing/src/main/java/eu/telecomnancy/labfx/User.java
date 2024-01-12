@@ -8,9 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
 
 
 
@@ -230,16 +234,15 @@ public class User {
     // Méthode pour obtenir les coordonnées (latitude, longitude) d'une localisation
     private double[] getCoordinates(String cityName) {
         String line;
-        String csvFile = "src/main/resources/eu/telecomnancy/labfx/cities.csv"; // Chemin vers votre fichier CSV
+        InputStream inputStream;
+        inputStream = getClass().getResourceAsStream("/eu/telecomnancy/labfx/cities.csv");
     
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             while ((line = br.readLine()) != null) {
                 String[] cityData = line.split(",");
-    
                 if (cityData[0].equals("id")) {
                     continue; // Ignorer l'en-tête
                 }
-    
                 // Vérifier si le nom de la ville correspond (en tenant compte des guillemets)
                 String cityInCsv = cityData[4].replace("\"", ""); // Retirer les guillemets
                 if (cityInCsv.equalsIgnoreCase(cityName)) {
@@ -252,7 +255,7 @@ public class User {
             System.err.println("Erreur lors de la lecture du fichier CSV : " + e.getMessage());
             e.printStackTrace();
         }
-        return new double[]{0.0, 0.0}; // Retourner une valeur par défaut en cas d'échec
+    return new double[]{0.0, 0.0}; // Retourner une valeur par défaut en cas d'échec
     }
     
     
@@ -270,6 +273,113 @@ public class User {
         double c = 2 * Math.asin(Math.sqrt(a));
         return EARTH_RADIUS * c;
     }
+
+    public void updateDistancesForNewUser() {
+        try (Connection conn = DataBase.getConnection()) {
+            // Récupérer tous les utilisateurs existants
+            String sqlGetUsers = "SELECT * FROM profil";
+            List<User> existingUsers = new ArrayList<>();
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlGetUsers);
+                 ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User(rs.getString("mail")); // Assurez-vous que le constructeur User initialise correctement un utilisateur
+                    existingUsers.add(user);
+                }
+            }
+    
+            // Calculer et insérer les distances pour le nouvel utilisateur
+            String sqlInsertDistance = "INSERT INTO user_distances (user_email1, user_email2, distance) VALUES (?, ?, ?)";
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlInsertDistance)) {
+                for (User existingUser : existingUsers) {
+                    double distance = this.calculateDistanceTo(existingUser);
+    
+                    pstmt.setString(1, this.mail); // ID du nouvel utilisateur
+                    pstmt.setString(2, existingUser.getMail()); // ID de l'utilisateur existant
+                    pstmt.setDouble(3, distance);
+                    pstmt.executeUpdate();
+    
+                    // Éventuellement, insérer aussi l'inverse pour la symétrie si nécessaire
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Gérer l'exception
+        }
+    }
+
+    public double getDistanceTo(User otherUser) {
+        double distance = 0.0;
+        try (Connection conn = DataBase.getConnection()) {
+            // Requête SQL pour obtenir la distance entre currentUser et offerOwner
+            String sql = "SELECT distance FROM user_distances WHERE (user_email1 = ? AND user_email2 = ?) OR (user_email1 = ? AND user_email2 = ?)";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                // Paramètres pour currentUser et offerOwner
+                pstmt.setString(1, this.mail); // mail de currentUser
+                pstmt.setString(2, otherUser.getMail()); // mail de offerOwner
+                pstmt.setString(3, otherUser.getMail()); // mail de offerOwner
+                pstmt.setString(4, this.mail); // mail de currentUser
+    
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    distance = rs.getDouble("distance");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Gérer l'exception
+        }
+        return distance;
+    }
+    
+
+
+    public List<User> getAllOtherUsers() {
+        List<User> otherUsers = new ArrayList<>();
+        try (Connection conn = DataBase.getConnection()) {
+            String sqlGetUsers = "SELECT * FROM profil WHERE mail != ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlGetUsers)) {
+                pstmt.setString(1, this.mail);
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()) {
+                    User user = new User(rs.getString("mail"));
+                    otherUsers.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Gérer l'exception
+        }
+        return otherUsers;
+    }
+
+    public void updateDistances(List<User> otherUsers) {
+        try (Connection conn = DataBase.getConnection()) {
+            String sqlUpdateDistance = "UPDATE user_distances SET distance = ? WHERE (user_email1 = ? AND user_email2 = ?) OR (user_email1 = ? AND user_email2 = ?)";
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlUpdateDistance)) {
+                for (User otherUser : otherUsers) {
+                    double newDistance = this.calculateDistanceTo(otherUser);
+    
+                    pstmt.setDouble(1, newDistance);
+                    pstmt.setString(2, this.mail);
+                    pstmt.setString(3, otherUser.getMail());
+                    pstmt.setString(4, otherUser.getMail());
+                    pstmt.setString(5, this.mail);
+                    pstmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Gérer l'exception
+        }
+    }
+    
+    public void recalculateDistances() {
+        List<User> otherUsers = getAllOtherUsers();
+        updateDistances(otherUsers);
+    }
+    
+
+
 }
 
     

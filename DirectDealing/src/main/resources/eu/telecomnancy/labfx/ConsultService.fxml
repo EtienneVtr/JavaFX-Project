@@ -8,19 +8,19 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.ConsultServiceController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.0" prefWidth="818.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.telecomnancy.labfx.ConsultServiceController">
    <children>
       <TextField fx:id="keywords" layoutX="115.0" layoutY="21.0" prefHeight="24.0" prefWidth="508.0" promptText="Mots-clé de la recherche" />
-      <TextField fx:id="priceMin" layoutX="46.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix min"/>
-      <TextField fx:id="priceMax" layoutX="454.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix max"/> 
+      <TextField fx:id="priceMin" layoutX="46.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix min" />
+      <TextField fx:id="priceMax" layoutX="591.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix max" /> 
       <DatePicker fx:id="begin" layoutX="115.0" layoutY="64.0" prefHeight="24.0" prefWidth="144.0" promptText="Date de début" />
-      <Slider fx:id="radius" blockIncrement="5.0" layoutX="433.0" layoutY="73.0" max="150.0" prefHeight="38.0" prefWidth="172.0" showTickLabels="true" showTickMarks="true" value="15.0" />
-      <DatePicker fx:id="end" layoutX="273.0" layoutY="64.0" prefHeight="24.0" prefWidth="144.0" promptText="Date de fin" /><TextField fx:id="timeMinInput" layoutX="200.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Heure Min (HH:MM)"/>
-      <TextField fx:id="timeMaxInput" layoutX="350.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Heure Max (HH:MM)"/>   
+      <Slider fx:id="radius" blockIncrement="5.0" layoutX="433.0" layoutY="73.0" max="500.0" prefHeight="38.0" prefWidth="172.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+      <DatePicker fx:id="end" layoutX="273.0" layoutY="64.0" prefHeight="24.0" prefWidth="144.0" promptText="Date de fin" /><TextField fx:id="timeMinInput" layoutX="200.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Heure Min (HH:MM)" />
+      <TextField fx:id="timeMaxInput" layoutX="425.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Heure Max (HH:MM)" />   
       <Label layoutX="433.0" layoutY="56.0" text="Rayon autour de moi (km)" />
-      <Button fx:id="ButtonSearch" layoutX="291.0" layoutY="111.0" mnemonicParsing="false" onAction="#handleSearch" text="Lancer la recherche !" />
-      <TableView fx:id="results" layoutX="14.0" layoutY="150.0" prefHeight="318.0" prefWidth="714.0" />
-      <Button fx:id="ButtonReset" layoutX="172.0" layoutY="484.0" mnemonicParsing="false" onAction="#handleReset" text="Réinitialiser les résultats" />
-      <Button fx:id="ButtonCancel" layoutX="505.0" layoutY="484.0" mnemonicParsing="false" onAction="#cancel" text="Retour" />
+      <Button fx:id="ButtonSearch" layoutX="329.0" layoutY="163.0" mnemonicParsing="false" onAction="#handleSearch" text="Lancer la recherche !" />
+      <TableView fx:id="results" layoutX="52.0" layoutY="202.0" prefHeight="318.0" prefWidth="714.0" />
+      <Button fx:id="ButtonReset" layoutX="210.0" layoutY="536.0" mnemonicParsing="false" onAction="#handleReset" text="Réinitialiser les résultats" />
+      <Button fx:id="ButtonCancel" layoutX="543.0" layoutY="536.0" mnemonicParsing="false" onAction="#cancel" text="Retour" />
    </children>
 </AnchorPane>

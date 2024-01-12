@@ -19,17 +19,20 @@ public class ServiceOfferController {
     @FXML private Label title;
     @FXML private Label description;
     @FXML private Label date;
-    @FXML private Label recurrency;
     @FXML private Label price;
 
     @FXML private Button book;
     @FXML private Button cancel;
+    @FXML private Button contact;
+    @FXML private Button ButtonDelete;
+    @FXML private Button contactHelp;
 
     @FXML private DatePicker booking_begin;
     @FXML private DatePicker booking_end;
 
     public void setCurrentOffer(ServiceOffer offer) {
         this.service_offer = offer;
+        currentUser = Main.getCurrentUser();
         displayOfferInfo();
     }
 
@@ -40,8 +43,23 @@ public class ServiceOfferController {
         String endDateString = service_offer.getEnd() != null ? service_offer.getEnd().toString() : "Pas de date renseigné";
         String time = service_offer.getTime() != null ? service_offer.getTime().toString() : "Pas d'heure renseigné";
         date.setText("Date : " + startDateString + " to " + endDateString + " at " + time);
-        recurrency.setText("Récurrence : " + service_offer.getRecurrency() + " jours par semaine" + "(" + service_offer.getDaysOfService() + ")");
         price.setText("Coût en florains : " + service_offer.getPrice());
+
+        if (service_offer.getSupplierMail().equals(currentUser.getMail())){
+            book.setVisible(false);
+            booking_begin.setVisible(false);
+            booking_end.setVisible(false);
+            contact.setVisible(false);
+        }
+
+        if (!currentUser.getMail().equals("admin")){
+            ButtonDelete.setVisible(false);
+        }else{
+            contactHelp.setVisible(false);
+            if(currentUser.getMail().equals(service_offer.getSupplierMail())){
+                ButtonDelete.setVisible(true);
+            }
+        }
     }
 
     @FXML public void handleBook() {
@@ -71,7 +89,7 @@ public class ServiceOfferController {
         }else if(begin.isAfter(end)){
             System.out.println("La date de début doit être avant la date de fin");
             return;
-        }else if(begin.isBefore(service_offer.getStart()) || end.isAfter(service_offer.getStart())){
+        }else if(begin.isBefore(service_offer.getStart()) || end.isAfter(service_offer.getEnd())){
             System.out.println("La date de début et de fin doivent être comprises dans la période de disponibilité de l'offre");
             return;
         }
@@ -84,15 +102,23 @@ public class ServiceOfferController {
             // Création de deux nouvelles offres avant et après la période de réservation
             // si le premier jour de réservation est le même que le début de l'offre de base, on en crée qu'une après
             // inverse pour le dernier jour de réservation
-            /* if(begin.equals(service_offer.getStart()) && end.equals(service_offer.getEnd())){
+            if(begin.equals(service_offer.getStart()) && end.equals(service_offer.getEnd())){
                 System.out.println("Offre bien créée");
             }else if(begin.equals(service_offer.getStart())){
+                ServiceOffer newOffer = new ServiceOffer(service_offer.getSupplier(), service_offer.getTitle(), service_offer.getDescription(), end.plusDays(1), service_offer.getEnd(), service_offer.getTime(), false, null, service_offer.getPrice());
                 System.out.println("Offre bien créée");
-                ServiceOffer newOffer = new ServiceOffer(service_offer.getTitle(), service_offer.getDescription(), service_offer.getSupplierMail(), service_offer.getPrice(), end.plusDays(1), service_offer.getEnd(), service_offer.getRecurrency(), service_offer.getDaysOfService(), service_offer.getTime());
+            }else if(end.equals(service_offer.getEnd())){
+                ServiceOffer newOffer = new ServiceOffer(service_offer.getSupplier(), service_offer.getTitle(), service_offer.getDescription(), service_offer.getStart(), begin.minusDays(1), service_offer.getTime(), false, null, service_offer.getPrice());
+                System.out.println("Offre bien créée");
+            }else{
+                ServiceOffer newOffer1 = new ServiceOffer(service_offer.getSupplier(), service_offer.getTitle(), service_offer.getDescription(), service_offer.getStart(), begin.minusDays(1), service_offer.getTime(), false, null, service_offer.getPrice());
+                ServiceOffer newOffer2 = new ServiceOffer(service_offer.getSupplier(), service_offer.getTitle(), service_offer.getDescription(), end.plusDays(1), service_offer.getEnd(), service_offer.getTime(), false, null, service_offer.getPrice());
+                System.out.println("Offres bien créées");
+            }
 
 
 
-            service_offer.setEstPris(currentUserEmail); */
+            service_offer.setEstPris(currentUserEmail);
             //set nb florain user
             currentUser = Main.getCurrentUser();
             currentUser.setNbFlorain(currentUser.getNbFlorain() - service_offer.getPrice());
@@ -106,12 +132,42 @@ public class ServiceOfferController {
     }
     
 
-    @FXML public void handleContact(){
+    @FXML public void handleContact() {
         System.out.println("Lancement d'une conversation avec le propriétaire de l'offre");
+    
+        // Obtenir le pseudo du fournisseur
+        String supplierPseudo = service_offer.getSupplier().getPseudo();
+    
+        // Passer le pseudo du fournisseur au SkeletonController
+        skeleton_controller.setSupplierForMessaging(supplierPseudo);
+    
+        // Charger la page de messagerie
+        skeleton_controller.loadMessageriePage();
     }
 
     @FXML public void cancel(){
         System.out.println("Go back !");
         skeleton_controller.loadListServiceOfferPage();
+    }
+
+    @FXML public void delete(){
+        System.out.println("Suppression de l'offre");
+        service_offer.delete();
+        skeleton_controller.loadListServiceOfferPage();
+    }
+
+    @FXML public void contactHelp(){
+        System.out.println("Help !!");
+        String message = "J'ai besoin d'aide sur l'annonce de \n"
+                 + "type \"" + "service" + "\" \n"
+                 + "créé par \"" + currentUser.getPseudo() + "\" \n"
+                 + "le \"" + service_offer.getDate_publication() + "\" \n"
+                 + "avec comme titre \"" + service_offer.getTitle() + "\" \n"
+                 + "comme description \"" + service_offer.getDescription() + "\" et \n"
+                 + "comme prix \"" + service_offer.getPrice() + "\" \n"
+                 + "situé à \"" + service_offer.getSupplier().getLocalisation() + "\"";
+
+        skeleton_controller.setSupplierForMessaging("admin", message);
+        skeleton_controller.loadMessageriePage();
     }
 }

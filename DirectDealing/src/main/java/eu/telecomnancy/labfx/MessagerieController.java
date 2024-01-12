@@ -16,6 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,6 +39,11 @@ public class MessagerieController {
     private ArrayList<Conversation> allConversations;
     private ObservableList<String> listOfContacts;
     private ArrayList<Message> listOfCurrentMessages;
+    private String initialContact;
+    private String initialMessage;
+    private Map<String, Integer> unreadMessageCountMap = new HashMap<>(); // Utiliser une Map pour conserver le nombre de messages non lus pour chaque conversation
+    
+
 
 
     @FXML private ListView<String> listContact;
@@ -45,14 +52,31 @@ public class MessagerieController {
     @FXML private ListView<Message> messageList;
     @FXML private TextField responseField;
     @FXML private Button sendButton;
+    @FXML private Label noConv;
+    @FXML private Label noSelectConv;
+    @FXML private VBox convActive;
+
+
 
 
     public void setSkeletonController(SkeletonController skeleton_controller){
         this.skeleton_controller = skeleton_controller;
     }
 
+    public void setInitialContact(String contactPseudo) {
+        this.initialContact = contactPseudo;
+    }
+
+    public void setInitialMessage(String messageText) {
+        this.initialMessage = messageText;
+    }
+
     public void initialize() {
         currentUser = Main.getCurrentUser();
+        
+    }
+
+    public void initializeListContact() {
         loadConversations();
         listContact.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -62,6 +86,24 @@ public class MessagerieController {
                 }
             }
         });
+
+        if (initialContact != null && !initialContact.isEmpty()) {
+            // Créer une conversation avec le contact initial
+            createConversationWith(initialContact);
+            listContact.getSelectionModel().select(initialContact);
+            setCurrentConversation(initialContact);
+            if(initialMessage != null && !initialMessage.isEmpty()) {
+                sendMessage(initialMessage);
+            }
+            initialContact = null; // Réinitialiser après utilisation
+            initialMessage = null;
+        }
+        else {
+            // Sélectionner le premier contact par défaut
+            listContact.getSelectionModel().selectFirst();
+            setCurrentConversation(listContact.getSelectionModel().getSelectedItem());
+        }
+    
     }
 
     //Accès à la dataBase
@@ -243,25 +285,7 @@ public class MessagerieController {
     }
 
 
-    private boolean hasUnreadMessages(int conversationId, int userId) {
-        String sql = "SELECT COUNT(*) FROM messages WHERE conversation_id = ? AND receiver_id = ? AND is_read = FALSE";
-    
-        try (Connection conn = DataBase.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    
-            pstmt.setInt(1, conversationId);
-            pstmt.setInt(2, userId);
-    
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;  // Retourne vrai si des messages non lus existent
-            }
-        } catch (SQLException e) {
-            System.out.println("Error checking for unread messages: " + e.getMessage());
-        }
-        return false;
-    }
-
+    // Fonction qui permet de compter le nombre de messages non lus pour une conversation donnée
     private int countUnreadMessages(int conversationId, int userId) {
         String sql = "SELECT COUNT(*) FROM messages WHERE conversation_id = ? AND receiver_id = ? AND is_read = FALSE";
         
@@ -280,6 +304,28 @@ public class MessagerieController {
         }
         return 0;
     }
+
+    // Fonction qui permet de supprimer une conversation de la base de donnée
+    private void deleteConversation(int conversationId) {
+        String sqlDeleteMessages = "DELETE FROM messages WHERE conversation_id = ?";
+        String sqlDeleteConversation = "DELETE FROM conversations WHERE conversation_id = ?";
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmtMessages = conn.prepareStatement(sqlDeleteMessages);
+             PreparedStatement pstmtConversation = conn.prepareStatement(sqlDeleteConversation)) {
+    
+            // Supprimer les messages
+            pstmtMessages.setInt(1, conversationId);
+            pstmtMessages.executeUpdate();
+    
+            // Supprimer la conversation
+            pstmtConversation.setInt(1, conversationId);
+            pstmtConversation.executeUpdate();
+    
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression de la conversation : " + e.getMessage());
+        }
+    }
     
 
     
@@ -289,43 +335,58 @@ public class MessagerieController {
 
     // Fonction qui permet de récupérer la listes des conversations de l'utilisateur courant et de les afficher dans la liste des contacts
     private void loadConversations() {
-    // Utiliser une Map pour conserver le nombre de messages non lus pour chaque conversation
-    Map<String, Integer> unreadMessageCountMap = new HashMap<>();
-    
-    allConversations = getAllConversations(currentUser.getId());
-    allConversations.sort(Comparator.comparingInt(Conversation::getConversationId).reversed()); // Trier par ID de conversation
+        allConversations = getAllConversations(currentUser.getId());
 
-    for (Conversation conversation : allConversations) {
-        int otherParticipantId = (conversation.getParticipant1Id() == currentUser.getId()) ? 
-                                conversation.getParticipant2Id() : 
-                                conversation.getParticipant1Id();
-        String otherParticipantPseudo = getUserPseudoById(otherParticipantId);
+        if (allConversations.isEmpty()) {
+            noConv.setVisible(true);
+            noSelectConv.setVisible(true);
+            convActive.setVisible(false);
+            listContact.setVisible(false);
 
-        // Compter les messages non lus
-        int unreadMessages = countUnreadMessages(conversation.getConversationId(), currentUser.getId());
-        unreadMessageCountMap.put(otherParticipantPseudo, unreadMessages);
-    }
 
-    listOfContacts = FXCollections.observableArrayList(unreadMessageCountMap.keySet());
-    listContact.setItems(listOfContacts);
-
-    // Utiliser un CellFactory personnalisé
-    listContact.setCellFactory(lv -> new ListCell<String>() {
-        @Override
-        protected void updateItem(String item, boolean empty) {
-            super.updateItem(item, empty);
-            if (empty || item == null) {
-                setText(null);
-                setStyle("");
-            } else {
-                int unreadMessages = unreadMessageCountMap.getOrDefault(item, 0);
-                String displayText = item + (unreadMessages > 0 ? " (" + unreadMessages +  " Non lu)" : "");
-                setText(displayText);
-                setStyle(unreadMessages > 0 ? "-fx-background-color: lightcoral;" : "");
-            }
+        } else {
+            noConv.setVisible(false);
+            noSelectConv.setVisible(false);
+            convActive.setVisible(true);
+            listContact.setVisible(true);
         }
-    });
-}
+        allConversations.sort(Comparator.comparingInt(Conversation::getConversationId).reversed()); // Trier par ID de conversation
+
+        for (Conversation conversation : allConversations) {
+            int otherParticipantId = (conversation.getParticipant1Id() == currentUser.getId()) ? 
+                                    conversation.getParticipant2Id() : 
+                                    conversation.getParticipant1Id();
+            String otherParticipantPseudo = getUserPseudoById(otherParticipantId);
+
+            // Compter les messages non lus
+            int unreadMessages = countUnreadMessages(conversation.getConversationId(), currentUser.getId());
+            unreadMessageCountMap.put(otherParticipantPseudo, unreadMessages);
+        }
+
+        listOfContacts = FXCollections.observableArrayList(unreadMessageCountMap.keySet());
+        listContact.setItems(listOfContacts);
+
+        // Utiliser un CellFactory personnalisé
+        listContact.setCellFactory(lv -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    int unreadMessages = unreadMessageCountMap.getOrDefault(item, 0);
+                    String displayText = item + (unreadMessages > 0 ? " (" + unreadMessages + " Non lu)" : "");
+                    setText(displayText);
+                    if (unreadMessages > 0 && !item.equals(contactPseudoLabel.getText())) {
+                        setStyle("-fx-background-color: lightcoral;");
+                    } else {
+                        setStyle("");
+                    }
+                }
+            }
+        });
+    }
 
 
     // Fonction qui permet de créer une conversation entre l'utilisateur courant et un autre utilisateur
@@ -351,6 +412,8 @@ public class MessagerieController {
                 currentConversation = conversation;
                 contactPseudoLabel.setText(participantPseudo); // Mettre à jour le label
                 loadMessages(currentConversation.getConversationId()); // Charger les messages de la conversation
+                unreadMessageCountMap.put(conversationPseudo, 0);
+                listContact.refresh();
                 break;
             }
         }
@@ -391,15 +454,28 @@ public class MessagerieController {
                 super.updateItem(message, empty);
                 if (empty || message == null) {
                     setText(null);
+                    setGraphic(null);
                 } else {
                     String senderPseudo = getUserPseudoById(message.getSenderId());
                     String status = message.isRead() ? "Lu" : "Remis";
-                    String messageDisplay = senderPseudo + ": " + message.getMessageText() + " (" + status + ")";
-                    setText(messageDisplay);
+                    String messageText = message.getMessageText();
+
+                    Label pseudoLabel = new Label(senderPseudo + " :");
+                    pseudoLabel.setFont(new Font("Arial", 14)); // Vous pouvez ajuster la police et la taille selon vos besoins
+
+                    Label messageLabel = new Label(messageText + " (" + status + ")");
+                    messageLabel.setWrapText(true);
+                    messageLabel.setMaxWidth(lv.getWidth() - 20);
+
+                    VBox vbox = new VBox(pseudoLabel, messageLabel);
+                    vbox.setSpacing(5); // Espace entre le pseudo et le message
+
+                    setGraphic(vbox);
                 }
             }
         });
     }
+
 
 
 
@@ -423,9 +499,20 @@ public class MessagerieController {
         if (pseudoContactText != null && !pseudoContactText.trim().isEmpty()) {
             // Logique pour créer une conversation avec le pseudo récupéré
             createConversationWith(pseudoContactText);
+
         } else {
             // Gérer le cas où le champ est vide
             System.out.println("Veuillez entrer un pseudo valide.");
+        }
+    }
+
+    @FXML
+    public void handleDeleteConversation() {
+        if (currentConversation != null) {
+            deleteConversation(currentConversation.getConversationId());
+            skeleton_controller.loadMessageriePage();
+        } else {
+            System.out.println("Aucune conversation sélectionnée.");
         }
     }
 

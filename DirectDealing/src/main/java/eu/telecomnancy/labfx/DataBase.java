@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -44,6 +45,33 @@ public class DataBase {
                              "historique_florain TEXT, " +
                              "note REAL)";
             stmt.execute(sqlProfil);
+
+            // Ajout de admin dans la table "profil" si elle n'existe pas
+            String emailToCheck = "admin"; // L'e-mail que tu veux vérifier
+            // Préparer une requête SQL pour vérifier si l'e-mail existe déjà
+            String sqlCheck = "SELECT COUNT(*) FROM profil WHERE mail = ?";
+            try (PreparedStatement checkStmt = conn.prepareStatement(sqlCheck)) {
+                checkStmt.setString(1, emailToCheck);
+
+                // Exécuter la requête et obtenir le résultat
+                ResultSet resultSet = checkStmt.executeQuery();
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+
+                    // Vérifier si l'e-mail existe déjà
+                    if (count == 0) {
+                        // L'e-mail n'existe pas, exécuter la requête d'insertion
+                        String sqlAdmin = "INSERT INTO profil (prenom, nom, pseudo, mail, phone, password, localisation, date_inscription, status_compte, etat_compte, nb_florain, historique_florain, note) " +
+                                        "VALUES ('admin', 'admin', 'admin', 'admin', '0000000000', 'admin', 'Paris', ?, NULL, 'actif', 10000, NULL, 5)";
+                        try (PreparedStatement insertStmt = conn.prepareStatement(sqlAdmin)) {
+                            insertStmt.setString(1, LocalDate.now().toString()); // Remplacer par la date actuelle
+                            insertStmt.execute();
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
             // Création de la table "equipement" si elle n'existe pas
             String sqlEquipement = "CREATE TABLE IF NOT EXISTS equipement (" +
@@ -104,6 +132,15 @@ public class DataBase {
                                  "is_read BOOLEAN DEFAULT FALSE," + 
                                  "FOREIGN KEY (conversation_id) REFERENCES conversations(conversation_id));";
             stmt.execute(sqlMessages);
+
+            String sqlUserDistances = "CREATE TABLE IF NOT EXISTS user_distances (" +
+                                      "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                      "user_email1 TEXT NOT NULL, " +
+                                      "user_email2 TEXT NOT NULL, " +
+                                      "distance DOUBLE NOT NULL, " +
+                                      "FOREIGN KEY (user_email1) REFERENCES profil (mail), " +
+                                      "FOREIGN KEY (user_email2) REFERENCES profil (mail))";
+            stmt.execute(sqlUserDistances);
 
 
 

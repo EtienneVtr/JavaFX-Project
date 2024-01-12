@@ -14,12 +14,12 @@ public class CombinedOffer {
     private String date_publication;
     private LocalDate start;
     private LocalDate end;
+    private double distanceToCurrentUser;
 
     // Champs spécifiques à EquipmentOffer
     private int quantity;
 
     // Champs spécifiques à ServiceOffer
-    private LocalDate date;
     private LocalTime time;
     private boolean isRecurrent;
     private String daysOfService;
@@ -64,6 +64,7 @@ public class CombinedOffer {
         this.type = OfferType.SERVICE_OFFER;
         this.date_publication    = serviceOffer.getDate_publication();
     }
+
 
     // Getters et setters pour les champs communs et spécifiques
 
@@ -120,8 +121,16 @@ public class CombinedOffer {
         return this.start;
     }
 
+    public String getStartString() {
+        return start.toString();
+    }
+
     public LocalDate getEnd() {
         return this.end;
+    }
+
+    public String getEndString() {
+        return end.toString();
     }
 
     public LocalTime getTime() {

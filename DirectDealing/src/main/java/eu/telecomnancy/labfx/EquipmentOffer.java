@@ -1,13 +1,10 @@
 package eu.telecomnancy.labfx;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.time.LocalDate;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -362,37 +359,36 @@ public class EquipmentOffer {
     }
 
     public static List<EquipmentOffer> searchOffers(User currentUser, String keywords, LocalDate begin, LocalDate end, Integer minPrice, Integer maxPrice, double radius) {
-        System.out.println("Début de la recherche des offres avec un rayon de " + radius + " km");
+        System.out.println("Début de la recherche des offres avec un rayon de " + radius + " km et les mots clés " + keywords + " et les dates " + begin + " " + end + " et les prix " + minPrice + " " + maxPrice);
     
         List<EquipmentOffer> offers = new ArrayList<>();
         String sql = "SELECT owner_mail, id, name, description, quantity, start_availability, end_availability, price FROM equipement WHERE estPris IS NULL";
-    
-        // Construction de la requête SQL avec les filtres
+
         if (!keywords.isEmpty()) {
             sql += " AND name LIKE ?";
         }
-        // Logique pour les dates
-        if (begin != null || end != null) {
-            sql += " AND (";
-            if (begin != null) {
-                sql += "(end_availability IS NULL OR end_availability >= ?)";
-            }
-            if (begin != null && end != null) {
-                sql += " AND";
-            }
-            if (end != null) {
-                sql += "(start_availability IS NULL OR start_availability <= ?)";
-            }
-            sql += ")";
+
+        if (begin != null && end != null) {
+            // Les offres doivent être disponibles pour toute la période demandée
+            sql += " AND (start_availability <= ? AND end_availability >= ?)";
+        
+        } else if (begin != null) {
+            // Les offres doivent commencer au plus tard à la date de début
+            sql += " AND (start_availability <= ?)";
+        } else if (end != null) {
+            // Les offres doivent se terminer au plus tôt à la date de fin
+            sql += " AND (end_availability >= ?)";
         }
+
         // Logique pour le prix
         if (minPrice != null) {
-            sql += " AND price >= ?";
+            sql += " AND price >= '?' ";
         }
         if (maxPrice != null) {
             sql += " AND price <= ?";
         }
-    
+
+        
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
     
@@ -401,10 +397,10 @@ public class EquipmentOffer {
                 pstmt.setString(paramIndex++, "%" + keywords + "%");
             }
             if (begin != null) {
-                pstmt.setDate(paramIndex++, Date.valueOf(begin));
+                pstmt.setString(paramIndex++, begin.toString());
             }
             if (end != null) {
-                pstmt.setDate(paramIndex++, Date.valueOf(end));
+                pstmt.setString(paramIndex++, end.toString());
             }
             if (minPrice != null) {
                 pstmt.setInt(paramIndex++, minPrice);
@@ -412,6 +408,7 @@ public class EquipmentOffer {
             if (maxPrice != null) {
                 pstmt.setInt(paramIndex++, maxPrice);
             }
+
     
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -439,12 +436,37 @@ public class EquipmentOffer {
             .filter(offer -> isWithinRadius(currentUser, offer.getOwner(), radius))
             .collect(Collectors.toList());
     }
+
+
+
+    // supprimer une offre
+    public void delete() {
+        String sql = "DELETE FROM equipement WHERE id = ?";
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setInt(1, this.id); // Remplacer par l'ID de l'offre à supprimer
+            int affectedRows = pstmt.executeUpdate();
+    
+            if (affectedRows > 0) {
+                System.out.println("Offre supprimée avec succès");
+            } else {
+                System.out.println("Aucune offre trouvée avec cet ID");
+            }
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Erreur lors de la suppression de l'offre");
+        }
+    }
+    
     
     
 
     private static boolean isWithinRadius(User currentUser, User offerOwner, double radius) {
-        // Calcul de la distance entre l'utilisateur actuel et le propriétaire de l'offre
-        double distance = currentUser.calculateDistanceTo(offerOwner);
+        // Récupérer la distance de la base de données
+        double distance = currentUser.getDistanceTo(offerOwner);
     
         // Vérifiez si la distance est inférieure ou égale au rayon spécifié
         return distance <= radius;

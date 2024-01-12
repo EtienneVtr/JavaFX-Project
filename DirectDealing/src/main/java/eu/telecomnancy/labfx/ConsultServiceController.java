@@ -7,7 +7,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableView;
 
 import java.time.LocalDate;
@@ -45,6 +44,7 @@ public class ConsultServiceController {
         TableColumn<ServiceOffer, String> endColumn = new TableColumn<>("End");
         TableColumn<ServiceOffer, String> timeColumn = new TableColumn<>("Time");
         TableColumn<ServiceOffer, String> descriptionColumn = new TableColumn<>("Description");
+        TableColumn<ServiceOffer, String> cityColumn = new TableColumn<>("City");
 
         // Définir comment chaque colonne va obtenir ses valeurs
         userNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSupplier().getPrenom()));
@@ -54,6 +54,7 @@ public class ConsultServiceController {
         endColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEndStr()));
         timeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTimeStr()));
         descriptionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
+        cityColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSupplier().getLocalisation()));
 
         // Ajoute les colonnes au TableView
         results.getColumns().add(userNameColumn);
@@ -63,9 +64,12 @@ public class ConsultServiceController {
         results.getColumns().add(endColumn);
         results.getColumns().add(timeColumn);
         results.getColumns().add(descriptionColumn);
+        results.getColumns().add(cityColumn);
 
         // Ajoute les données au TableView
         ArrayList<ServiceOffer> all_service = Main.getAllServiceHome();
+        all_service.removeIf(item -> item.getSupplier().getEtatCompte().equals("sommeil"));
+
         if(all_service != null){
             results.setItems(FXCollections.observableArrayList(all_service));
         }
@@ -92,6 +96,7 @@ public class ConsultServiceController {
         Integer maxPrice = null;
         String timeMin = timeMinInput.getText();
         String timeMax = timeMaxInput.getText();
+        double selectedRadius = radius.getValue();
     
         try {
             if (!priceMin.getText().isEmpty()) {
@@ -107,7 +112,7 @@ public class ConsultServiceController {
         // Vérifiez que les formats d'heure sont valides ou gérez les exceptions comme vous le souhaitez
     
         // Appeler une méthode pour effectuer la recherche dans la base de données
-        List<ServiceOffer> searchResults = ServiceOffer.searchOffers(currentUser, keywordText, startDate, endDate, minPrice, maxPrice, timeMin, timeMax);
+        List<ServiceOffer> searchResults = ServiceOffer.searchOffers(currentUser, keywordText, startDate, endDate, minPrice, maxPrice, timeMin, timeMax, selectedRadius);
 
         // Mettre à jour le TableView avec les résultats
         results.setItems(FXCollections.observableArrayList(searchResults));

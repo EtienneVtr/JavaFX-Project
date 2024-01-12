@@ -131,6 +131,7 @@ public class PlanningController {
         if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
 
             ajouterEvenement(offer.getStart(), offer.getEnd(), offer.getTime(), LocalTime.of(23, 59),  offer);
+            ajouterEvenement(offer.getStart(), offer.getEnd(), offer.getTime(), LocalTime.of(23, 59),  offer);
         } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
             ajouterEvenement(offer.getStart(), offer.getEnd(), LocalTime.of(7, 00), LocalTime.of(23, 59), offer);
         }
