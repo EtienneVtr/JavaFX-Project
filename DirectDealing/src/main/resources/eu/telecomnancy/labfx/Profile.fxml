@@ -76,7 +76,12 @@
                </children>
             </HBox>
             <Label fx:id="State" text="Label" />
-            <Button mnemonicParsing="false" onAction="#handleDeconnexion" text="Deconnexion" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+               <children>
+                  <Button fx:id="help" mnemonicParsing="false" onAction="#contactHelp" text="Help" />
+                  <Button mnemonicParsing="false" onAction="#handleDeconnexion" text="Deconnexion" />
+               </children>
+            </HBox>
          </children>
          <VBox.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
