@@ -3,10 +3,14 @@ package eu.telecomnancy.labfx;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 import javafx.scene.control.TableView;
 
 import java.time.LocalDate;
@@ -31,6 +35,8 @@ public class ConsultServiceController {
     @FXML private TextField priceMax;
     @FXML private TextField timeMinInput;
     @FXML private TextField timeMaxInput;
+    @FXML private Button ButtonCreate;
+    @FXML private Label State;
 
 
     @FXML public void initialize() {
@@ -80,11 +86,37 @@ public class ConsultServiceController {
                 handleDoubleClickOnService(selectedService);
             }
         });
+        // Configurez le DatePicker pour début, afin de bloquer les dates des jours passés
+        begin.setDayCellFactory(disablePastDates());
+        // Configurez le DatePicker pour fin
+        end.setDayCellFactory(disablePastDates());
+
+        if(currentUser.getEtatCompte().equals("sommeil")){
+            ButtonCreate.setDisable(true);
+            State.setVisible(true);
+        }else{
+            State.setVisible(false);
+        }
     }
     
     private void handleDoubleClickOnService(ServiceOffer service) {
         // Ici, tu peux effectuer une action avec l'objet ServiceOffer sélectionné
         skeleton_controller.loadServiceOfferPage(service);
+    }
+
+    //Fonction qui permet de désactiver les dates passées
+    private Callback<DatePicker, DateCell> disablePastDates() {
+        return dp -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                // Désactivez les dates antérieures à aujourd'hui
+                if (item.isBefore(LocalDate.now())) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #888888;"); // Vous pouvez changer la couleur si vous le souhaitez
+                }
+            }
+        };
     }
 
     @FXML public void handleSearch() {
@@ -107,6 +139,7 @@ public class ConsultServiceController {
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid price");
+            skeleton_controller.flash("Prix invalide", "red");
         }
     
         // Vérifiez que les formats d'heure sont valides ou gérez les exceptions comme vous le souhaitez
@@ -127,6 +160,11 @@ public class ConsultServiceController {
 
     @FXML public void cancel() {
         System.out.println("cancel");
-        skeleton_controller.loadServicePage();
+        skeleton_controller.loadHomePage();
+    }
+
+    @FXML public void handleCreateOffer() {
+        System.out.println("Create offer");
+        skeleton_controller.loadCreateServicePage();
     }
 }

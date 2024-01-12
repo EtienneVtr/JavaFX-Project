@@ -12,7 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
@@ -20,6 +22,7 @@ import javafx.scene.text.Text;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 
 
 public class Main extends Application {
@@ -159,21 +162,30 @@ public class Main extends Application {
 
     // Fonction qui permet de modifier le curseur de la souris lorsqu'on passe dessus
     public static void applyCursorChangeToScene(Parent parent) {
+    
         for (Node node : parent.getChildrenUnmodifiable()) {
-            if (node instanceof Parent) {
+            if (node instanceof Parent && (node != null)) {
                 applyCursorChangeToScene((Parent) node);
             }
 
             if (isClickable(node)) {
-                node.setOnMouseEntered(event -> node.getScene().setCursor(Cursor.HAND));
-                node.setOnMouseExited(event -> node.getScene().setCursor(Cursor.DEFAULT));
+                node.setOnMouseEntered(event -> {
+                    if (node.getScene() != null) {
+                        node.getScene().setCursor(Cursor.HAND);
+                    }
+                });
+                node.setOnMouseExited(event -> {
+                    if (node.getScene() != null) {
+                        node.getScene().setCursor(Cursor.DEFAULT);
+                    }
+                });
             }
         }
     }
 
     private static boolean isClickable(Node node) {
         // Définir les critères pour un nœud cliquable, par exemple :
-        return node instanceof Button || node instanceof ImageView || node instanceof ListView;
+        return node instanceof Button || node instanceof TableView || node instanceof ListView;
     }
     
 
@@ -193,5 +205,27 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(true);
         primaryStage.show();
+    }
+
+    // Méthode pour vérifier si une ville existe dans le fichier CSV
+    public static boolean testCity(String cityName){
+        String line;
+        InputStream inputStream;
+        inputStream = Main.class.getResourceAsStream("/eu/telecomnancy/labfx/cities.csv");
+        Boolean test = false;
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            while ((line = br.readLine()) != null) {
+                String[] cityData = line.split(",");
+                if (cityData[4].equals(cityName)){
+                    test = true;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la lecture du fichier CSV : " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return test;
     }
 }

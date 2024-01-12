@@ -31,6 +31,7 @@ import java.util.Comparator;
 
 
 
+
 public class MessagerieController {
 
     private SkeletonController skeleton_controller;
@@ -43,9 +44,6 @@ public class MessagerieController {
     private String initialMessage;
     private Map<String, Integer> unreadMessageCountMap = new HashMap<>(); // Utiliser une Map pour conserver le nombre de messages non lus pour chaque conversation
     
-
-
-
     @FXML private ListView<String> listContact;
     @FXML private TextField pseudoContact;
     @FXML private Label contactPseudoLabel;
@@ -55,9 +53,6 @@ public class MessagerieController {
     @FXML private Label noConv;
     @FXML private Label noSelectConv;
     @FXML private VBox convActive;
-
-
-
 
     public void setSkeletonController(SkeletonController skeleton_controller){
         this.skeleton_controller = skeleton_controller;
@@ -86,6 +81,8 @@ public class MessagerieController {
                 }
             }
         });
+        listContact.setStyle("-fx-cursor: hand;");
+
 
         if (initialContact != null && !initialContact.isEmpty()) {
             // Créer une conversation avec le contact initial
@@ -395,10 +392,13 @@ public class MessagerieController {
         if (contactId != null && !doesConversationExist(currentUser.getId(), contactId)) {
             addConversation(currentUser.getId(), contactId);
             loadConversations();
+            setCurrentConversation(contactPseudo);
         } else if (contactId == null) {
             System.out.println("Aucun utilisateur trouvé avec ce pseudo");
+            skeleton_controller.flash("Aucun utilisateur trouvé avec ce pseudo", "red");
         } else {
-            System.out.println("Une conversation existe déjà avec cet utilisateur");
+            System.out.println("Une conversation existe déjà avec cet utilisateur, chargement de la conversation...");
+
         }
     }
 
@@ -490,6 +490,7 @@ public class MessagerieController {
             responseField.clear(); // Effacer le champ après envoi
         } else {
             System.out.println("Le message ne peut pas être vide.");
+            skeleton_controller.flash("Le message ne peut pas être vide.", "red");
         }
     }
 
@@ -503,6 +504,7 @@ public class MessagerieController {
         } else {
             // Gérer le cas où le champ est vide
             System.out.println("Veuillez entrer un pseudo valide.");
+            skeleton_controller.flash("Veuillez entrer un pseudo valide.", "red");
         }
     }
 

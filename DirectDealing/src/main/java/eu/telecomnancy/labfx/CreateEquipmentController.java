@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
+import javafx.scene.control.DateCell;
 
 public class CreateEquipmentController {
     @FXML private TextField title;
@@ -27,6 +29,10 @@ public class CreateEquipmentController {
     public void initialize() {
         System.out.println("EquipmentController initialize");
         currentUser = Main.getCurrentUser();
+        // Configurez le DatePicker pour début, afin de bloquer les dates des jours passés
+        begin.setDayCellFactory(disablePastDates());
+        // Configurez le DatePicker pour fin
+        end.setDayCellFactory(disablePastDates());
     }   
 
     @FXML 
@@ -37,10 +43,36 @@ public class CreateEquipmentController {
         String priceStr = price.getText();
         String quantityStr = quantity.getText();
     
-        if (titleField.isEmpty() || priceStr.isEmpty() || descriptionField.isEmpty() || quantityStr.isEmpty() || begin.getValue() == null || end.getValue() == null) {
-            System.out.println("Veuillez remplir tous les champs requis.");
+        //Affichage des messages d'erreur si les champs ne sont pas remplis
+        if (titleField.isEmpty()) {
+            skeleton_controller.flash("Veuillez remplir le titre", "red");
             return;
         }
+        if (descriptionField.isEmpty()) {
+            skeleton_controller.flash("Veuillez remplir la description", "red");
+            return;
+        }
+        if (priceStr.isEmpty()) {
+            skeleton_controller.flash("Veuillez remplir le prix", "red");
+            return;
+        }
+        if (quantityStr.isEmpty()) {
+            skeleton_controller.flash("Veuillez remplir la quantité", "red");
+            return;
+        }
+        if (begin.getValue() == null) {
+            skeleton_controller.flash("Veuillez remplir la date de début", "red");
+            return;
+        }
+        if (end.getValue() == null) {
+            skeleton_controller.flash("Veuillez remplir la date de fin", "red");
+            return;
+        }
+        if (begin.getValue().isAfter(end.getValue())) {
+            skeleton_controller.flash("La date de début doit être avant la date de fin", "red");
+            return;
+        }
+        
     
         try {
             int price = Integer.parseInt(priceStr);
@@ -60,12 +92,14 @@ public class CreateEquipmentController {
                 
             );
             System.out.println("Offre bien créé");
+            skeleton_controller.flash("Offre correctement créé", "green");
             skeleton_controller.loadEquipmentOfferPage(newOffer);
             System.out.println("id" + newOffer.getId() + " " + newOffer.getName() + " " + newOffer.getDescription() + " " + newOffer.getQuantity() + " " + newOffer.getStartAvailability() + " " + newOffer.getEndAvailability() + " " + newOffer.getPrice());
             // L'offre est automatiquement enregistrée dans createNewOffer()
     
         } catch (NumberFormatException e) {
             System.out.println("Erreur de format de nombre");
+            skeleton_controller.flash("Erreur dans le choix de la date", "red");
         }
 
     }
@@ -73,6 +107,20 @@ public class CreateEquipmentController {
     
 
     @FXML public void cancel() {
-        skeleton_controller.loadEquipmentPage();
+        skeleton_controller.loadListEquipmentOfferPage();
+    }
+
+    private Callback<DatePicker, DateCell> disablePastDates() {
+        return dp -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                // Désactivez les dates antérieures à aujourd'hui
+                if (item.isBefore(LocalDate.now())) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #888888;"); // Vous pouvez changer la couleur si vous le souhaitez
+                }
+            }
+        };
     }
 }

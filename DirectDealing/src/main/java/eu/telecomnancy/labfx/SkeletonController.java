@@ -1,12 +1,19 @@
 package eu.telecomnancy.labfx;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import java.util.ArrayList;
 import java.io.IOException;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 public class SkeletonController {
 
@@ -28,14 +35,12 @@ public class SkeletonController {
     }
 
     @FXML private SplitPane skeletonContent;
-
     @FXML private VBox menuContent;
-
     @FXML private ProfileController profil_controller;
-
     @FXML private VBox profileContent;
-
     @FXML private VBox mainContent;
+    @FXML private HBox flashMessageContainer;
+    @FXML private Label flashMessageLabel;
 
 
 
@@ -49,6 +54,23 @@ public class SkeletonController {
         this.profil_controller = profil_controller;
     }
 
+
+    // Fonction qui d'afficher un message flash
+    public void flash(String message, String color) {
+        flashMessageLabel.setText(message);
+        flashMessageContainer.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 20;");
+        flashMessageContainer.setVisible(true);
+        // Temporisateur pour masquer le message flash après 5 secondes
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> closeFlashMessage()));
+        timeline.setCycleCount(1);
+        timeline.play();
+    }
+
+    @FXML
+    private void closeFlashMessage() {
+        flashMessageContainer.setVisible(false);
+    }
+
     // Vous pouvez également ajouter des méthodes spécifiques pour charger le menu et le profil si nécessaire
     public void loadMenuPage() {
         try {
@@ -60,6 +82,7 @@ public class SkeletonController {
 
             menuContent.getChildren().setAll(menu_page);
             Main.applyCursorChangeToScene(menuContent);
+            closeFlashMessage();
 
 
         } catch (IOException e) {
@@ -77,6 +100,7 @@ public class SkeletonController {
             setProfileController(profile_controller);
             profileContent.getChildren().setAll(profil_page);
             Main.applyCursorChangeToScene(profileContent);
+            closeFlashMessage();
             
 
         } catch (IOException e) {
@@ -99,44 +123,7 @@ public class SkeletonController {
             // Ajouter la page d'inscription à la scène
             mainContent.getChildren().setAll(home);
             Main.applyCursorChangeToScene(mainContent);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    // Fonction qui permet de charger la page des services
-    public void loadServicePage(){
-        try {
-            System.out.println("Chargement de la page Service");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Service.fxml"));
-            Parent service = loader.load();
-
-            ServiceController service_controller = loader.getController();
-            service_controller.setSkeletonController(this);
-
-            // Ajouter la page d'inscription à la scène
-            mainContent.getChildren().setAll(service);
-            Main.applyCursorChangeToScene(mainContent);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void loadEquipmentPage(){
-        try {
-            System.out.println("Chargement de la page matériel");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Equipment.fxml"));
-            Parent equipment = loader.load();
-
-            EquipmentController equipment_controller = loader.getController();
-            equipment_controller.setSkeletonController(this);
-
-            // Ajouter la page d'inscription à la scène
-            mainContent.getChildren().setAll(equipment);
-            Main.applyCursorChangeToScene(mainContent);
+            closeFlashMessage();
             
         } catch (IOException e) {
             e.printStackTrace();

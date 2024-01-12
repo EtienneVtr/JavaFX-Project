@@ -229,7 +229,6 @@ public class User {
         //print user city and other user city
         return distance;
     }
-    
 
     // Méthode pour obtenir les coordonnées (latitude, longitude) d'une localisation
     private double[] getCoordinates(String cityName) {

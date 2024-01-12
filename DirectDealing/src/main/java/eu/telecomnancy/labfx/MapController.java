@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Cursor;
+
 
 public class MapController {
 
@@ -135,8 +137,41 @@ public class MapController {
         double[] mapCoordinates = convertGpsToMapCoordinates(gpsCoordinates[0], gpsCoordinates[1], mapImage);
         double circleSize = calculateCircleSize(offerCount);
         Circle circle = new Circle(mapCoordinates[0], mapCoordinates[1], circleSize, Color.RED);
+    
+        // Changer le curseur en une petite main lorsqu'on survole un cercle
+        circle.setOnMouseEntered(event -> mapPane.getScene().setCursor(Cursor.HAND));
+        circle.setOnMouseExited(event -> mapPane.getScene().setCursor(Cursor.DEFAULT));
+    
+        // Ajout d'un gestionnaire d'événements de clic
+        circle.setOnMouseClicked(event -> {
+            // Mettre à jour la TableView avec les offres de la ville cliquée
+            updateListOffers(city);
+        });
+    
         mapPane.getChildren().add(circle);
     }
+    
+    private void updateListOffers(String city) {
+        ArrayList<CombinedOffer> offersInCity = new ArrayList<>();
+    
+        // Filtrez les offres d'équipement et de service par ville
+        for (EquipmentOffer offer : Main.getAllEquipment()) {
+            if (offer.getOwner().getLocalisation().equalsIgnoreCase(city)) {
+                offersInCity.add(new CombinedOffer(offer));
+            }
+        }
+        for (ServiceOffer offer : Main.getAllService()) {
+            if (offer.getSupplier().getLocalisation().equalsIgnoreCase(city)) {
+                offersInCity.add(new CombinedOffer(offer));
+            }
+        }
+    
+        // Mettez à jour la TableView avec les offres filtrées
+        ObservableList<CombinedOffer> observableOffers = FXCollections.observableArrayList(offersInCity);
+        listOffers.setItems(observableOffers);
+    }
+    
+    
 
     private double calculateCircleSize(int offerCount) {
         // changer taille du cercle en fonction du nombre d'offres

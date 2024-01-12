@@ -11,6 +11,8 @@ import javafx.scene.control.TableView;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 public class ConsultEquipmentController {
 
@@ -28,6 +30,8 @@ public class ConsultEquipmentController {
     @FXML private TextField priceMin;
     @FXML private TextField priceMax;
     @FXML private TableView<EquipmentOffer> results;
+    @FXML private Button ButtonCreate;
+    @FXML private Label State;
 
     @FXML public void initialize() {
         // Création des colonnes
@@ -75,11 +79,23 @@ public class ConsultEquipmentController {
                 handleDoubleClickOnEquipment(selectedEquipment);
             }
         });
+
+        if(currentUser.getEtatCompte().equals("sommeil")){
+            ButtonCreate.setDisable(true);
+            State.setVisible(true);
+        }else{
+            State.setVisible(false);
+        }
     }
 
     private void handleDoubleClickOnEquipment(EquipmentOffer equipment) {
         // Ici, tu peux effectuer une action avec l'objet ServiceOffer sélectionné
         skeleton_controller.loadEquipmentOfferPage(equipment);
+    }
+
+    @FXML public void handleCreateOffer() {
+        System.out.println("Create offer");
+        skeleton_controller.loadCreateEquipmentPage();
     }
 
     @FXML
@@ -100,6 +116,8 @@ public class ConsultEquipmentController {
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid price");
+            skeleton_controller.flash("Veuillez entrer un prix valide", "red");
+
         }
     
         List<EquipmentOffer> searchResults = EquipmentOffer.searchOffers(currentUser, keywordText, startDate, endDate, minPrice, maxPrice, selectedRadius);
@@ -117,6 +135,6 @@ public class ConsultEquipmentController {
 
     @FXML public void cancel(){
         System.out.println("Go back !");
-        skeleton_controller.loadEquipmentPage();
+        skeleton_controller.loadHomePage();
     }
 }

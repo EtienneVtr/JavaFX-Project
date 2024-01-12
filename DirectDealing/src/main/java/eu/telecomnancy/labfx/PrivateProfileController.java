@@ -115,6 +115,7 @@ public class PrivateProfileController {
             }
     
             skeleton_controller.updateProfile(); // Mise à jour de l'interface utilisateur
+            skeleton_controller.flash("Modifications enregistrées", "green");
         }
     }
     
