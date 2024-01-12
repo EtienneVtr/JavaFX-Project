@@ -38,7 +38,7 @@ public class EquipmentOfferController {
         description.setText("Description : " + currentOffer.getDescription());
         quantity.setText("Quantité : " + currentOffer.getQuantity());    
         String startDateString = currentOffer.getStartAvailability() != null ? currentOffer.getStartAvailability().toString() : "Pas de date renseigné";
-        String endDateString = currentOffer.getEndAvaibility() != null ? currentOffer.getEndAvaibility().toString() : "Pas de date renseigné";
+        String endDateString = currentOffer.getEndAvailability() != null ? currentOffer.getEndAvailability().toString() : "Pas de date renseigné";
         dates.setText("Dates : " + startDateString + " / " + endDateString);    
         price.setText("Coût en florains : " + currentOffer.getPrice());
     }
@@ -69,7 +69,7 @@ public class EquipmentOfferController {
         }else if(begin.isAfter(end)){
             System.out.println("La date de début doit être avant la date de fin");
             return;
-        }else if(begin.isBefore(currentOffer.getStartAvailability()) || end.isAfter(currentOffer.getEndAvaibility())){
+        }else if(begin.isBefore(currentOffer.getStartAvailability()) || end.isAfter(currentOffer.getEndAvailability())){
             System.out.println("La date de début et de fin doivent être comprises dans la période de disponibilité de l'offre");
             return;
         }
@@ -83,14 +83,14 @@ public class EquipmentOfferController {
             // Création de deux nouvelles offres avant et après la période de réservation
             // si le premier jour de réservation est le même que le début de l'offre de base, on en crée qu'une après
             // inverse pour le dernier jour de réservation
-            if(begin.equals(currentOffer.getStartAvailability()) && end.equals(currentOffer.getEndAvaibility())){
+            if(begin.equals(currentOffer.getStartAvailability()) && end.equals(currentOffer.getEndAvailability())){
                 System.out.println("Offre bien créée");
                 currentOffer.setEstPris(currentUserEmail);
                 currentOffer.setBook_begin(begin);
                 currentOffer.setBook_end(end);
                 currentOffer.update();
             }else if(begin.equals(currentOffer.getStartAvailability())){
-                EquipmentOffer newOffer = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), end.plusDays(1), currentOffer.getEndAvaibility(), currentOffer.getPrice());
+                EquipmentOffer newOffer = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), end.plusDays(1), currentOffer.getEndAvailability(), currentOffer.getPrice());
                 currentOffer.setEstPris(currentUserEmail);
                 currentOffer.setBook_begin(begin);
                 currentOffer.setBook_end(end);
@@ -98,7 +98,7 @@ public class EquipmentOfferController {
                 System.out.println("Offre bien créée");
                 currentOffer.update();
                 newOffer.update();
-            }else if(end.equals(currentOffer.getEndAvaibility())){
+            }else if(end.equals(currentOffer.getEndAvailability())){
                 EquipmentOffer newOffer = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), currentOffer.getStartAvailability(), begin.minusDays(1), currentOffer.getPrice());
                 currentOffer.setEstPris(currentUserEmail);
                 currentOffer.setBook_begin(begin);
@@ -109,7 +109,7 @@ public class EquipmentOfferController {
                 newOffer.update();
             }else{
                 EquipmentOffer newOffer1 = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), currentOffer.getStartAvailability(), begin.minusDays(1), currentOffer.getPrice());
-                EquipmentOffer newOffer2 = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), end.plusDays(1), currentOffer.getEndAvaibility(), currentOffer.getPrice());
+                EquipmentOffer newOffer2 = new EquipmentOffer(currentOffer.getOwner(), currentOffer.getName(), currentOffer.getDescription(), currentOffer.getQuantity(), end.plusDays(1), currentOffer.getEndAvailability(), currentOffer.getPrice());
                 
                 currentOffer.setEstPris(currentUserEmail);
                 currentOffer.setBook_begin(begin);

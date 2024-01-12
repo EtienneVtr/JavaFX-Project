@@ -42,7 +42,7 @@ public class CombinedOffer {
         this.estPris = equipmentOffer.getEstPris();
         this.quantity = equipmentOffer.getQuantity();
         this.start = equipmentOffer.getStartAvailability();
-        this.end = equipmentOffer.getEndAvaibility();
+        this.end = equipmentOffer.getEndAvailability();
         this.type = OfferType.EQUIPMENT_OFFER;
         this.date_publication = equipmentOffer.getDate_publication();
     }
@@ -159,4 +159,6 @@ public class CombinedOffer {
     public String getDate_publication() {
         return date_publication;
     }
+
+    
 }

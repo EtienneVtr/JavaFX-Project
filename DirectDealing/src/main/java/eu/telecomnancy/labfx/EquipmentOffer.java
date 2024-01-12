@@ -297,7 +297,7 @@ public class EquipmentOffer {
         }
     }
 
-    
+
     public boolean reserveOffer(String currentUserEmail, LocalDate begin, LocalDate end) {
         Connection conn = null;
         try {
@@ -509,7 +509,7 @@ public class EquipmentOffer {
         this.start_availability = begin;
     }
 
-    public LocalDate getEndAvaibility(){
+    public LocalDate getEndAvailability(){
         return end_availability;
     }
 

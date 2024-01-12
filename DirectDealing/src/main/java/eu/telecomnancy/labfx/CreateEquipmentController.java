@@ -61,7 +61,7 @@ public class CreateEquipmentController {
             );
             System.out.println("Offre bien créé");
             skeleton_controller.loadEquipmentOfferPage(newOffer);
-            System.out.println("id" + newOffer.getId() + " " + newOffer.getName() + " " + newOffer.getDescription() + " " + newOffer.getQuantity() + " " + newOffer.getStartAvailability() + " " + newOffer.getEndAvaibility() + " " + newOffer.getPrice());
+            System.out.println("id" + newOffer.getId() + " " + newOffer.getName() + " " + newOffer.getDescription() + " " + newOffer.getQuantity() + " " + newOffer.getStartAvailability() + " " + newOffer.getEndAvailability() + " " + newOffer.getPrice());
             // L'offre est automatiquement enregistrée dans createNewOffer()
     
         } catch (NumberFormatException e) {

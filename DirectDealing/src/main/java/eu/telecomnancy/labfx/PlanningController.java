@@ -83,58 +83,38 @@ public class PlanningController {
 
     public void ajouterEvenement(LocalDate dateDebut, LocalDate dateFin, LocalTime heureDebut, LocalTime heureFin, CombinedOffer offer) {
         System.out.println("ajouterEvenement");
-        Entry<String> evenement = new Entry<>(offer.getTitle());
-        if(dateDebut == null) {
-            dateDebut = LocalDate.now();
-        }
-        if(dateFin == null) {
-            dateFin = dateDebut;
-        }
-        if(heureDebut == null) {
-            heureDebut = LocalTime.of(0, 0);
-        }
-        if(heureFin == null) {
-            heureFin = LocalTime.of(23, 59);
-        }
+        Entry<String> evenement = new Entry<String>(offer.getTitle());
 
+        // Définir des valeurs par défaut si nécessaire
+        dateDebut = (dateDebut == null) ? LocalDate.now() : dateDebut;
+        dateFin = (dateFin == null) ? dateDebut : dateFin;
+        heureDebut = (heureDebut == null) ? LocalTime.of(0, 0) : heureDebut;
+        heureFin = (heureFin == null) ? LocalTime.of(23, 59) : heureFin;
+
+        // Configurer l'événement
         evenement.changeStartDate(dateDebut);
         evenement.changeStartTime(heureDebut);
         evenement.changeEndDate(dateFin);
         evenement.changeEndTime(heureFin);
-        evenement.setLocation(offer.getDescription());
-        if (dateDebut != null) {
 
-            if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
-                if (offer.getEstPris() == null) { 
-                    // on est dans le cas d un service de user offre mais qui n'a pas encore été réservé
-                    serviceNoneOfferedCalendar.addEntry(evenement);
-                } else {
-                    if (offer.getOwnerName() != null && offer.getOwnerName().equals(currentUser.getMail())) {
-                        // dans ce cas on a un service réservé et proposé par user
-                        serviceOfferedCalendar.addEntry(evenement);
-                    } else {
-                        // dans ce cas la c'est alors user qui à réserver le service
-                        serviceDemandedCalendar.addEntry(evenement);
-                    }
-                }
-            } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
-                if (offer.getEstPris() == null) { 
-                    // on est dans le cas d un équipement de user offre mais qui n'a pas encore été réservé
-                    equipmentNoneOfferedCalendar.addEntry(evenement);
-                } else {
-                    if (offer.getOwnerName() != null && offer.getOwnerName().equals(currentUser.getMail())) { 
-                        // dans ce cas on a un équipement réservé et proposé par user
-                        equipmentOfferedCalendar.addEntry(evenement);
-                    } else {
-                        // dans ce cas la c'est alors user qui à réserver l'équipement
-                        equipmentDemandedCalendar.addEntry(evenement);
-                    }
-                }
-            }
+        // Sélectionner le calendrier approprié
+        Calendar calendar;
+        if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
+            calendar = (offer.getEstPris() == null) ? serviceNoneOfferedCalendar :
+                    (offer.getOwner().getMail().equals(currentUser.getMail())) ? serviceOfferedCalendar :
+                    serviceDemandedCalendar;
+        } else {
+            calendar = (offer.getEstPris() == null) ? equipmentNoneOfferedCalendar :
+                    (offer.getOwner().getMail().equals(currentUser.getMail())) ? equipmentOfferedCalendar :
+                    equipmentDemandedCalendar;
         }
+
+        // Ajouter l'entrée au calendrier sélectionné
+        calendar.addEntry(evenement);
     }
 
     private void AddEventToCalendar() {
+        // update permet de mettre tout les event dans lesquels participent user
         planning.update();
         // Vérifiez que les méthodes getMyOffer() et getMyDemand() existent dans la classe Planning
         System.out.println("planning.getMyOffer()");
@@ -152,7 +132,6 @@ public class PlanningController {
 
             ajouterEvenement(offer.getStart(), offer.getEnd(), offer.getTime(), LocalTime.of(23, 59),  offer);
         } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
-;
             ajouterEvenement(offer.getStart(), offer.getEnd(), LocalTime.of(7, 00), LocalTime.of(23, 59), offer);
         }
     }
