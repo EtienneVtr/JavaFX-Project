@@ -34,16 +34,16 @@ public class CombinedOffer {
 
     // Constructeur pour EquipmentOffer
     public CombinedOffer(EquipmentOffer equipmentOffer) {
-        this.id = equipmentOffer.getId();
-        this.owner = equipmentOffer.getOwner();
-        this.title = equipmentOffer.getName();
-        this.description = equipmentOffer.getDescription();
-        this.price = equipmentOffer.getPrice();
-        this.estPris = equipmentOffer.getEstPris();
-        this.quantity = equipmentOffer.getQuantity();
-        this.start = equipmentOffer.getStartAvailability();
-        this.end = equipmentOffer.getEndAvailability();
-        this.type = OfferType.EQUIPMENT_OFFER;
+        this.id               = equipmentOffer.getId();
+        this.owner            = equipmentOffer.getOwner();
+        this.title            = equipmentOffer.getName();
+        this.description      = equipmentOffer.getDescription();
+        this.price            = equipmentOffer.getPrice();
+        this.estPris          = equipmentOffer.getEstPris();
+        this.quantity         = equipmentOffer.getQuantity();
+        this.start            = equipmentOffer.getStartAvailability();
+        this.end              = equipmentOffer.getEndAvailability();
+        this.type             = OfferType.EQUIPMENT_OFFER;
         this.date_publication = equipmentOffer.getDate_publication();
     }
 
