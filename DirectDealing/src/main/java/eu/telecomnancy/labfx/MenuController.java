@@ -1,22 +1,12 @@
 package eu.telecomnancy.labfx;
 
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
-import javafx.scene.image.ImageView;
 
 public class MenuController {
     private SkeletonController skeleton_controller;
-    @FXML private ImageView homeButton;
 
     public void setSkeletonController(SkeletonController skeleton_controller){
         this.skeleton_controller = skeleton_controller;
-    }
-
-    @FXML public void initialize() {
-
-        homeButton.setOnMouseEntered(event -> homeButton.getScene().setCursor(Cursor.HAND));
-        homeButton.setOnMouseExited(event -> homeButton.getScene().setCursor(Cursor.DEFAULT));
-
     }
 
     @FXML public void handleService() {
