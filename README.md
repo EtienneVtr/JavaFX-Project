@@ -163,6 +163,6 @@ L'objectif principal est de créer une plateforme intuitive et facile à utilise
 
 ## Gestion de Projet
 
-Dans le dossier Gestion de Projet, vous retrouverez nos convention, les fonctionnalités que nous avons observés dans le sujet et la RoadMap de la semaine.
+Dans le dossier Gestion de Projet, vous retrouverez nos convention, les fonctionnalités que nous avons observés dans le sujet, la RoadMap de la semaine et le diagramme de classe.
 
 ---
