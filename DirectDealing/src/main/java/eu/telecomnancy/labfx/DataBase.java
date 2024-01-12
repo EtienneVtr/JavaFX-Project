@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 
 public class DataBase {
 
@@ -63,7 +64,7 @@ public class DataBase {
                         String sqlAdmin = "INSERT INTO profil (prenom, nom, pseudo, mail, phone, password, localisation, date_inscription, status_compte, etat_compte, nb_florain, historique_florain, note) " +
                                         "VALUES ('admin', 'admin', 'admin', 'admin', '0000000000', 'admin', 'Paris', ?, NULL, 'actif', 10000, NULL, 5)";
                         try (PreparedStatement insertStmt = conn.prepareStatement(sqlAdmin)) {
-                            insertStmt.setDate(1, new java.sql.Date(System.currentTimeMillis())); // Remplacer par la date actuelle
+                            insertStmt.setString(1, LocalDate.now().toString()); // Remplacer par la date actuelle
                             insertStmt.execute();
                         }
                     }
