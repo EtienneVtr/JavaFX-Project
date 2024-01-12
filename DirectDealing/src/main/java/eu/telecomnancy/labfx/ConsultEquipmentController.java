@@ -100,6 +100,8 @@ public class ConsultEquipmentController {
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid price");
+            skeleton_controller.flash("Veuillez entrer un prix valide", "red");
+
         }
     
         List<EquipmentOffer> searchResults = EquipmentOffer.searchOffers(currentUser, keywordText, startDate, endDate, minPrice, maxPrice, selectedRadius);

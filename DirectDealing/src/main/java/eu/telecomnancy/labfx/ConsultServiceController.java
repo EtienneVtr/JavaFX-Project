@@ -3,10 +3,12 @@ package eu.telecomnancy.labfx;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 import javafx.scene.control.TableView;
 
 import java.time.LocalDate;
@@ -80,11 +82,30 @@ public class ConsultServiceController {
                 handleDoubleClickOnService(selectedService);
             }
         });
+        // Configurez le DatePicker pour début, afin de bloquer les dates des jours passés
+        begin.setDayCellFactory(disablePastDates());
+        // Configurez le DatePicker pour fin
+        end.setDayCellFactory(disablePastDates());
     }
     
     private void handleDoubleClickOnService(ServiceOffer service) {
         // Ici, tu peux effectuer une action avec l'objet ServiceOffer sélectionné
         skeleton_controller.loadServiceOfferPage(service);
+    }
+
+    //Fonction qui permet de désactiver les dates passées
+    private Callback<DatePicker, DateCell> disablePastDates() {
+        return dp -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                // Désactivez les dates antérieures à aujourd'hui
+                if (item.isBefore(LocalDate.now())) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #888888;"); // Vous pouvez changer la couleur si vous le souhaitez
+                }
+            }
+        };
     }
 
     @FXML public void handleSearch() {
@@ -107,6 +128,7 @@ public class ConsultServiceController {
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid price");
+            skeleton_controller.flash("Prix invalide", "red");
         }
     
         // Vérifiez que les formats d'heure sont valides ou gérez les exceptions comme vous le souhaitez
