@@ -363,11 +363,11 @@ public class EquipmentOffer {
     
         List<EquipmentOffer> offers = new ArrayList<>();
         String sql = "SELECT owner_mail, id, name, description, quantity, start_availability, end_availability, price FROM equipement WHERE estPris IS NULL";
-
+    
         if (!keywords.isEmpty()) {
             sql += " AND name LIKE ?";
         }
-
+    
         if (begin != null && end != null) {
             // Les offres doivent être disponibles pour toute la période demandée
             sql += " AND (start_availability <= ? AND end_availability >= ?)";
@@ -379,16 +379,14 @@ public class EquipmentOffer {
             // Les offres doivent se terminer au plus tôt à la date de fin
             sql += " AND (end_availability >= ?)";
         }
-
-        // Logique pour le prix
+    
         if (minPrice != null) {
-            sql += " AND price >= '?' ";
+            sql += " AND price >= ?";
         }
         if (maxPrice != null) {
             sql += " AND price <= ?";
         }
-
-        
+    
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
     
@@ -408,7 +406,6 @@ public class EquipmentOffer {
             if (maxPrice != null) {
                 pstmt.setInt(paramIndex++, maxPrice);
             }
-
     
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -430,12 +427,17 @@ public class EquipmentOffer {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        for (EquipmentOffer offer : offers) {
+            System.out.println("id: " + offer.getId() + " title: " + offer.getName() + " description: " + offer.getDescription() + " start: " + offer.getStartAvailability() + " end: " + offer.getEndAvaibility() + " price: " + offer.getPrice());
+        }
+
     
         // Filtrer les offres par rayon
         return offers.stream()
             .filter(offer -> isWithinRadius(currentUser, offer.getOwner(), radius))
             .collect(Collectors.toList());
     }
+    
 
 
 

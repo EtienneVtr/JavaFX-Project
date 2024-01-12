@@ -14,7 +14,7 @@
       <TextField fx:id="priceMin" layoutX="46.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix min" />
       <TextField fx:id="priceMax" layoutX="591.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Prix max" /> 
       <DatePicker fx:id="begin" layoutX="115.0" layoutY="64.0" prefHeight="24.0" prefWidth="144.0" promptText="Date de début" />
-      <Slider fx:id="radius" blockIncrement="5.0" layoutX="433.0" layoutY="73.0" max="500.0" prefHeight="38.0" prefWidth="172.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+      <Slider fx:id="radius" blockIncrement="5.0" layoutX="433.0" layoutY="73.0" max="1000.0" prefHeight="38.0" prefWidth="172.0" showTickLabels="true" showTickMarks="true" value="50.0" />
       <DatePicker fx:id="end" layoutX="273.0" layoutY="64.0" prefHeight="24.0" prefWidth="144.0" promptText="Date de fin" /><TextField fx:id="timeMinInput" layoutX="200.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Heure Min (HH:MM)" />
       <TextField fx:id="timeMaxInput" layoutX="425.0" layoutY="120.0" prefHeight="24.0" prefWidth="100.0" promptText="Heure Max (HH:MM)" />   
       <Label layoutX="433.0" layoutY="56.0" text="Rayon autour de moi (km)" />
