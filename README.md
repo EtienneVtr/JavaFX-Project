@@ -29,7 +29,7 @@ Cette souche contient un projet directement utilisable en utilisant le moteur de
 
 ```bash
 git clone https://gitlab.telecomnancy.univ-lorraine.fr/pcd2k24/codingweek-04.git
-cd pcd2k24-javafx-bootstrap
+cd codingweek-04
 ./gradlew run
 ```
 
