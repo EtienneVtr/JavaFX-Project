@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.LocalTime;
 
 
 // Description: Classe représentant une offre de service. Elle contient un titre, une description, une date et une heure.
@@ -630,6 +631,14 @@ public class ServiceOffer {
     //get book_end
     public LocalDate getBook_end(){
         return book_end;
+    }
+
+    public void setBook_begin(LocalDate book_begin){
+        this.book_begin = book_begin;
+    }
+
+    public void setBook_end(LocalDate book_end){
+        this.book_end = book_end;
     }
 
 }

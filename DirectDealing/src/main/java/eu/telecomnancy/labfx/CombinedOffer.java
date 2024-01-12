@@ -112,7 +112,7 @@ public class CombinedOffer {
     }
 
     public String getEstPris() {
-        return estPris;
+        return this.estPris;
     }
 
     public int getQuantity() {
@@ -181,5 +181,13 @@ public class CombinedOffer {
 
     public LocalDate getEndBook() {
         return endBook;
+    }
+
+    public void setStartBook(LocalDate startBook) {
+        this.startBook = startBook;
+    }
+
+    public void setEndBook(LocalDate endBook) {
+        this.endBook = endBook;
     }
 }

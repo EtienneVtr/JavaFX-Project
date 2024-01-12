@@ -27,8 +27,14 @@ java {
 application {
     mainModule = 'eu.telecomnancy.labfx'
     mainClass = 'eu.telecomnancy.labfx.Main'
+
+    applicationDefaultJvmArgs = ['-Dfile.encoding=UTF-8']
 }
 
+compileJava {
+    // Spécifier l'encodage UTF-8 pour la compilation
+    options.encoding = 'UTF-8'
+}
 
 jar {
     manifest {

@@ -81,32 +81,60 @@ public class PlanningController {
         AddEventToCalendar();
     }
 
-    public void ajouterEvenement(LocalDate dateDebut, LocalDate dateFin, LocalTime heureDebut, LocalTime heureFin, CombinedOffer offer) {
+    public void ajouterEvenement(CombinedOffer offer) {
         System.out.println("ajouterEvenement");
-        Entry<String> evenement = new Entry<String>(offer.getTitle());
-            
-        // Définir des valeurs par défaut si nécessaire
-        dateDebut = (dateDebut == null) ? LocalDate.now() : dateDebut;
-        dateFin = (dateFin == null) ? dateDebut : dateFin;
-        heureDebut = (heureDebut == null) ? LocalTime.of(0, 0) : heureDebut;
-        heureFin = (heureFin == null) ? LocalTime.of(23, 59) : heureFin;
+
+        // Vérifier si l'offre et son titre sont non null
+        if (offer == null || offer.getTitle() == null) {
+            System.out.println("Offre ou titre de l'offre non définis");
+            return;
+        }
+
+        // Utiliser getStartBook et getEndBook, si disponibles, sinon utiliser getStart et getEnd
+        LocalDate dateDebut = (offer.getStartBook() != null) ? offer.getStartBook() : offer.getStart();
+        LocalDate dateFin = (offer.getEndBook() != null) ? offer.getEndBook() : offer.getEnd();
+
+
+        // affiche les deux date debut et fin
+        System.out.println("###########");
+        System.out.println("dateDebut : " + dateDebut.toString() + "\n");
+        System.out.println("dateFin : " + dateFin.toString() + "\n");
+        // Vérifier si les dates sont non null
+        if (dateDebut == null || dateFin == null) {
+            System.out.println("Dates de début ou de fin non définies");
+            return;
+        }
+
+        Entry<String> evenement = new Entry<>(offer.getTitle());
 
         // Configurer l'événement
         evenement.changeStartDate(dateDebut);
-        evenement.changeStartTime(heureDebut);
+        evenement.changeStartTime(LocalTime.of(0, 0));
         evenement.changeEndDate(dateFin);
-        evenement.changeEndTime(heureFin);
+        evenement.changeEndTime(LocalTime.of(23, 59));
 
         // Sélectionner le calendrier approprié
-        Calendar calendar;
+        Calendar calendar = null;
         if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
             calendar = (offer.getEstPris() == null) ? serviceNoneOfferedCalendar :
-                    (offer.getOwner().getMail().equals(currentUser.getMail())) ? serviceOfferedCalendar :
+                    (offer.getOwner() != null && offer.getOwner().getMail().equals(currentUser.getMail())) ? serviceOfferedCalendar :
                     serviceDemandedCalendar;
-        } else {
-            calendar = (offer.getEstPris() == null) ? equipmentNoneOfferedCalendar :
-                    (offer.getOwner().getMail().equals(currentUser.getMail())) ? equipmentOfferedCalendar :
-                    equipmentDemandedCalendar;
+        } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
+            if(offer.getEstPris() == null){
+                System.out.println(offer.getEstPris()+"\n\n\n");
+                calendar = equipmentNoneOfferedCalendar;
+            }
+            else if(offer.getEstPris().equals(currentUser.getMail())){
+                calendar = equipmentDemandedCalendar;
+            }else{  
+                calendar = equipmentOfferedCalendar;
+            }
+        }
+
+        // Vérifier si le calendrier est défini
+        if (calendar == null) {
+            System.out.println("Calendrier non trouvé pour l'offre");
+            return;
         }
 
         // Ajouter l'entrée au calendrier sélectionné
@@ -127,13 +155,7 @@ public class PlanningController {
     }
 
     private void handleOffer(CombinedOffer offer) {
-        System.out.println("offer.getType()" );
-        if (offer.getType() == CombinedOffer.OfferType.SERVICE_OFFER) {
-
-            ajouterEvenement(offer.getStart(), offer.getEnd(), offer.getTime(), LocalTime.of(23, 59),  offer);
-            ajouterEvenement(offer.getStart(), offer.getEnd(), offer.getTime(), LocalTime.of(23, 59),  offer);
-        } else if (offer.getType() == CombinedOffer.OfferType.EQUIPMENT_OFFER) {
-            ajouterEvenement(offer.getStart(), offer.getEnd(), LocalTime.of(7, 00), LocalTime.of(23, 59), offer);
-        }
+        System.out.println("offer.getType()");
+        ajouterEvenement(offer);
     }
 }
