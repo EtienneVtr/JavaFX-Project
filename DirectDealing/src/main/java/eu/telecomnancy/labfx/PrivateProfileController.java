@@ -96,6 +96,7 @@ public class PrivateProfileController {
             currentUser.setLocalisation(localisation.getText());
             currentUser.update(); 
             skeleton_controller.updateProfile();
+            skeleton_controller.flash("Modifications enregistrées", "green");
         }
     }
 
