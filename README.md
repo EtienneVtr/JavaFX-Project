@@ -1,9 +1,24 @@
+# README du Projet TelecomNancy DirectDealing
 
-# Guide rapide d'installation (JDK/JavaFX/Gradle)
-
-
-Ce document vous guide rapidement sur l'installation et la configuration de votre environnement.
-Vous allez ainsi installer "à la main", un kit de développement Java (Java SDK), la librairie JavaFX et réaliser un premier programme.
+1. [Projet souche Gradle/JavaFX/JUnit](#projet-souche-gradlejavafxjunit)
+   - [Clonage et Initialisation](#clonage-et-initialisation)
+   - [Structure du Projet](#structure-du-projet)
+   - [Utilisation dans Visual Studio Code](#utilisation-dans-visual-studio-code)
+   - [Utilisation dans IntelliJ](#utilisation-dans-intellij)
+   - [Lancement à partir de l'archive .jar](#lancement-à-partir-de-larchive-jar)
+2. [Vue d'Ensemble du Projet](#vue-densemble-du-projet)
+3. [Objectif du Projet](#objectif-du-projet)
+4. [Fonctionnalités Clés](#fonctionnalités-clés)
+   - [Authentification et Gestion de Compte](#authentification-et-gestion-de-compte)
+   - [Système de Messagerie Intégrée](#système-de-messagerie-intégrée)
+   - [Cartographie des Offres](#cartographie-des-offres)
+   - [Gestion des Offres](#gestion-des-offres)
+   - [Intégration Calendrier](#intégration-calendrier)
+   - [Économie de Florains](#économie-de-florains)
+   - [Fonctionnalités de Recherche et Filtrage](#fonctionnalités-de-recherche-et-filtrage)
+   - [Système d'Évaluation et de Feedback](#système-dévaluation-et-de-feedback)
+5. [Technologies Utilisées](#technologies-utilisées)
+6. [Architecture du Projet](#architecture-du-projet)
 
 
 ## Projet souche Gradle/JavaFX/JUnit
@@ -13,43 +28,78 @@ Pour simplifier votre démarrage et si vous disposez déjà d'un kit de dévelop
 Cette souche contient un projet directement utilisable en utilisant le moteur de production Gradle (https://gradle.org/). Vous n'avez rien à installer, l'outil téléchargera les dépendances pour vous.
 
 ```bash
-git clone git@gitlab.telecomnancy.univ-lorraine.fr:projets/2324/pcd2k24/pcd2k24-javafx-bootstrap.git
+git clone https://gitlab.telecomnancy.univ-lorraine.fr/pcd2k24/codingweek-04.git
 cd pcd2k24-javafx-bootstrap
 ./gradlew run
 ```
 
-Après quelques instants, le temps que l'outil télécharge les différentes dépendances (l'application Gradle et ses dépendances, la librairie JavaFX et ses dépendances, la libraire JUnit, etc.), compile le code de l'application exemple, vous devriez voir apparaître une fenêtre avec un bouton sur votre écran.
+Après quelques instants, le temps que l'outil télécharge les différentes dépendances (l'application Gradle et ses dépendances, la librairie JavaFX et ses dépendances, la libraire JUnit, etc.), compile le code de l'application et affiche la fenêtre de connexion.
 
 Le projet souche suit la configuration standard d'un projet Java, à savoir :
 
 ```
-pcd2k24-javafx-bootstrap
-├── build.gradle
-└── src
-    ├── main
-    │   ├── java
-    │   │   └── eu
-    │   │       └── telecomnancy
-    │   │           ├── Main.java
-    │   │           └── ...
-    │   └── resources
-    │       └── ...
-    └── test
-        ├── java
-        │   └── eu
-        │       └── telecomnancy
-        │           ├── MainTest.java
-        │           └── ...
-        └── resources
-            └── ...
+├── all.txt
+├── CodingWeek 2023-2024 - Sujet.pdf
+├── DirectDealing
+│   ├── BD
+│   │   └── DirectDealing.db
+│   │   ├── libs
+│   │   │   └── labfx-1.0-SNAPSHOT.jar
+│   │   ├── resources
+│   │   │   └── main
+│   │   │       ├── eu
+│   │   │       │   └── telecomnancy
+│   │   │       │       └── labfx
+│   │   │       │           ├── cities.csv
+│   │   │       │           ├── Page.fxml
+│   │   │       │           ├── images
+│   │   │       └── ical4j.properties
+│   ├── build.gradle
+│   ├── dist
+│   │   ├── day1.jar
+│   │   └── day3.jar
+│   ├── gradle
+│   ├── gradlew
+│   ├── gradlew.bat
+│   ├── settings.gradle
+│   └── src
+│       ├── main
+│       │   ├── all.txt
+│       │   ├── java
+│       │   │   ├── eu
+│       │   │   │   └── telecomnancy
+│       │   │   │       └── labfx
+│       │   │   │           ├── Controller.java
+│       │   │   │           ├── Objet.java
+│       │   │   └── module-info.java
+│       │   ├── resources
+│       │   │   ├── eu
+│       │   │   │   └── telecomnancy
+│       │   │   │       └── labfx
+│       │   │   │           ├── cities.csv
+│       │   │   │           ├── images
+│       │   │   │           ├── Page.fxml
+│       │   │   └── ical4j.properties
+│       │   └── Sumup.py
+│       └── test
+│           └── java
+│               └── eu
+│                   └── telecomnancy
+│                       └── labfx
+│                           ├── TestEquipment.java
+│                           ├── TestServiceOffer.java
+│                           └── TestUser.java
+├── Gestion de Projet
+│   ├── Conventions.md
+│   ├── fonctionnalités.md
+│   └── RoadMap.md
+└── README.md
+
 ```
 
 - le répertoire `src/main/java` contient le code source Java des classes de votre application (dans des sous-répertoires correspondant aux paquetages de votre application).
-- le répertoire `src/main/resources` contient les fichiers de ressources (images, données, etc.) de votre application (potentiellement dans des sous-répertoires correspondant aux paquetages de votre application) ;
-- le répertoire `src/test/java` contient le code source Java des classes de tests de votre application (dans des sous-répertoires correspondant aux paquetages de votre application) ;
-- le répertoire `src/test/resources` contient les fichiers de ressources (images, données, etc.) nécessaires à l'exécution des tests de votre application (potentiellement dans des sous-répertoires correspondant aux paquetages de votre application).
-
-
+- le répertoire `src/main/resources` contient les fichiers de ressources (images, données, etc.) de notre application;
+- le répertoire `src/test/java` contient le code source Java des classes de tests de notre application (dans des sous-répertoires correspondant aux paquetages de notre application) ;
 
 Ce projet souche est directement utilisable dans Visual Studio Code ou IntelliJ.
 
@@ -64,177 +114,50 @@ Le projet devrait se configurer automatiquement (*classpath*, répertoire des re
 
 ### Utilisation dans IntelliJ
 
-Pour utiliser ce projet dans IntelliJ, il suffit d'ouvrir ~~le répertoire~~ le fichier `build.gradle` présent dans le répertoire vous venez de cloner en tant que projet dans IntelliJ.
+Pour utiliser ce projet dans IntelliJ, il suffit d'ouvrir le fichier `build.gradle` présent dans le répertoire vous venez de cloner en tant que projet dans IntelliJ.
 
 Le projet devrait se configurer automatiquement (*classpath*, répertoire des ressources, etc.). Pour compiler/exécuter le projet, vous utiliserez alors soit le terminal (par exemple avec la commande `./gradlew run`) ou l'icône de l'onglet Gradle (cf. le petit éléphant).
 
+### Lancement à partir de l'archive .jar
 
-> ٩◔‿◔۶
->
-> ℹ️ **NOTE**
->
-> Le reste de ce guide est uniquement destinés aux élèves souhaitant installer les différentes dépendances "à la main".
->
->(✿◠‿◠)
+Pour lancer l'application TelecomNancy DirectDealing à partir de l'archive `.jar`, suivez ces étapes :
 
+1. Ouvrez un terminal.
+2. Naviguez jusqu'au répertoire contenant l'archive `.jar` (`DirectDealing/dist/`).
+3. Exécutez la commande suivante :
 
-## Installation d'un JDK (Java Development Kit)
+   ```bash
+   java --module-path ${JAVAFX_HOME}/lib --add-modules=javafx.base,javafx.controls,javafx.fxml -jar DirectDealing.jar
 
-Vous aurez besoin d'un JDK d'installé. Nous vous invitons à installer une version LTS (Long Term Support) de préférence (version 17 ou 21).
+## Vue d'Ensemble du Projet
 
-Vous pouvez télécharger une version d'OpenJDK pour votre système d'exploitation à l'adresse suivante : https://adoptium.net/temurin/releases
-Depuis cette page, choisissez votre système d'exploitation, votre architecture (le plus souvent x64), le type de paquetage (JDK et non JRE), et la version (17).
+**TelecomNancy DirectDealing** est un projet visant à développer une application d'économie circulaire en ligne. Elle est conçue pour permettre aux utilisateurs de prêter, d'emprunter du matériel, ou de proposer/demander des services divers. Ce projet est structuré autour d'un ensemble de fonctionnalités clés visant à faciliter les interactions entre les utilisateurs tout en intégrant des éléments de géolocalisation, de planification, et de récompenses.
 
-Après avoir téléchargé l'archive, décompresser celle-ci à un emplacement que vous noterez.
+## Objectif du Projet
 
+L'objectif principal est de créer une plateforme intuitive et facile à utiliser, où les utilisateurs peuvent efficacement proposer ou rechercher des services et du matériel. La plateforme vise à encourager l'économie circulaire en facilitant le partage de ressources au sein d'une communauté.
 
-### Décompression de l'archive (en ligne de commande)
+## Fonctionnalités Clés
 
-```sh
-tar xvfz OpenJDK17U-jdk_x64_mac_hotspot_17.0.9_9.tar.gz
-```
+- **Authentification et Gestion de Compte**: Sécurité et gestion personnalisée des comptes utilisateurs.
+- **Système de Messagerie Intégrée**: Communication directe entre les utilisateurs pour la coordination des échanges.
+- **Cartographie des Offres**: Affichage des offres disponibles sur une carte interactive, facilitant la recherche géolocalisée.
+- **Gestion des Offres**: Création, consultation, et réservation d'offres de services ou de matériel.
+- **Intégration Calendrier**: Gestion des réservations et planification des services.
+- **Économie de Florains**: Système de monnaie virtuelle pour gérer les transactions au sein de l'application.
+- **Fonctionnalités de Recherche et Filtrage**: Recherche avancée pour trouver rapidement ce que l'utilisateur cherche.
+- **Système d'Évaluation et de Feedback**: Evaluation des transactions pour maintenir la qualité et la fiabilité du service.
 
-### Mise en place des variables d'environnement `JAVA_HOME` et `PATH`
+## Technologies Utilisées
 
-Il est recommandé de définir une variable d'environnement `JAVA_HOME` pointant vers le répertoire d'installation de votre JDK. Puis de mettre à jour votre variable d'environnement `PATH` pour avoir accès aux commandes `java` et `javac`.
+- **Langage de Programmation**: Java (avec focus sur la programmation orientée objet).
+- **Gestion de Version**: Git pour le contrôle de version et la collaboration en équipe.
+- **Base de Données**: (Définir selon les besoins, ex: SQLite, MySQL, etc.).
+- **Interface Utilisateur**: (Choisir la technologie selon les besoins, ex: JavaFX, Swing, etc.).
 
-Vous pouvez réaliser cela avec les lignes de commandes suivantes :
+## Architecture du Projet
 
-```sh
-export JAVA_HOME=$(pwd)/jdk-17.0.9+9 # Attention ici, $(pwd) correspond au répertoire où vous avez précédemment décompressé l'archive du JDK
-export PATH=${JAVA_HOME}/bin:${PATH}
-```
+- **Modèle MVC** (Modèle-Vue-Contrôleur) pour une séparation claire entre la logique de l'interface utilisateur, la logique métier et la gestion des données.
+- **APIs et Services Externes**: Intégration d'APIs pour des fonctionnalités spécifiques comme le calendrier.
 
-Ces variables ne sont pas persistantes d'une session à l'autre. Si vous voulez les rendre persistantes, le mieux est de les ajouter au fichier des commandes qui sont exécutées à l'ouverture de votre *shell* (`~/.bashrc` ou `~/.zshrc` par exemple).
-
-Sous Windows, le mieux est d'ajouter ces définitions à vos variables d'environnement système. Vous pouvez :
-- soit en passer par l'interface graphique spécifique (vous pouvez normalement y accéder en effectuant la recherche `env` dans votre barre de recherche) ;
-- soit utiliser les lignes de commande suivantes :
-
-```shell
-setx /m JAVA_HOME "C:\Progra~1\Java\jdk-17.0.9+9"
-setx /m PATH "%JAVA_HOME%\bin;%PATH"
-
-# Pensez à redémarrer votre terminal pour que les nouvelles valeurs des variables d'environnement soient prises en compte
-```
-
-À noter que sous Windows, la valeur d'une variable d'environnement s'obtient par `%JAVA_HOME%` et non pas `${JAVA_HOME}`
-
-
-## Librarie JavaFX
-
-Vous aurez également besoin de télécharger la librairie JavaFX. À partir de la version 11 du JDK, cette librairie ne fait plus partie du JDK.
-Nous vous recommandons de télécharger la version 17 (ou 21).
-
-Vous pouvez trouver une distribution (binaire compilée) sur le site web : https://gluonhq.com/products/javafx/
-À partir de cette, choisissez la version (17), votre système d'exploitation, votre architecture et le type d'archive (SDK)
-
-Après avoir téléchargé l'archive, décompresser celle-ci à un emplacement que vous noterez.
-
-
-### Mise en place de la variable d'environnement `JAVAFX_HOME` qui sera utilisée lors des phases de compilation/exécution
-
-Voici l'exemple de la commande pour définir la variable d'environnement sous un shell bash/zsh. Il faut bien entendu adapter cette commande pour un environnement Windows (voir la section précédente sur la définition des variables d'environnement sous Windows).
-
-```bash
-export JAVAFX_HOME=$(pwd)/javafx-sdk-17.0.9 # Attention ici, $(pwd) correspond au répertoire où vous avez précédemment décompressé l'archive du SDK JavaFX
-```
-
-
-## Téléchargement du kit Scene Builder (pour plus tard)
-
-https://gluonhq.com/products/scene-builder/#download 
-
-- Liens direct : https://download2.gluonhq.com/scenebuilder/21.0.0/scenebuilder-kit-21.0.0.jar
-
-
-
-## Application Exemple JavaFx
-
-Pour tester votre installation en ligne de commande, nous allons écrire un premier programme utilisant la librairie graphique JavaFX.
-
-On commence par créer un répertoire `src/`.
-
-```sh
-mkdir src
-```
-
-Vous saisirez le code Java suivant dans un fichier `src/Main.java` :
-
-```java
-import javafx.application.Application;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.geometry.Pos;
-
-public class Main extends Application {
-
-public static void main(String[] args) {
-    Application.launch(args);
-}
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Hello world JavaFX Application");
-        primaryStage.setWidth(300);
-        primaryStage.setHeight(200);
-
-        Label helloWorldLabel = new Label("Hello world!");
-        helloWorldLabel.setAlignment(Pos.CENTER);
-        Scene primaryScene = new Scene(helloWorldLabel);
-
-        primaryStage.setScene(primaryScene);
-        primaryStage.show();
-    }
-
-}
-```
-
-
-### Compilation de l'exemple
-
-La librairie JavaFX étant en dehors du JDK, il est nécessaire de l'*activer* en l'ajoutant les modules correspondant (pour faire simple, les modules sont des archives contenant à la fois des classes Java compilées et également des librairies natives de type `.dll`, `.dylib` `.so` en fonction de votre système). 
-
-Dans la commande suivante, on précise donc le répertoire où se trouvent les modules que l'on veut activer et le nom des modules (on se contente pour l'instant des modules `javafx.base` et `javafx.controls`, plus tard vous serez amené à en ajouter d'autres, notamment `javafx.fxml`).
-
-```bash
-javac -classpath src/ --module-path ${JAVAFX_HOME}/lib --add-modules=javafx.base,javafx.controls src/Main.java
-```
-
-### Exécution de l'exemple
-
-De même, lors de l'exécution, il est nécessaire d'activer les modules liés à la librairie JavaFX.
-
-```bash
-java -classpath src/ --module-path ${JAVAFX_HOME}/lib --add-modules=javafx.base,javafx.controls Main
-```
-
-
-
-## Installation IntellJ et configuration d'un projet JavaFX
-
-Dans les différents TPs nous utiliserons l'environnement de développement intégré (IDE) IntelliJ. Vous pouvez télécharger et installer cet environnement sur votre ordinateur. La version *Community* sera suffisante, mais sachez qu'avec le programme éducation vous avez accès la version *Ultimate*.
-
-Lien du site JetBrains IntelliJ : https://www.jetbrains.com/fr-fr/idea/
-
-
-- Lancer IntelliJ
-- Choisissez "New Project" -> "Java FX"
-- Dans "Project SDK" -> ajoutez un nouveau JDK ("Add JDK")
-    - indiquez le chemin où vous avez installé votre JDK17.
-- Choisissez "JavaFX Application"
-- Dans "Project Structure" -> "Project Settings" -> "Modules", 
-    - choisissez "+" -> "Library" -> "Java"
-        - indiquez le chemin où vous avez installé la librairie JavaFX
-        - donnez comme nom "JavaFX" à cette nouvelle librairie que vous venez d'ajouter
-- Dans "Run" -> "Edit configurations"
-    - choisissez "Application" -> "Main"
-    - et ajouter dans "VM Options" : ``--module-path %REPERTOIRE_JAVAFX%/lib --add-modules javafx.controls,javafx.fxml`` où vous remplacez `%REPERTOIRE_JAVAFX%` par le chemin vers le répertoire où vous avez installé la librairie JavaFX.
-- Dans "Settings" -> "Languages and Frameworks" -> JavaFX
-    - indiquez dans "Path to SceneBuilder", le chemin vers le .jar "Scene Builder Kit" que vous avez téléchargé.
-
-Si vous souhaitez des instructions plus complètes, vous pouvez consulter les pages : 
-
-- https://www.jetbrains.com/help/idea/javafx.html#add-javafx-lib
-- https://www.jetbrains.com/help/idea/opening-fxml-files-in-javafx-scene-builder.html#open-in-scene-builder
+---
