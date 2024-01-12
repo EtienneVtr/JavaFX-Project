@@ -14,6 +14,8 @@ public class Planning {
     private ArrayList<CombinedOffer> my_demand; // Les offres que d'autres ont publiées et que j'ai réservées
 
 
+
+    
     public Planning(User user) {
         this.user = user;
         this.my_offer = new ArrayList<CombinedOffer>();
