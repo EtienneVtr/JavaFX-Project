@@ -5,9 +5,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.LocalDate;
 
 public class DataBase {
 
@@ -132,6 +132,15 @@ public class DataBase {
                                  "is_read BOOLEAN DEFAULT FALSE," + 
                                  "FOREIGN KEY (conversation_id) REFERENCES conversations(conversation_id));";
             stmt.execute(sqlMessages);
+
+            String sqlUserDistances = "CREATE TABLE IF NOT EXISTS user_distances (" +
+                                      "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                      "user_email1 TEXT NOT NULL, " +
+                                      "user_email2 TEXT NOT NULL, " +
+                                      "distance DOUBLE NOT NULL, " +
+                                      "FOREIGN KEY (user_email1) REFERENCES profil (mail), " +
+                                      "FOREIGN KEY (user_email2) REFERENCES profil (mail))";
+            stmt.execute(sqlUserDistances);
 
 
 
