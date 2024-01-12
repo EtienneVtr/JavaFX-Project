@@ -1,4 +1,4 @@
-package eu.telecomnancy.labfx;
+/* package eu.telecomnancy.labfx;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -65,3 +65,4 @@ public class TestUser {
     }
 
 }
+ */

@@ -161,18 +161,6 @@
                </padding>
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="179.0" prefHeight="30.0" prefWidth="600.0" spacing="20.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Note:">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Text>
-                  <Label fx:id="note" text="note">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-               </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>

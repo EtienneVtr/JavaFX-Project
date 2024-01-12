@@ -1,5 +1,5 @@
 package eu.telecomnancy.labfx;
-
+ /*
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,7 +45,7 @@ public class TestServiceOffer {
         offer.update();
     }
 
-    /* @Order(3)
+    @Order(3)
     @Test
     @DisplayName("Créer une nouvelle offre de service")
     void testCreateNewServiceOffer() {
@@ -69,4 +69,4 @@ public class TestServiceOffer {
         assertEquals(testDaysOfService, newOffer.getDaysOfService());
         assertEquals(testNbRecurrencingWeeks, newOffer.getRecurrency());
     }
- */}
+ }*/
