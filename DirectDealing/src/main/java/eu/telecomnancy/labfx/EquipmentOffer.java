@@ -265,8 +265,8 @@ public class EquipmentOffer {
     }
     
     public void update() {
-        String sql = "UPDATE equipement SET owner_mail = ?, name = ?, description = ?, quantity = ?, start_availability = ?, end_availability = ?, price = ? WHERE id = ?";
-    
+        String sql = "UPDATE equipement SET owner_mail = ?, name = ?, description = ?, quantity = ?, start_availability = ?, end_availability = ?, price = ?, estPris = ?, book_begin = ?, book_end = ? WHERE id = ?";
+
         try (Connection conn = DataBase.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 
@@ -277,7 +277,11 @@ public class EquipmentOffer {
             pstmt.setString(5, (this.start_availability != null) ? this.start_availability.toString() : null);
             pstmt.setString(6, (this.end_availability != null) ? this.end_availability.toString() : null);
             pstmt.setInt(7, this.price);
-            pstmt.setInt(8, this.id);
+            pstmt.setString(8, this.estPris);
+            pstmt.setString(9, (this.book_begin != null) ? this.book_begin.toString() : null);
+            pstmt.setString(10, (this.book_end != null) ? this.book_end.toString() : null);
+            pstmt.setInt(11, this.id);
+
     
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -297,15 +301,12 @@ public class EquipmentOffer {
             }
 
             // Vérifier si les dates de réservation sont disponibles
-            String sql = "SELECT id FROM equipement WHERE id != ? AND ((book_begin <= ? AND book_end >= ?) OR (book_begin <= ? AND book_end >= ?) OR (book_begin >= ? AND book_end <= ?))";
+            String sql = "SELECT id FROM equipement WHERE id = ? AND (start_availability > ? OR end_availability < ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setInt(1, this.id);
                 pstmt.setString(2, begin.toString());
-                pstmt.setString(3, begin.toString());
-                pstmt.setString(4, end.toString());
-                pstmt.setString(5, end.toString());
-                pstmt.setString(6, begin.toString());
-                pstmt.setString(7, end.toString());
+                pstmt.setString(3, end.toString());
+
                 ResultSet rs = pstmt.executeQuery();
                 if (rs.next()) {
                     System.out.println("Les dates de réservation ne sont pas disponibles");
@@ -549,6 +550,7 @@ public class EquipmentOffer {
     //get fin réservation
     public LocalDate getBook_end(){
         return book_end;
+
     }
 
     public void setBook_begin(LocalDate book_begin) {

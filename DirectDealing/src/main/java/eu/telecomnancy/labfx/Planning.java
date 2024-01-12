@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.time.LocalDate;
+
 public class Planning {
     private User user;
     private ArrayList<CombinedOffer> my_offer; // Les offres que j'ai publiées et qui sont réservées
@@ -19,8 +21,8 @@ public class Planning {
         update();
     }
 
-    private void update(){
-        String sql_equipment = "SELECT owner_mail, name, description, estPris FROM equipement WHERE owner_mail = ? OR estPris = ?";
+    public void update(){
+        String sql_equipment = "SELECT owner_mail, name, description, estPris, start_availability, end_availability, estPris, price, quantity FROM equipement WHERE (owner_mail = ? OR estPris = ?)";
 
         try (Connection conn = DataBase.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql_equipment)) {
@@ -30,10 +32,16 @@ public class Planning {
 
             while (rs.next()) {
 
-                String ownerMail = rs.getString("owner_mail");
-                String name = rs.getString("name");
-                String description = rs.getString("description");
-                EquipmentOffer equipment = new EquipmentOffer(ownerMail, name, description);
+                String ownerMail             = rs.getString("owner_mail");
+                String name                  = rs.getString("name");
+                String description           = rs.getString("description");
+                String start_availability = rs.getString("start_availability");
+                String end_availability   = rs.getString("end_availability");
+                String estPris               = rs.getString("estPris"); 
+                int price                    = rs.getInt("price");
+                int quantity                 = rs.getInt("quantity");
+
+                EquipmentOffer equipment     = new EquipmentOffer(ownerMail, name, description, quantity, LocalDate.parse(start_availability), LocalDate.parse(start_availability), price);
 
                 if (rs.getString("estPris") == null) {
                     my_demand.add(new CombinedOffer(equipment));

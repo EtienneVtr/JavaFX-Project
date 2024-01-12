@@ -1,10 +1,14 @@
 package eu.telecomnancy.labfx;
 
+import javafx.scene.input.MouseEvent;
+
 import com.calendarfx.view.CalendarView;
 import javafx.fxml.FXML;
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
+import com.calendarfx.view.CalendarView;
+
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -37,8 +41,10 @@ public class PlanningController {
         planning = new Planning(currentUser);
         planningCalendar.setEntryFactory(param -> null);
 
+
+
         serviceOfferedCalendar = new Calendar("Services Proposés accepté");
-        equipmentOfferedCalendar = new Calendar("Equipments Proposés");
+        equipmentOfferedCalendar = new Calendar("Equipments Proposés accepté");
         serviceNoneOfferedCalendar = new Calendar("Services proposé non accepté");
         equipmentNoneOfferedCalendar = new Calendar("Equipments proposé non accepté");
         serviceDemandedCalendar = new Calendar("Services demandé");
@@ -129,6 +135,7 @@ public class PlanningController {
     }
 
     private void AddEventToCalendar() {
+        planning.update();
         // Vérifiez que les méthodes getMyOffer() et getMyDemand() existent dans la classe Planning
         System.out.println("planning.getMyOffer()");
         for (CombinedOffer offer : planning.getMyOffer()) {

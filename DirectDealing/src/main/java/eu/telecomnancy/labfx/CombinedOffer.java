@@ -117,11 +117,11 @@ public class CombinedOffer {
     }
 
     public LocalDate getStart() {
-        return start;
+        return this.start;
     }
 
     public LocalDate getEnd() {
-        return end;
+        return this.end;
     }
 
     public LocalTime getTime() {
