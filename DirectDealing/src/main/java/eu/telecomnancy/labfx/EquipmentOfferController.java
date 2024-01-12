@@ -24,6 +24,7 @@ public class EquipmentOfferController {
 
     @FXML private Button book;
     @FXML private Button contact;
+    @FXML private Button ButtonDelete;
 
     @FXML private DatePicker booking_begin;
     @FXML private DatePicker booking_end;
@@ -52,6 +53,10 @@ public class EquipmentOfferController {
             booking_begin.setVisible(false);
             booking_end.setVisible(false);
             contact.setVisible(false);
+        }
+
+        if (!currentUser.getMail().equals("admin")){
+            ButtonDelete.setVisible(false);
         }
     }
 
@@ -136,6 +141,12 @@ public class EquipmentOfferController {
 
     @FXML public void cancel(){
         System.out.println("Go back !");
+        skeleton_controller.loadListEquipmentOfferPage();
+    }
+
+    @FXML public void delete(){
+        System.out.println("Suppression de l'offre");
+        currentOffer.delete();
         skeleton_controller.loadListEquipmentOfferPage();
     }
 

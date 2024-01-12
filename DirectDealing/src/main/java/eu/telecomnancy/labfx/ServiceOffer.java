@@ -471,9 +471,26 @@ public class ServiceOffer {
         // Vérifiez si la distance est inférieure ou égale au rayon spécifié
         return distance <= radius;
     }
-    
-    
-    
+
+    public void delete() {
+        String sql = "DELETE FROM service_offers WHERE id = ?";
+
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, this.id);
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Offre supprimée avec succés");
+            } else {
+                System.out.println("Aucune offre trouvée avec cet ID");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Erreur lors de la suppression de l'offre");
+        }
+    }
     
 
     public String getSupplierMail(){

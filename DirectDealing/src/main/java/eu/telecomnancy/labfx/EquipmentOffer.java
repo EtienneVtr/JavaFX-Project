@@ -447,6 +447,30 @@ public class EquipmentOffer {
             .filter(offer -> isWithinRadius(currentUser, offer.getOwner(), radius))
             .collect(Collectors.toList());
     }
+
+
+
+    // supprimer une offre
+    public void delete() {
+        String sql = "DELETE FROM equipement WHERE id = ?";
+    
+        try (Connection conn = DataBase.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    
+            pstmt.setInt(1, this.id); // Remplacer par l'ID de l'offre à supprimer
+            int affectedRows = pstmt.executeUpdate();
+    
+            if (affectedRows > 0) {
+                System.out.println("Offre supprimée avec succès");
+            } else {
+                System.out.println("Aucune offre trouvée avec cet ID");
+            }
+    
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Erreur lors de la suppression de l'offre");
+        }
+    }
     
     
     

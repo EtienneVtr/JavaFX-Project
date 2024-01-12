@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.Cursor;
+import javafx.scene.control.Button;
 import java.io.InputStream;
 
 public class ProfileController {
@@ -21,6 +22,7 @@ public class ProfileController {
     @FXML private VBox vbox;
     @FXML private ImageView photoProfil;
     @FXML private Label unreadMessagesLabel;
+    @FXML private Button help;
 
 
     public void initialize(){
@@ -28,6 +30,10 @@ public class ProfileController {
         currentUser = Main.getCurrentUser();
 
         State.setText(currentUser.getEtatCompte());
+
+        if (currentUser.getMail().equals("admin")){
+            help.setDisable(true);
+        }
 
         String cheminImageProfil = currentUser.getPhotoProfil();
         //Chemin type : /Users/maxence/Downloads/chat.png
@@ -116,5 +122,10 @@ public class ProfileController {
         skeleton_controller.loadPrivateProfile();
     }
 
+    @FXML public void contactHelp(){
+        System.out.println("Help !!");
+        skeleton_controller.setSupplierForMessaging("admin");
+        skeleton_controller.loadMessageriePage();
+    }
     
 }

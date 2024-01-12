@@ -24,6 +24,7 @@ public class ServiceOfferController {
     @FXML private Button book;
     @FXML private Button cancel;
     @FXML private Button contact;
+    @FXML private Button ButtonDelete;
 
     @FXML private DatePicker booking_begin;
     @FXML private DatePicker booking_end;
@@ -50,6 +51,9 @@ public class ServiceOfferController {
             contact.setVisible(false);
         }
 
+        if (!currentUser.getMail().equals("admin")){
+            ButtonDelete.setVisible(false);
+        }
     }
 
     @FXML public void handleBook() {
@@ -79,7 +83,7 @@ public class ServiceOfferController {
         }else if(begin.isAfter(end)){
             System.out.println("La date de début doit être avant la date de fin");
             return;
-        }else if(begin.isBefore(service_offer.getStart()) || end.isAfter(service_offer.getStart())){
+        }else if(begin.isBefore(service_offer.getStart()) || end.isAfter(service_offer.getEnd())){
             System.out.println("La date de début et de fin doivent être comprises dans la période de disponibilité de l'offre");
             return;
         }
@@ -92,11 +96,19 @@ public class ServiceOfferController {
             // Création de deux nouvelles offres avant et après la période de réservation
             // si le premier jour de réservation est le même que le début de l'offre de base, on en crée qu'une après
             // inverse pour le dernier jour de réservation
-            /* if(begin.equals(service_offer.getStart()) && end.equals(service_offer.getEnd())){
+            if(begin.equals(service_offer.getStart()) && end.equals(service_offer.getEnd())){
                 System.out.println("Offre bien créée");
             }else if(begin.equals(service_offer.getStart())){
+                ServiceOffer newOffer = new ServiceOffer(service_offer.getSupplier(), service_offer.getTitle(), service_offer.getDescription(), end.plusDays(1), service_offer.getEnd(), service_offer.getTime(), false, null, service_offer.getPrice());
                 System.out.println("Offre bien créée");
-                ServiceOffer newOffer = new ServiceOffer(); */
+            }else if(end.equals(service_offer.getEnd())){
+                ServiceOffer newOffer = new ServiceOffer(service_offer.getSupplier(), service_offer.getTitle(), service_offer.getDescription(), service_offer.getStart(), begin.minusDays(1), service_offer.getTime(), false, null, service_offer.getPrice());
+                System.out.println("Offre bien créée");
+            }else{
+                ServiceOffer newOffer1 = new ServiceOffer(service_offer.getSupplier(), service_offer.getTitle(), service_offer.getDescription(), service_offer.getStart(), begin.minusDays(1), service_offer.getTime(), false, null, service_offer.getPrice());
+                ServiceOffer newOffer2 = new ServiceOffer(service_offer.getSupplier(), service_offer.getTitle(), service_offer.getDescription(), end.plusDays(1), service_offer.getEnd(), service_offer.getTime(), false, null, service_offer.getPrice());
+                System.out.println("Offres bien créées");
+            }
 
 
 
@@ -129,6 +141,12 @@ public class ServiceOfferController {
 
     @FXML public void cancel(){
         System.out.println("Go back !");
+        skeleton_controller.loadListServiceOfferPage();
+    }
+
+    @FXML public void delete(){
+        System.out.println("Suppression de l'offre");
+        service_offer.delete();
         skeleton_controller.loadListServiceOfferPage();
     }
 }

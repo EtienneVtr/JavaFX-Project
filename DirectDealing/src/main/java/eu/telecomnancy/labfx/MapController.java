@@ -1,11 +1,14 @@
 package eu.telecomnancy.labfx;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -21,7 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.InputStream;
-
+import java.time.LocalDate;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class MapController {
 
@@ -29,21 +34,66 @@ public class MapController {
 
     private Map<String, Integer> offerCountByCity = new HashMap<>();
 
+    private User currentUser;
+
 
     public void setSkeletonController(SkeletonController skeleton_controller){
         this.skeleton_controller = skeleton_controller;
     }
 
-    @FXML
-    private Pane mapPane;
+    @FXML private Pane mapPane;
     private Image mapImage;
+    @FXML private TableView<CombinedOffer> listOffers;
 
     public void initialize() {
+        currentUser = Main.getCurrentUser();
+
         // Initialiser mapImage avec l'image de la carte
         mapImage = new Image(getClass().getResourceAsStream("/eu/telecomnancy/labfx/images/france.png"));
 
         drawMap();
         drawOffers();
+
+        TableColumn<CombinedOffer, String> typeColumn = new TableColumn<>("Type");
+        TableColumn<CombinedOffer, String> titleColumn = new TableColumn<>("Title");
+        TableColumn<CombinedOffer, String> priceColumn = new TableColumn<>("Price");
+        TableColumn<CombinedOffer, String> cityColumn = new TableColumn<>("City");
+        TableColumn<CombinedOffer, String> userNameColumn = new TableColumn<>("Pseudo");
+
+        typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTypeString()));
+        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
+        priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPrice())));
+        cityColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner().getLocalisation()));
+        userNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwnerName()));
+
+        listOffers.getColumns().add(typeColumn);
+        listOffers.getColumns().add(titleColumn);
+        listOffers.getColumns().add(priceColumn);
+        listOffers.getColumns().add(cityColumn);
+        listOffers.getColumns().add(userNameColumn);
+
+        listOffers.setItems(null); // Il faut remplacer null par une observable list contenant les offres à afficher
+        // la liste doit contenir des combinedOffer
+    
+        listOffers.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && !listOffers.getSelectionModel().isEmpty()) {
+                CombinedOffer selected_item = listOffers.getSelectionModel().getSelectedItem();
+                handleDoubleClickOnEquipment(selected_item);
+            }
+        });
+    
+    }
+
+    private void handleDoubleClickOnEquipment(CombinedOffer item) {
+        System.out.println("Double click !!");
+        // Ici, tu peux effectuer une action avec l'objet ServiceOffer sélectionné
+        if(item.getTypeString().equals("Equipment")){
+            EquipmentOffer equipment = new EquipmentOffer(item.getOwner().getMail(), item.getTitle(), item.getDescription(), item.getStartString(), item.getEstPris());
+            skeleton_controller.loadEquipmentOfferPage(equipment);
+        }else{
+            ServiceOffer service = new ServiceOffer(item.getOwner().getMail(), item.getTitle(), item.getDescription(), item.getStartString(), item.getEstPris());
+            skeleton_controller.loadServiceOfferPage(service);
+        }
     }
 
     private void drawMap() {
