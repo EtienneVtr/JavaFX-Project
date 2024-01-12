@@ -40,6 +40,7 @@ public class MessagerieController {
     private ObservableList<String> listOfContacts;
     private ArrayList<Message> listOfCurrentMessages;
     private String initialContact;
+    private String initialMessage;
     private Map<String, Integer> unreadMessageCountMap = new HashMap<>(); // Utiliser une Map pour conserver le nombre de messages non lus pour chaque conversation
     
 
@@ -66,6 +67,10 @@ public class MessagerieController {
         this.initialContact = contactPseudo;
     }
 
+    public void setInitialMessage(String messageText) {
+        this.initialMessage = messageText;
+    }
+
     public void initialize() {
         currentUser = Main.getCurrentUser();
         
@@ -87,7 +92,11 @@ public class MessagerieController {
             createConversationWith(initialContact);
             listContact.getSelectionModel().select(initialContact);
             setCurrentConversation(initialContact);
+            if(initialMessage != null && !initialMessage.isEmpty()) {
+                sendMessage(initialMessage);
+            }
             initialContact = null; // Réinitialiser après utilisation
+            initialMessage = null;
         }
         else {
             // Sélectionner le premier contact par défaut

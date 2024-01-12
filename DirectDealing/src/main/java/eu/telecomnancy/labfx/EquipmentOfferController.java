@@ -25,6 +25,7 @@ public class EquipmentOfferController {
     @FXML private Button book;
     @FXML private Button contact;
     @FXML private Button ButtonDelete;
+    @FXML private Button contactHelp;
 
     @FXML private DatePicker booking_begin;
     @FXML private DatePicker booking_end;
@@ -57,6 +58,11 @@ public class EquipmentOfferController {
 
         if (!currentUser.getMail().equals("admin")){
             ButtonDelete.setVisible(false);
+        }else{
+            contactHelp.setVisible(false);
+            if(currentUser.getMail().equals(currentOffer.getMail())){
+                ButtonDelete.setVisible(true);
+            }
         }
     }
 
@@ -150,5 +156,18 @@ public class EquipmentOfferController {
         skeleton_controller.loadListEquipmentOfferPage();
     }
 
+    @FXML public void contactHelp(){
+        System.out.println("Help !!");
+        String message = "J'ai besoin d'aide sur l'annonce de \n"
+                 + "type \"" + "service" + "\" \n"
+                 + "créé par \"" + currentUser.getPseudo() + "\" \n"
+                 + "le \"" + currentOffer.getDate_publication() + "\" \n"
+                 + "avec comme titre \"" + currentOffer.getName() + "\" \n"
+                 + "comme description \"" + currentOffer.getDescription() + "\" et \n"
+                 + "comme prix \"" + currentOffer.getPrice() + "\" \n"
+                 + "situé à \"" + currentOffer.getOwner().getLocalisation() + "\"";
 
+        skeleton_controller.setSupplierForMessaging("admin", message);
+        skeleton_controller.loadMessageriePage();
+    }
 }

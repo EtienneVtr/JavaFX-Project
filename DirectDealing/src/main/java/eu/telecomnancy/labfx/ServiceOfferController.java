@@ -25,6 +25,7 @@ public class ServiceOfferController {
     @FXML private Button cancel;
     @FXML private Button contact;
     @FXML private Button ButtonDelete;
+    @FXML private Button contactHelp;
 
     @FXML private DatePicker booking_begin;
     @FXML private DatePicker booking_end;
@@ -53,6 +54,11 @@ public class ServiceOfferController {
 
         if (!currentUser.getMail().equals("admin")){
             ButtonDelete.setVisible(false);
+        }else{
+            contactHelp.setVisible(false);
+            if(currentUser.getMail().equals(service_offer.getSupplierMail())){
+                ButtonDelete.setVisible(true);
+            }
         }
     }
 
@@ -148,5 +154,20 @@ public class ServiceOfferController {
         System.out.println("Suppression de l'offre");
         service_offer.delete();
         skeleton_controller.loadListServiceOfferPage();
+    }
+
+    @FXML public void contactHelp(){
+        System.out.println("Help !!");
+        String message = "J'ai besoin d'aide sur l'annonce de \n"
+                 + "type \"" + "service" + "\" \n"
+                 + "créé par \"" + currentUser.getPseudo() + "\" \n"
+                 + "le \"" + service_offer.getDate_publication() + "\" \n"
+                 + "avec comme titre \"" + service_offer.getTitle() + "\" \n"
+                 + "comme description \"" + service_offer.getDescription() + "\" et \n"
+                 + "comme prix \"" + service_offer.getPrice() + "\" \n"
+                 + "situé à \"" + service_offer.getSupplier().getLocalisation() + "\"";
+
+        skeleton_controller.setSupplierForMessaging("admin", message);
+        skeleton_controller.loadMessageriePage();
     }
 }

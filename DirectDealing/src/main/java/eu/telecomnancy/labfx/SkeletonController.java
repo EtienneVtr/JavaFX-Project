@@ -13,12 +13,18 @@ public class SkeletonController {
     public MainController main_controller;
     private User currentUser;
     private String supplierForMessaging;
+    private String message;
 
     public void setMainController(MainController main_controller) {
         this.main_controller = main_controller;
     }
     public void setSupplierForMessaging(String pseudo) {
         this.supplierForMessaging = pseudo;
+    }
+
+    public void setSupplierForMessaging(String pseudo, String message) {
+        this.supplierForMessaging = pseudo;
+        this.message = message;
     }
 
     @FXML private SplitPane skeletonContent;
@@ -319,8 +325,10 @@ public class SkeletonController {
     
             // Passer le pseudo du fournisseur à MessagerieController
             messagerie_controller.setInitialContact(supplierForMessaging);
+            messagerie_controller.setInitialMessage(message);
             messagerie_controller.initializeListContact();
             supplierForMessaging = null; // Réinitialiser la variable après utilisation
+            message = null;
     
             mainContent.getChildren().setAll(messagerie);
             Main.applyCursorChangeToScene(mainContent);
