@@ -296,12 +296,13 @@ public class EquipmentOffer {
             e.printStackTrace();
         }
     }
+
+    
     public boolean reserveOffer(String currentUserEmail, LocalDate begin, LocalDate end) {
         Connection conn = null;
         try {
             conn = DataBase.getConnection();
             conn.setAutoCommit(false); // Démarrer une transaction
-
 
             // Vérifier si l'offre est déjà réservée
             if (this.estPris != null) {
@@ -322,51 +323,23 @@ public class EquipmentOffer {
                     return false;
                 }
             }
-    
-            // Mettre à jour les florains
-            if (!updateFlorains(conn, currentUserEmail, offer.getMail(), offer.getPrice())) {
-                conn.rollback();
-                return false;
-            }
 
-
-            String ownerMail ;
-            int id;
-            String name;
-            String description;
-            LocalDate startAvailability;
-            LocalDate endAvailability;
-            int price;
-
-
-
-            // on commence par récupérer les infos de l'offre en java 
-            String sql2 = "SELECT * FROM equipement WHERE id = ?";
-            try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-                pstmt.setInt(1, offer.getId());
-                ResultSet rs = pstmt.executeQuery();
-                if (rs.next()) {
-                    String ownerMail = rs.getString("owner_mail");
-                    int id = rs.getInt("id");
-                    String name = rs.getString("name");
-                    String description = rs.getString("description");
-                    int quantity = rs.getInt("quantity");
-                    LocalDate startAvailability = rs.getDate("start_availability").toLocalDate();
-                    LocalDate endAvailability = rs.getDate("end_availability").toLocalDate();
-                    int price = rs.getInt("price");
-
+            conn.commit(); // Valider la transaction
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
-
-            // si la réservation couvre toute la plage et
-
-
-
-
-
-    
+        }
     }
+
 
     public boolean updateFlorains(Connection conn, String buyerEmail, String sellerEmail, int price) throws SQLException {
         // Déduire les florains du compte de l'acheteur
