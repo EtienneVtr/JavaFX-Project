@@ -28,7 +28,6 @@ public class ProfileController {
     public void initialize(){
         System.out.println("Initialisation du profile");
         currentUser = Main.getCurrentUser();
-
         State.setText(currentUser.getEtatCompte());
 
         if (currentUser.getMail().equals("admin")){
@@ -37,7 +36,6 @@ public class ProfileController {
 
         String cheminImageProfil = currentUser.getPhotoProfil();
         //Chemin type : /Users/maxence/Downloads/chat.png
-        
         //Set de l'image de profil
         if (cheminImageProfil == null) { //Si il y en a pas de personalisé on met l'image par défaut
             System.out.println("L'utilisateur n'a pas de photo de profil");
@@ -61,9 +59,7 @@ public class ProfileController {
         double radius = photoProfil.getFitWidth() / 2;
         Circle clip = new Circle(radius, radius, radius);
         photoProfil.setClip(clip);
-    
         updateProfileInfo(currentUser);
-
         // Faire en sorte de changer la forme du curseur quand on passe sur l'image
         photoProfil.setOnMouseEntered(event -> photoProfil.getScene().setCursor(Cursor.HAND));
         photoProfil.setOnMouseExited(event -> photoProfil.getScene().setCursor(Cursor.DEFAULT));
@@ -90,11 +86,8 @@ public class ProfileController {
     public void updateProfileInfo(User user) {
         labelPseudo.setText(user.getPseudo());
         labelSoldeFlorain.setText(String.valueOf(user.getNbFlorain()));
-    
         String imagePath = user.getPhotoProfil();
         Image profileImage;
-
-    
         if (imagePath != null && !imagePath.isEmpty()) {
             try {
                 profileImage = new Image("file:" + imagePath);
@@ -110,7 +103,6 @@ public class ProfileController {
                 profileImage = new Image(inputStream);
             
         }
-    
         photoProfil.setImage(profileImage);
         updateUnreadMessagesCount();
     }

@@ -1,14 +1,20 @@
 package eu.telecomnancy.labfx;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.util.Duration;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javafx.scene.control.Label;
 
 import java.io.IOException;
 
@@ -19,6 +25,8 @@ public class MainController {
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private SkeletonController skeleton_controller;
+    @FXML private HBox flashMessageContainer;
+    @FXML private Label flashMessageLabel;
 
     private static User currentUser;
 
@@ -60,7 +68,7 @@ public class MainController {
     }
 
 
-    // Fonction qui charge le squellete de la page d'accueil
+    // Fonction qui charge le squellete de l'application
     public void loadSkeleton() {
         
         try {
@@ -88,6 +96,23 @@ public class MainController {
         loadSkeleton();
         skeleton_controller.loadServicePage();
     }
+
+    // Fonction qui permet d'afficher un message flash
+    public void flash(String message, String color) {
+        flashMessageLabel.setText(message);
+        flashMessageContainer.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 20;");
+        flashMessageContainer.setVisible(true);
+        // Temporisateur pour masquer le message flash après 5 secondes
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> closeFlashMessage()));
+        timeline.setCycleCount(1);
+        timeline.play();
+    }
+
+    @FXML
+    private void closeFlashMessage() {
+        flashMessageContainer.setVisible(false);
+    }
+
 
 
     // Bouton qui charge la page d'incription
@@ -129,6 +154,7 @@ public class MainController {
                     loadHomePage();
                 } else {
                     System.out.println("Identifiants incorrects");
+                    flash("Identifiants incorrects, veuillez réessayer", "red");
                     // Afficher un message d'erreur
                 }
             }

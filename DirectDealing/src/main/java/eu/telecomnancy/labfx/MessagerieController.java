@@ -395,10 +395,13 @@ public class MessagerieController {
         if (contactId != null && !doesConversationExist(currentUser.getId(), contactId)) {
             addConversation(currentUser.getId(), contactId);
             loadConversations();
+            setCurrentConversation(contactPseudo);
         } else if (contactId == null) {
             System.out.println("Aucun utilisateur trouvé avec ce pseudo");
+            skeleton_controller.flash("Aucun utilisateur trouvé avec ce pseudo", "red");
         } else {
-            System.out.println("Une conversation existe déjà avec cet utilisateur");
+            System.out.println("Une conversation existe déjà avec cet utilisateur, chargement de la conversation...");
+
         }
     }
 
@@ -490,6 +493,7 @@ public class MessagerieController {
             responseField.clear(); // Effacer le champ après envoi
         } else {
             System.out.println("Le message ne peut pas être vide.");
+            skeleton_controller.flash("Le message ne peut pas être vide.", "red");
         }
     }
 
@@ -503,6 +507,7 @@ public class MessagerieController {
         } else {
             // Gérer le cas où le champ est vide
             System.out.println("Veuillez entrer un pseudo valide.");
+            skeleton_controller.flash("Veuillez entrer un pseudo valide.", "red");
         }
     }
 
