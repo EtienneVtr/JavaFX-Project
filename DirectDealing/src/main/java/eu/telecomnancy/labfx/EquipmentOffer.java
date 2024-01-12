@@ -406,7 +406,6 @@ public class EquipmentOffer {
             if (maxPrice != null) {
                 pstmt.setInt(paramIndex++, maxPrice);
             }
-    
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     LocalDate startAvailability = rs.getString("start_availability") != null ? LocalDate.parse(rs.getString("start_availability")) : null;
@@ -429,7 +428,9 @@ public class EquipmentOffer {
         }
         for (EquipmentOffer offer : offers) {
             System.out.println("id: " + offer.getId() + " title: " + offer.getName() + " description: " + offer.getDescription() + " start: " + offer.getStartAvailability() + " end: " + offer.getEndAvailability() + " price: " + offer.getPrice());
+            
         }
+        System.out.println(sql);
 
     
         // Filtrer les offres par rayon

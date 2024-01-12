@@ -5,6 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.DatePicker;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import java.time.format.DateTimeParseException;
 
 public class ServiceOfferController {
 
@@ -39,11 +42,14 @@ public class ServiceOfferController {
     private void displayOfferInfo() {
         title.setText("Titre : " + service_offer.getTitle());
         description.setText("Description : " + service_offer.getDescription());
-        String startDateString = service_offer.getStart() != null ? service_offer.getStart().toString() : "Pas de date renseigné";
-        String endDateString = service_offer.getEnd() != null ? service_offer.getEnd().toString() : "Pas de date renseigné";
+    
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String startDateString = service_offer.getStart() != null ? service_offer.getStart().format(formatter) : "Pas de date renseignée";
+        String endDateString = service_offer.getEnd() != null ? service_offer.getEnd().format(formatter) : "Pas de date renseignée";
         String time = service_offer.getTime() != null ? service_offer.getTime().toString() : "Pas d'heure renseigné";
-        date.setText("Date : " + startDateString + " to " + endDateString + " at " + time);
+        date.setText("Date : du " + startDateString + " au " + endDateString + " à " + time);
         price.setText("Coût en florains : " + service_offer.getPrice());
+    
 
         if (service_offer.getSupplierMail().equals(currentUser.getMail())){
             book.setVisible(false);
@@ -132,18 +138,41 @@ public class ServiceOfferController {
     }
     
 
-    @FXML public void handleContact() {
+    @FXML
+    public void handleContact() {
         System.out.println("Lancement d'une conversation avec le propriétaire de l'offre");
+    
+        // Formater la date de publication
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate date;
+        try {
+            date = LocalDate.parse(service_offer.getDate_publication(), inputFormatter);
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException("Erreur de format de date", e);
+        }
+        String formattedDate = date.format(outputFormatter);
+    
+        // Construire le message
+        String message = "J'aimerais discuter de l'annonce de \n"
+                         + "type \"" + "service" + "\" \n"
+                         + "créée par \"" + service_offer.getSupplier().getPseudo() + "\" \n"
+                         + "le \"" + formattedDate + "\" \n"
+                         + "avec comme titre \"" + service_offer.getTitle() + "\" \n"
+                         + "comme description \"" + service_offer.getDescription() + "\" et \n"
+                         + "comme prix \"" + service_offer.getPrice() + " florains\" \n"
+                         + "située à \"" + service_offer.getSupplier().getLocalisation() + "\"";
     
         // Obtenir le pseudo du fournisseur
         String supplierPseudo = service_offer.getSupplier().getPseudo();
     
-        // Passer le pseudo du fournisseur au SkeletonController
-        skeleton_controller.setSupplierForMessaging(supplierPseudo);
+        // Passer le message et le pseudo du fournisseur au SkeletonController
+        skeleton_controller.setSupplierForMessaging(supplierPseudo, message);
     
         // Charger la page de messagerie
         skeleton_controller.loadMessageriePage();
     }
+    
 
     @FXML public void cancel(){
         System.out.println("Go back !");
@@ -158,15 +187,24 @@ public class ServiceOfferController {
 
     @FXML public void contactHelp(){
         System.out.println("Help !!");
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate date;
+        try {
+            date = LocalDate.parse(service_offer.getDate_publication(), inputFormatter);
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException("Erreur de format de date", e);
+        }
+        String formattedDate = date.format(outputFormatter);
         String message = "J'ai besoin d'aide sur l'annonce de \n"
-                 + "type \"" + "service" + "\" \n"
-                 + "créé par \"" + currentUser.getPseudo() + "\" \n"
-                 + "le \"" + service_offer.getDate_publication() + "\" \n"
-                 + "avec comme titre \"" + service_offer.getTitle() + "\" \n"
-                 + "comme description \"" + service_offer.getDescription() + "\" et \n"
-                 + "comme prix \"" + service_offer.getPrice() + "\" \n"
-                 + "situé à \"" + service_offer.getSupplier().getLocalisation() + "\"";
-
+        + "type \"" + "service" + "\" \n"
+        + "créé par \"" + currentUser.getPseudo() + "\" \n"
+        + "le \"" + formattedDate + "\" \n"
+        + "avec comme titre \"" + service_offer.getTitle() + "\" \n"
+        + "comme description \"" + service_offer.getDescription() + "\" et \n"
+        + "comme prix \"" + service_offer.getPrice() + " florains\" \n"
+        + "situé à \"" + service_offer.getSupplier().getLocalisation() + "\""; 
+       
         skeleton_controller.setSupplierForMessaging("admin", message);
         skeleton_controller.loadMessageriePage();
     }

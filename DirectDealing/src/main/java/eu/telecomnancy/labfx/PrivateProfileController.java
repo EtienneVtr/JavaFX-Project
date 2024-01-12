@@ -38,7 +38,7 @@ public class PrivateProfileController {
 
     @FXML private Label dateInscription;
     @FXML private Label nbFlorain;
-    @FXML private Label note;
+
     @FXML private ImageView photoProfil;
     @FXML private String photoProfilPath;
 
@@ -51,7 +51,6 @@ public class PrivateProfileController {
         dateInscription.setText(currentUser.getDateInscription().toString());
         nbFlorain.setText(String.valueOf(currentUser.getNbFlorain()));
         mail.setText(currentUser.getMail());
-        note.setText(String.valueOf(currentUser.getNote()));
 
         String cheminImageProfil = currentUser.getPhotoProfil();
 
