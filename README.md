@@ -23,13 +23,13 @@
 
 ## Projet souche Gradle/JavaFX/JUnit
 
-Pour simplifier votre démarrage et si vous disposez déjà d'un kit de développement Java, vous pouvez utiliser la souche de projet que nous vous proposons. Pour cela, vous devez simplement cloner le projet git disponible à l'adresse suivante : https://gitlab.telecomnancy.univ-lorraine.fr/projets/2324/pcd2k24/pcd2k24-javafx-bootstrap
+Pour simplifier le démarrage et si vous disposez déjà d'un kit de développement Java, vous pouvez utiliser la souche de projet que nous vous proposons. Pour cela, vous devez simplement cloner le projet git disponible à l'adresse suivante : https://gitlab.telecomnancy.univ-lorraine.fr/projets/2324/pcd2k24/pcd2k24-javafx-bootstrap
 
 Cette souche contient un projet directement utilisable en utilisant le moteur de production Gradle (https://gradle.org/). Vous n'avez rien à installer, l'outil téléchargera les dépendances pour vous.
 
 ```bash
 git clone https://gitlab.telecomnancy.univ-lorraine.fr/pcd2k24/codingweek-04.git
-cd pcd2k24-javafx-bootstrap
+cd codingweek-04
 ./gradlew run
 ```
 
@@ -97,7 +97,7 @@ Le projet souche suit la configuration standard d'un projet Java, à savoir :
 
 ```
 
-- le répertoire `src/main/java` contient le code source Java des classes de votre application (dans des sous-répertoires correspondant aux paquetages de votre application).
+- le répertoire `src/main/java` contient le code source Java des classes de notre application (dans des sous-répertoires correspondant aux paquetages de notre application).
 - le répertoire `src/main/resources` contient les fichiers de ressources (images, données, etc.) de notre application;
 - le répertoire `src/test/java` contient le code source Java des classes de tests de notre application (dans des sous-répertoires correspondant aux paquetages de notre application) ;
 

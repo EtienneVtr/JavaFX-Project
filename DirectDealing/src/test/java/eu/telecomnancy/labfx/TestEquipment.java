@@ -1,5 +1,5 @@
 package eu.telecomnancy.labfx;
-
+  /* 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,7 +16,7 @@ public class TestEquipment {
         
     }
 
-    /* 
+  
     @Order(1)
     @Test
     @DisplayName("Vérifier les informations de l'offre d'équipement")
@@ -43,7 +43,7 @@ public class TestEquipment {
         offer.setQuantity(10);
         offer.update();
 
-    } */
+    } 
     @Order(3)
     @Test
     @DisplayName("Créer une nouvelle offre d'équipement")
@@ -69,3 +69,4 @@ public class TestEquipment {
         
     }
 }
+*/

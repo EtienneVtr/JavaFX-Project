@@ -5,7 +5,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Button;
 
+
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class EquipmentOfferController {
     private SkeletonController skeleton_controller;
@@ -43,12 +46,13 @@ public class EquipmentOfferController {
     private void displayOfferInfo() {
         title.setText("Titre : " + currentOffer.getName());
         description.setText("Description : " + currentOffer.getDescription());
-        quantity.setText("Quantité : " + currentOffer.getQuantity());    
-        String startDateString = currentOffer.getStartAvailability() != null ? currentOffer.getStartAvailability().toString() : "Pas de date renseigné";
-        String endDateString = currentOffer.getEndAvailability() != null ? currentOffer.getEndAvailability().toString() : "Pas de date renseigné";
-        dates.setText("Dates : " + startDateString + " / " + endDateString);    
+        quantity.setText("Quantité : " + currentOffer.getQuantity());
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String startDateString = currentOffer.getStartAvailability() != null ? currentOffer.getStartAvailability().format(formatter) : "Pas de date renseignée";
+        String endDateString = currentOffer.getEndAvailability() != null ? currentOffer.getEndAvailability().format(formatter) : "Pas de date renseignée";
+        dates.setText("Dates : du " + startDateString + " au " + endDateString);
         price.setText("Coût en florains : " + currentOffer.getPrice());
-
         if (currentOffer.getOwner().getMail().equals(currentUser.getMail())){
             book.setVisible(false);
             booking_begin.setVisible(false);
@@ -159,18 +163,41 @@ public class EquipmentOfferController {
         }
     }
 
-    @FXML public void handleContact(){
+    @FXML
+    public void handleContact() {
         System.out.println("Lancement d'une conversation avec le propriétaire de l'offre");
+    
+        // Formater la date de publication
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate date;
+        try {
+            date = LocalDate.parse(currentOffer.getDate_publication(), inputFormatter);
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException("Erreur de format de date", e);
+        }
+        String formattedDate = date.format(outputFormatter);
+    
+        // Construire le message
+        String message = "J'ai besoin de discuter à propos de l'annonce de \n"
+                         + "type \"" + "service" + "\" \n"
+                         + "créée par \"" + currentOffer.getOwner().getPseudo() + "\" \n"
+                         + "le \"" + formattedDate + "\" \n"
+                         + "avec comme titre \"" + currentOffer.getName() + "\" \n"
+                         + "comme description \"" + currentOffer.getDescription() + "\" et \n"
+                         + "comme prix \"" + currentOffer.getPrice() + " florains\" \n"
+                         + "située à \"" + currentOffer.getOwner().getLocalisation() + "\"";
     
         // Obtenir le pseudo du fournisseur
         String supplierPseudo = currentOffer.getOwner().getPseudo();
     
-        // Passer le pseudo du fournisseur au SkeletonController
-        skeleton_controller.setSupplierForMessaging(supplierPseudo);
+        // Passer le message et le pseudo du fournisseur au SkeletonController
+        skeleton_controller.setSupplierForMessaging(supplierPseudo, message);
     
         // Charger la page de messagerie
         skeleton_controller.loadMessageriePage();
     }
+    
 
     @FXML public void cancel(){
         System.out.println("Go back !");
@@ -185,15 +212,25 @@ public class EquipmentOfferController {
 
     @FXML public void contactHelp(){
         System.out.println("Help !!");
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate date;
+        try {
+            date = LocalDate.parse(currentOffer.getDate_publication(), inputFormatter);
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException("Erreur de format de date", e);
+        }
+        String formattedDate = date.format(outputFormatter);
+        
         String message = "J'ai besoin d'aide sur l'annonce de \n"
-                 + "type \"" + "service" + "\" \n"
-                 + "créé par \"" + currentUser.getPseudo() + "\" \n"
-                 + "le \"" + currentOffer.getDate_publication() + "\" \n"
-                 + "avec comme titre \"" + currentOffer.getName() + "\" \n"
-                 + "comme description \"" + currentOffer.getDescription() + "\" et \n"
-                 + "comme prix \"" + currentOffer.getPrice() + "\" \n"
-                 + "situé à \"" + currentOffer.getOwner().getLocalisation() + "\"";
-
+                         + "type \"" + "service" + "\" \n"
+                         + "créé par \"" + currentUser.getPseudo() + "\" \n"
+                         + "le \"" + formattedDate + "\" \n"
+                         + "avec comme titre \"" + currentOffer.getName() + "\" \n"
+                         + "comme description \"" + currentOffer.getDescription() + "\" et \n"
+                         + "comme prix \"" + currentOffer.getPrice() + " florains\" \n"
+                         + "situé à \"" + currentOffer.getOwner().getLocalisation() + "\"";
+        
         skeleton_controller.setSupplierForMessaging("admin", message);
         skeleton_controller.loadMessageriePage();
     }
