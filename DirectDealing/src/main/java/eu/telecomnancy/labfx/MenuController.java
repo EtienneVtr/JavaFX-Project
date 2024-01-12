@@ -24,7 +24,7 @@ public class MenuController {
 
     @FXML public void handleService() {
         System.out.println("Service");
-        skeleton_controller.loadServicePage();
+        skeleton_controller.loadListServiceOfferPage();;
     }
 
     @FXML public void handleHome() {
@@ -34,7 +34,7 @@ public class MenuController {
 
     @FXML public void handleEquipment() {
         System.out.println("Equipment");
-        skeleton_controller.loadEquipmentPage();
+        skeleton_controller.loadListEquipmentOfferPage();
     }
 
 

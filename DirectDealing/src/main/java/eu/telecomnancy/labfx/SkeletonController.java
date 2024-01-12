@@ -130,44 +130,6 @@ public class SkeletonController {
         }
     }
 
-
-    // Fonction qui permet de charger la page des services
-    public void loadServicePage(){
-        try {
-            System.out.println("Chargement de la page Service");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Service.fxml"));
-            Parent service = loader.load();
-
-            ServiceController service_controller = loader.getController();
-            service_controller.setSkeletonController(this);
-
-            // Ajouter la page d'inscription à la scène
-            mainContent.getChildren().setAll(service);
-            Main.applyCursorChangeToScene(mainContent);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void loadEquipmentPage(){
-        try {
-            System.out.println("Chargement de la page matériel");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/eu/telecomnancy/labfx/Equipment.fxml"));
-            Parent equipment = loader.load();
-
-            EquipmentController equipment_controller = loader.getController();
-            equipment_controller.setSkeletonController(this);
-
-            // Ajouter la page d'inscription à la scène
-            mainContent.getChildren().setAll(equipment);
-            Main.applyCursorChangeToScene(mainContent);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     // Fonction qui permet de charger la page de création des équipements
     public void loadCreateEquipmentPage(){
         try {

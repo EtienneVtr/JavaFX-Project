@@ -92,11 +92,6 @@ public class MainController {
         skeleton_controller.loadHomePage();
     }
 
-    public void loadServicePage(){
-        loadSkeleton();
-        skeleton_controller.loadServicePage();
-    }
-
     // Fonction qui permet d'afficher un message flash
     public void flash(String message, String color) {
         flashMessageLabel.setText(message);

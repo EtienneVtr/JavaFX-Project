@@ -3,8 +3,10 @@ package eu.telecomnancy.labfx;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
@@ -33,6 +35,8 @@ public class ConsultServiceController {
     @FXML private TextField priceMax;
     @FXML private TextField timeMinInput;
     @FXML private TextField timeMaxInput;
+    @FXML private Button ButtonCreate;
+    @FXML private Label State;
 
 
     @FXML public void initialize() {
@@ -86,6 +90,13 @@ public class ConsultServiceController {
         begin.setDayCellFactory(disablePastDates());
         // Configurez le DatePicker pour fin
         end.setDayCellFactory(disablePastDates());
+
+        if(currentUser.getEtatCompte().equals("sommeil")){
+            ButtonCreate.setDisable(true);
+            State.setVisible(true);
+        }else{
+            State.setVisible(false);
+        }
     }
     
     private void handleDoubleClickOnService(ServiceOffer service) {
@@ -149,6 +160,11 @@ public class ConsultServiceController {
 
     @FXML public void cancel() {
         System.out.println("cancel");
-        skeleton_controller.loadServicePage();
+        skeleton_controller.loadHomePage();
+    }
+
+    @FXML public void handleCreateOffer() {
+        System.out.println("Create offer");
+        skeleton_controller.loadCreateServicePage();
     }
 }

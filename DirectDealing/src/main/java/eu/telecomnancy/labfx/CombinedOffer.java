@@ -14,6 +14,8 @@ public class CombinedOffer {
     private String date_publication;
     private LocalDate start;
     private LocalDate end;
+    private LocalDate startBook;
+    private LocalDate endBook;
     private double distanceToCurrentUser;
 
     // Champs spécifiques à EquipmentOffer
@@ -43,6 +45,8 @@ public class CombinedOffer {
         this.quantity = equipmentOffer.getQuantity();
         this.start = equipmentOffer.getStartAvailability();
         this.end = equipmentOffer.getEndAvailability();
+        this.startBook = equipmentOffer.getBook_begin();
+        this.endBook = equipmentOffer.getBook_end();
         this.type = OfferType.EQUIPMENT_OFFER;
         this.date_publication = equipmentOffer.getDate_publication();
     }
@@ -57,6 +61,8 @@ public class CombinedOffer {
         this.estPris     = serviceOffer.getEstPris();
         this.start       = serviceOffer.getStart();
         this.end         = serviceOffer.getEnd();
+        this.startBook   = serviceOffer.getBook_begin();
+        this.endBook     = serviceOffer.getBook_end();
         this.time        = serviceOffer.getTime();
         this.isRecurrent = serviceOffer.getIsRecurrent();
         this.daysOfService       = serviceOffer.getDaysOfService();
@@ -169,5 +175,11 @@ public class CombinedOffer {
         return date_publication;
     }
 
-    
+    public LocalDate getStartBook() {
+        return startBook;
+    }
+
+    public LocalDate getEndBook() {
+        return endBook;
+    }
 }

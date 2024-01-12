@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 //import javafx.stage.Stage;
+import java.util.regex.Pattern;
 
 
 import java.io.File;
@@ -61,6 +62,19 @@ public class InscriptionController {
             System.out.println("Tous les champs obligatoires doivent être remplis");
             return;
         }
+
+        if (!Main.testCity(localisationValue)) {
+            System.out.println("La ville n'est pas valide");
+            return;
+        }
+
+        String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        String PHONE_REGEX = "^\\+?\\d{1,3}?[-.\\s]?\\(?\\d{1,3}\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$";
+
+        if(!Pattern.matches(EMAIL_REGEX, mailValue) || !Pattern.matches(PHONE_REGEX, phoneValue)) {
+            System.out.println("Le mail ou le téléphone n'est pas valide");
+            return;
+        }
     
         if (!passwordValue.equals(password2Value)) {
             System.out.println("Les mots de passe ne correspondent pas");
@@ -83,8 +97,6 @@ public class InscriptionController {
                 pstmt.setString(6, phoneValue.isEmpty() ? null : phoneValue); // Téléphone non obligatoire
                 pstmt.setString(7, localisationValue);
                 pstmt.setString(8, LocalDate.now().toString());
-                String test = LocalDate.now().toString();
-                System.out.println("caac" + test);
                 pstmt.setString(9, imagePath); // Photo de profil non obligatoire
     
                 pstmt.executeUpdate();

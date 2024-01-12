@@ -12,7 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
@@ -203,5 +205,27 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(true);
         primaryStage.show();
+    }
+
+    // Méthode pour vérifier si une ville existe dans le fichier CSV
+    public static boolean testCity(String cityName){
+        String line;
+        InputStream inputStream;
+        inputStream = Main.class.getResourceAsStream("/eu/telecomnancy/labfx/cities.csv");
+        Boolean test = false;
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            while ((line = br.readLine()) != null) {
+                String[] cityData = line.split(",");
+                if (cityData[4].equals(cityName)){
+                    test = true;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la lecture du fichier CSV : " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return test;
     }
 }
