@@ -83,9 +83,16 @@ public class InscriptionController {
                 pstmt.setString(6, phoneValue.isEmpty() ? null : phoneValue); // Téléphone non obligatoire
                 pstmt.setString(7, localisationValue);
                 pstmt.setString(8, LocalDate.now().toString());
+                String test = LocalDate.now().toString();
+                System.out.println("caac" + test);
                 pstmt.setString(9, imagePath); // Photo de profil non obligatoire
     
                 pstmt.executeUpdate();
+                User newUser = new User(mailValue);
+                //get all info of user
+                System.out.println("Utilisateur créé" + newUser.getMail() + newUser.getPseudo() + newUser.getNbFlorain() + newUser.getPhotoProfil() + newUser.getEtatCompte() + newUser.getHistoriqueFlorain() + newUser.getNote() + newUser.getPhone() + newUser.getLocalisation());
+                newUser.updateDistancesForNewUser(); // Mise à jour des distances pour le nouvel utilisateur
+
                 System.out.println("Utilisateur créé");
                 // Reste du code pour la redirection
             }
