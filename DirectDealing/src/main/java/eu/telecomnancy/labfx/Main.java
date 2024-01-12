@@ -160,14 +160,23 @@ public class Main extends Application {
 
     // Fonction qui permet de modifier le curseur de la souris lorsqu'on passe dessus
     public static void applyCursorChangeToScene(Parent parent) {
+    
         for (Node node : parent.getChildrenUnmodifiable()) {
-            if (node instanceof Parent) {
+            if (node instanceof Parent && (node != null)) {
                 applyCursorChangeToScene((Parent) node);
             }
 
             if (isClickable(node)) {
-                node.setOnMouseEntered(event -> node.getScene().setCursor(Cursor.HAND));
-                node.setOnMouseExited(event -> node.getScene().setCursor(Cursor.DEFAULT));
+                node.setOnMouseEntered(event -> {
+                    if (node.getScene() != null) {
+                        node.getScene().setCursor(Cursor.HAND);
+                    }
+                });
+                node.setOnMouseExited(event -> {
+                    if (node.getScene() != null) {
+                        node.getScene().setCursor(Cursor.DEFAULT);
+                    }
+                });
             }
         }
     }

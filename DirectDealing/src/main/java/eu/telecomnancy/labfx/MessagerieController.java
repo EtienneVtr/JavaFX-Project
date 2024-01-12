@@ -31,6 +31,7 @@ import java.util.Comparator;
 
 
 
+
 public class MessagerieController {
 
     private SkeletonController skeleton_controller;
@@ -43,9 +44,6 @@ public class MessagerieController {
     private String initialMessage;
     private Map<String, Integer> unreadMessageCountMap = new HashMap<>(); // Utiliser une Map pour conserver le nombre de messages non lus pour chaque conversation
     
-
-
-
     @FXML private ListView<String> listContact;
     @FXML private TextField pseudoContact;
     @FXML private Label contactPseudoLabel;
@@ -55,9 +53,6 @@ public class MessagerieController {
     @FXML private Label noConv;
     @FXML private Label noSelectConv;
     @FXML private VBox convActive;
-
-
-
 
     public void setSkeletonController(SkeletonController skeleton_controller){
         this.skeleton_controller = skeleton_controller;
@@ -86,6 +81,8 @@ public class MessagerieController {
                 }
             }
         });
+        listContact.setStyle("-fx-cursor: hand;");
+
 
         if (initialContact != null && !initialContact.isEmpty()) {
             // Créer une conversation avec le contact initial
