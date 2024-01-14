@@ -16,7 +16,8 @@
    - [Intégration Calendrier](#intégration-calendrier)
    - [Économie de Florains](#économie-de-florains)
    - [Fonctionnalités de Recherche et Filtrage](#fonctionnalités-de-recherche-et-filtrage)
-   - [Système d'Évaluation et de Feedback](#système-dévaluation-et-de-feedback)
+   -  [Vidéo présentant les fonctionnalités clés](#vidéo-présentant-les-fonctionnalités-clés)
+
 5. [Technologies Utilisées](#technologies-utilisées)
 6. [Architecture du Projet](#architecture-du-projet)
 7. [Gestion de projet](#gestion-de-projet)
@@ -30,7 +31,7 @@ Cette souche contient un projet directement utilisable en utilisant le moteur de
 
 ```bash
 git clone https://gitlab.telecomnancy.univ-lorraine.fr/pcd2k24/codingweek-04.git
-cd codingweek-04
+cd codingweek-04/DirectDealing
 ./gradlew run
 ```
 
@@ -147,7 +148,10 @@ L'objectif principal est de créer une plateforme intuitive et facile à utilise
 - **Intégration Calendrier**: Gestion des réservations et planification des services.
 - **Économie de Florains**: Système de monnaie virtuelle pour gérer les transactions au sein de l'application.
 - **Fonctionnalités de Recherche et Filtrage**: Recherche avancée pour trouver rapidement ce que l'utilisateur cherche.
-- **Système d'Évaluation et de Feedback**: Evaluation des transactions pour maintenir la qualité et la fiabilité du service.
+
+### Vidéo présentant les fonctionnalités clés
+
+[Regardez la vidéo ici](https://youtu.be/VZfYyfOwzTY)
 
 ## Technologies Utilisées
 
